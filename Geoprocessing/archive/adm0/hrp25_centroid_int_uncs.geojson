@@ -1,0 +1,31 @@
+{
+"type": "FeatureCollection",
+"name": "hrp25_centroid_int_uncs",
+"features": [
+{ "type": "Feature", "properties": { "ISO_3": "PSE", "STATUS": "Occupied Territory", "COLOR_CODE": "XXX", "Terr_ID": 265, "Terr_Name": "Occupied Palestinian Territory" }, "geometry": { "type": "Point", "coordinates": [ 35.2041, 31.9143 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "AFG", "STATUS": "Member State", "COLOR_CODE": "AFG", "Terr_ID": 1, "Terr_Name": "Afghanistan" }, "geometry": { "type": "Point", "coordinates": [ 66.0265, 33.8388 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "SSD", "STATUS": "Member State", "COLOR_CODE": "SSD", "Terr_ID": 0, "Terr_Name": "South Sudan" }, "geometry": { "type": "Point", "coordinates": [ 30.3088, 7.2962 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "SDN", "STATUS": "Member State", "COLOR_CODE": "SDN", "Terr_ID": 229, "Terr_Name": "Sudan" }, "geometry": { "type": "Point", "coordinates": [ 29.9589, 16.0218 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "BDI", "STATUS": "Member State", "COLOR_CODE": "BDI", "Terr_ID": 41, "Terr_Name": "Burundi" }, "geometry": { "type": "Point", "coordinates": [ 29.8871, -3.3562 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "BFA", "STATUS": "Member State", "COLOR_CODE": "BFA", "Terr_ID": 40, "Terr_Name": "Burkina Faso" }, "geometry": { "type": "Point", "coordinates": [ -1.7401, 12.2779 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "CAF", "STATUS": "Member State", "COLOR_CODE": "CAF", "Terr_ID": 47, "Terr_Name": "Central African Republic" }, "geometry": { "type": "Point", "coordinates": [ 20.483, 6.5712 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "CMR", "STATUS": "Member State", "COLOR_CODE": "CMR", "Terr_ID": 43, "Terr_Name": "Cameroon" }, "geometry": { "type": "Point", "coordinates": [ 12.7436, 5.686 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "COD", "STATUS": "Member State", "COLOR_CODE": "COD", "Terr_ID": 65, "Terr_Name": "Democratic Republic of the Congo" }, "geometry": { "type": "Point", "coordinates": [ 23.655, -2.8762 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "COL", "STATUS": "Member State", "COLOR_CODE": "COL", "Terr_ID": 54, "Terr_Name": "Colombia" }, "geometry": { "type": "Point", "coordinates": [ -73.0734, 3.9012 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "ETH", "STATUS": "Member State", "COLOR_CODE": "ETH", "Terr_ID": 76, "Terr_Name": "Ethiopia" }, "geometry": { "type": "Point", "coordinates": [ 39.6162, 8.6333 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "HTI", "STATUS": "Member State", "COLOR_CODE": "HTI", "Terr_ID": 105, "Terr_Name": "Haiti" }, "geometry": { "type": "Point", "coordinates": [ -72.6795, 18.9416 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "IRQ", "STATUS": "Member State", "COLOR_CODE": "IRQ", "Terr_ID": 116, "Terr_Name": "Iraq" }, "geometry": { "type": "Point", "coordinates": [ 43.7721, 33.048 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "LBY", "STATUS": "Member State", "COLOR_CODE": "LBY", "Terr_ID": 141, "Terr_Name": "Libya" }, "geometry": { "type": "Point", "coordinates": [ 18.0233, 27.044 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "MLI", "STATUS": "Member State", "COLOR_CODE": "MLI", "Terr_ID": 151, "Terr_Name": "Mali" }, "geometry": { "type": "Point", "coordinates": [ -3.5244, 17.3503 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "MMR", "STATUS": "Member State", "COLOR_CODE": "MMR", "Terr_ID": 168, "Terr_Name": "Myanmar" }, "geometry": { "type": "Point", "coordinates": [ 96.5069, 21.1543 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "NER", "STATUS": "Member State", "COLOR_CODE": "NER", "Terr_ID": 178, "Terr_Name": "Niger" }, "geometry": { "type": "Point", "coordinates": [ 9.3976, 17.4261 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "NGA", "STATUS": "Member State", "COLOR_CODE": "NGA", "Terr_ID": 179, "Terr_Name": "Nigeria" }, "geometry": { "type": "Point", "coordinates": [ 8.1053, 9.594 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "SOM", "STATUS": "Member State", "COLOR_CODE": "SOM", "Terr_ID": 223, "Terr_Name": "Somalia" }, "geometry": { "type": "Point", "coordinates": [ 45.8626, 6.0637 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "SYR", "STATUS": "Member State", "COLOR_CODE": "SYR", "Terr_ID": 235, "Terr_Name": "Syrian Arab Republic" }, "geometry": { "type": "Point", "coordinates": [ 38.5051, 35.0131 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "TCD", "STATUS": "Member State", "COLOR_CODE": "TCD", "Terr_ID": 48, "Terr_Name": "Chad" }, "geometry": { "type": "Point", "coordinates": [ 18.6645, 15.3612 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "UKR", "STATUS": "Member State", "COLOR_CODE": "UKR", "Terr_ID": 253, "Terr_Name": "Ukraine" }, "geometry": { "type": "Point", "coordinates": [ 31.3871, 49.0171 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "VEN", "STATUS": "Member State", "COLOR_CODE": "VEN", "Terr_ID": 261, "Terr_Name": "Venezuela" }, "geometry": { "type": "Point", "coordinates": [ -66.1696, 7.1224 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "YEM", "STATUS": "Member State", "COLOR_CODE": "YEM", "Terr_ID": 267, "Terr_Name": "Yemen" }, "geometry": { "type": "Point", "coordinates": [ 47.5996, 15.9055 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "ZWE", "STATUS": "Member State", "COLOR_CODE": "ZWE", "Terr_ID": 269, "Terr_Name": "Zimbabwe" }, "geometry": { "type": "Point", "coordinates": [ 29.8718, -19.0001 ] } }
+]
+}
