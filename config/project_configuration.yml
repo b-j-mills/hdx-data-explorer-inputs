@@ -1,0 +1,37 @@
+iso:
+  - pak
+
+action:
+  - replace
+
+HRPs:
+  - AFG
+  - BDI
+  - BFA
+  - CAF
+  - CMR
+  - COD
+  - COL
+  - ETH
+  - GTM
+  - HND
+  - HTI
+  - IRQ
+  - LBY
+  - MLI
+  - MMR
+  - MOZ
+  - NER
+  - NGA
+  - PAK
+  - PSE
+  - SDN
+  - SLV
+  - SOM
+  - SSD
+  - SYR
+  - TCD
+  - UKR
+  - VEN
+  - YEM
+  - ZWE
