@@ -134,3 +134,4 @@ dmypy.json
 # other
 scratch/*
 *.log
+.DS_Store
