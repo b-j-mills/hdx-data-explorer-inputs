@@ -268,7 +268,7 @@ def main():
         adm0_layer_bnd = remove_fields(adm0_layer_bnd, fields)
         adm0_layer_cent = remove_fields(adm0_layer_cent, fields)
         
-        # remove CRS entry from centroid json
+        # remove CRS entry from centroid json (only because of MapBox)
         QgsProject.instance().removeMapLayer(adm0_layer_cent)
         remove_crs(latest_centroid_file)
         adm0_layer_cent = add_vector_layer(latest_centroid_file)
@@ -338,7 +338,7 @@ def main():
             "ADM0_PCODE": QVariant.String, "alpha_3": QVariant.String, "ADM0_REF": QVariant.String}
             adm1_layer_simp = add_fields(adm1_layer_simp, fields)
             
-            # calculate fields adlpha_3, ADM0_REF, and ADM1_REF
+            # calculate fields alpha_3, ADM0_REF, and ADM1_REF
             layer_provider = adm1_layer_simp.dataProvider()
             adm0_name = [i for i in adm1_layer_simp.fields().names() if "ADM0" in i and not "ALT" in i and not "PCODE" in i and not "REF" in i]
             try:
@@ -437,13 +437,12 @@ def main():
     attributes = list()
     for f in adm1_layer.getFeatures():
         attributes.append({
-        "ADM0_REF": f.attributes()[adm1_layer.fields().indexFromName("ADM0_REF")],
-        "alpha_3": f.attributes()[adm1_layer.fields().indexFromName("alpha_3")], 
-        "ADM0_PCODE": f.attributes()[adm1_layer.fields().indexFromName("ADM0_PCODE")], 
-        "ADM1_PCODE": f.attributes()[adm1_layer.fields().indexFromName("ADM1_PCODE")],
-        "ADM1_REF": f.attributes()[adm1_layer.fields().indexFromName("ADM1_REF")],
+        "country": f.attributes()[adm1_layer.fields().indexFromName("ADM0_REF")],
+        "iso3": f.attributes()[adm1_layer.fields().indexFromName("alpha_3")], 
+        "pcode": f.attributes()[adm1_layer.fields().indexFromName("ADM1_PCODE")],
+        "name": f.attributes()[adm1_layer.fields().indexFromName("ADM1_REF")],
         })
-    attributes = sorted(attributes, key = lambda i: i['ADM1_PCODE'])
+    attributes = sorted(attributes, key = lambda i: (i["country"], i["name"]))
     
     with open(join("config","adm1_attributes.txt"), "w") as f:
         for item in attributes:
