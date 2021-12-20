@@ -63,7 +63,7 @@ def remove_country_rows(layer, isos, invert):
     try:
         iso_field = iso_field[0]
     except IndexError:
-        return None
+        return
     with edit(layer):
         if invert == 1:
             ids = [feat.id() for feat in layer.getFeatures() if feat[iso_field] not in isos]
@@ -95,23 +95,23 @@ def main():
         iso = configuration["iso"][0].upper()
     except (IndexError, KeyError):
         logging.error(f"Cannot run function without ISO code!")
-        return None
+        return
     
     try:
         action = configuration["action"][0].lower()
     except (IndexError, KeyError):
         logging.error(f"Cannot run function without action!")
-        return None
+        return
     
     if action not in ["add", "remove", "replace"]:
         logging.error(f"Action {action} not in allowed set of actions!")
-        return None
+        return
     
     try:
         HRPs = configuration["HRPs"]
     except KeyError:
         logging.error("HRP list not found in config file!")
-        return None
+        return
     
     # remove all layers from map
     layers = QgsProject.instance().mapLayers()
@@ -128,7 +128,7 @@ def main():
             copyfile(lf, af)
         except IOError:
             logging.error(f"Unable to copy file: {lf}")
-            return None
+            return
         if basename(lf)[:4] != "hrp_" and dirname(lf) == "Geoprocessing/latest/adm1":
             remove(lf)
     
@@ -139,7 +139,7 @@ def main():
             copyfile(lf, lf.replace("hrp_", f"hrp{len(HRPs)}_"))
         except:
             logging.error(f"Unable to copy file: {lf}")
-            return None
+            return
     
     logging.info("Made copies of all files")
     
@@ -155,7 +155,7 @@ def main():
             lf_layer = remove_country_rows(lf_layer, [iso], 0)
             if lf_layer is None:
                 logging.error(f"Country field not found in {basename(lf)}!")
-                return None
+                return
             QgsProject.instance().removeMapLayer(lf_layer)
         
         for lf in latest_adm0:
@@ -163,7 +163,7 @@ def main():
             lf_layer = remove_country_rows(lf_layer, [iso], 0)
             if lf_layer is None:
                 logging.error(f"Country field not found in {basename(lf)}!")
-                return None
+                return
             QgsProject.instance().removeMapLayer(lf_layer)
                 
         logging.info(f"Removed country {iso} from all jsons")
@@ -179,7 +179,7 @@ def main():
             new_admin0 = new_admin0[0]
         except IndexError:
             logging.error(f"Cannot find admin0 file!")
-            return None
+            return
         
         # simplify
         adm0_simp = join("Geoprocessing", "new", "adm0", iso.lower(), f"{iso.lower()}_simp.shp")
@@ -197,7 +197,7 @@ def main():
             adm0_name = adm0_name[0]
         except IndexError:
             logging.error("Country field not found!")
-            return None
+            return
         
         countryname = NULL
         adm0_layer_simp.startEditing()
@@ -228,7 +228,7 @@ def main():
             latest_polbnda_file = [i for i in latest_adm0 if "polbnda" in basename(i)][0]
         except IndexError:
             logging.error(f"Cannot find copied admin0 boundary!")
-            return None
+            return
         
         latest_polbnda_rename = latest_polbnda_file.split(".")[0] + "_edit." + latest_polbnda_file.split(".")[1]
         rename(latest_polbnda_file, latest_polbnda_rename)
@@ -238,7 +238,7 @@ def main():
             latest_centroid_file = [i for i in latest_adm0 if "centroid" in basename(i)][0]
         except IndexError:
             logging.error(f"Cannot find copied admin0 centroid!")
-            return None
+            return
         
         latest_centroid_rename = latest_centroid_file.split(".")[0] + "_edit." + latest_centroid_file.split(".")[1]
         rename(latest_centroid_file, latest_centroid_rename)
@@ -326,7 +326,7 @@ def main():
                 new_admin1 = new_admin1[0]
             except IndexError:
                 logging.error(f"Cannot find admin1 file!")
-                return None
+                return
                 
             # simplify
             adm1_simp = join("Geoprocessing", "new", "adm1", iso.lower(), f"{iso.lower()}_simp.shp")
@@ -345,14 +345,14 @@ def main():
                 adm0_name = adm0_name[0]
             except IndexError:
                 logging.error("Country field not found!")
-                return None
+                return
             
             adm1_name = [i for i in adm1_layer_simp.fields().names() if "ADM1" in i and not "ALT" in i and not "PCODE" in i and not "REF" in i]
             try:
                 adm1_name = adm1_name[0]
             except IndexError:
                 logging.error("Admin 1 name field not found!")
-                return None
+                return
             
             countryname = NULL
             provname = NULL
@@ -431,7 +431,7 @@ def main():
         latest_adm1 = latest_adm1[0]
     except IndexError:
         logging.error(f"Cannot find admin1 boundary!")
-        return None
+        return
     adm1_layer = add_vector_layer(latest_adm1)
     
     attributes = list()
@@ -449,11 +449,9 @@ def main():
         for item in attributes:
             f.write("%s\n" % str(item).replace("'",""))
     
-    return "Processed"
+    return
 
 
 if __name__ == "__main__":
-    message = main()
-    if not message is None:
-        print(message)
+    main()
 
