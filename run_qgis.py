@@ -445,8 +445,13 @@ def main():
     attributes = sorted(attributes, key = lambda i: (i["country"], i["name"]))
     
     with open(join("config","adm1_attributes.txt"), "w") as f:
-        for item in attributes:
-            f.write("%s\n" % str(item).replace("'",""))
+        for row in attributes:
+            if "," in row["name"]:
+                row["name"] = '"' + row["name"] + '"'
+            if "'" in row["name"]:
+                row["name"] = row["name"].replace("'","|")
+                row["name"] = '"' + row["name"] + '"'
+            f.write("- %s\n" % str(row).replace("'","").replace("|","'"))
     
     return
 
