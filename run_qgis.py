@@ -450,7 +450,6 @@ def main():
                 row["name"] = '"' + row["name"] + '"'
             if "'" in row["name"]:
                 row["name"] = row["name"].replace("'","|")
-                row["name"] = '"' + row["name"] + '"'
             f.write("- %s\n" % str(row).replace("'","").replace("|","'"))
     
     return
