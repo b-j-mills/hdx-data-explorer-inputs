@@ -135,3 +135,8 @@ dmypy.json
 scratch/*
 *.log
 .DS_Store
+
+Geoprocessing/new/adm0/
+Geoprocessing/new/adm1/
+Geoprocessing/new/health_facilities/
+Geoprocessing/new/population/

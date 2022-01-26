@@ -1,6 +1,6 @@
 {
 "type": "FeatureCollection",
-"name": "63_centroid_int_uncs",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
 "features": [
 { "type": "Feature", "properties": { "ISO_3": "PAN", "Terr_ID": "591", "Terr_Name": "Panama" }, "geometry": { "type": "Point", "coordinates": [ -80.74025, 8.4975 ] } },
 { "type": "Feature", "properties": { "ISO_3": "GUY", "Terr_ID": "328", "Terr_Name": "Guyana" }, "geometry": { "type": "Point", "coordinates": [ -58.97478, 4.79202 ] } },
@@ -54,12 +54,16 @@
 { "type": "Feature", "properties": { "ISO_3": "HTI", "Terr_ID": "332", "Terr_Name": "Haiti" }, "geometry": { "type": "Point", "coordinates": [ -72.30038, 19.05203 ] } },
 { "type": "Feature", "properties": { "ISO_3": "TCD", "Terr_ID": "148", "Terr_Name": "Chad" }, "geometry": { "type": "Point", "coordinates": [ 18.66448, 15.36117 ] } },
 { "type": "Feature", "properties": { "ISO_3": "YEM", "Terr_ID": "887", "Terr_Name": "Yemen" }, "geometry": { "type": "Point", "coordinates": [ 47.59959, 15.494477489847748 ] } },
-{ "type": "Feature", "properties": { "ISO_3": "ZWE", "Terr_ID": "716", "Terr_Name": "Zimbabwe" }, "geometry": { "type": "Point", "coordinates": [ 29.94379960391305, -18.49638277260863 ] } },
 { "type": "Feature", "properties": { "ISO_3": "KEN", "Terr_ID": "404", "Terr_Name": "Kenya" }, "geometry": { "type": "Point", "coordinates": [ 37.85802, 0.52956 ] } },
 { "type": "Feature", "properties": { "ISO_3": "PRY", "Terr_ID": "600", "Terr_Name": "Paraguay" }, "geometry": { "type": "Point", "coordinates": [ -59.508095941051486, -22.445106088422765 ] } },
 { "type": "Feature", "properties": { "ISO_3": "GTM", "Terr_ID": "320", "Terr_Name": "Guatemala" }, "geometry": { "type": "Point", "coordinates": [ -91.3244, 15.56734 ] } },
 { "type": "Feature", "properties": { "ISO_3": "SLV", "Terr_ID": "222", "Terr_Name": "El Salvador" }, "geometry": { "type": "Point", "coordinates": [ -89.00207, 13.77721 ] } },
 { "type": "Feature", "properties": { "ISO_3": "HND", "Terr_ID": "340", "Terr_Name": "Honduras" }, "geometry": { "type": "Point", "coordinates": [ -86.89745, 14.96257 ] } },
-{ "type": "Feature", "properties": { "ISO_3": "PAK", "Terr_ID": "586", "Terr_Name": "Pakistan" }, "geometry": { "type": "Point", "coordinates": [ 68.844288060076281, 29.818957206683272 ] } }
+{ "type": "Feature", "properties": { "ISO_3": "PAK", "Terr_ID": "586", "Terr_Name": "Pakistan" }, "geometry": { "type": "Point", "coordinates": [ 68.844288060076281, 29.818957206683272 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "IRN", "Terr_ID": "0", "Terr_Name": "Iran (Islamic Republic of)" }, "geometry": { "type": "Point", "coordinates": [ 54.120767552073943, 32.435949500000049 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "MDG", "Terr_ID": "0", "Terr_Name": "Madagascar" }, "geometry": { "type": "Point", "coordinates": [ 46.713680325116542, -18.784789236499904 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "TJK", "Terr_ID": "0", "Terr_Name": "Tajikistan" }, "geometry": { "type": "Point", "coordinates": [ 70.947259948169673, 38.861359 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "TKM", "Terr_ID": "0", "Terr_Name": "Turkmenistan" }, "geometry": { "type": "Point", "coordinates": [ 57.740357791366336, 38.966652500000038 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "UZB", "Terr_ID": "0", "Terr_Name": "Uzbekistan" }, "geometry": { "type": "Point", "coordinates": [ 63.361442180554647, 41.393544999998866 ] } }
 ]
 }

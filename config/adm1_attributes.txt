@@ -221,7 +221,7 @@
 - {country: Guatemala, iso3: GTM, pcode: GT19, name: Zacapa}
 - {country: Haiti, iso3: HTI, pcode: HT05, name: Artibonite}
 - {country: Haiti, iso3: HTI, pcode: HT06, name: Centre}
-- {country: Haiti, iso3: HTI, pcode: HT08, name: "Grande'Anse"}
+- {country: Haiti, iso3: HTI, pcode: HT08, name: Grande'Anse}
 - {country: Haiti, iso3: HTI, pcode: HT10, name: Nippes}
 - {country: Haiti, iso3: HTI, pcode: HT03, name: North}
 - {country: Haiti, iso3: HTI, pcode: HT04, name: North East}
@@ -348,11 +348,6 @@
 - {country: Nigeria, iso3: NGA, pcode: NG035, name: Taraba}
 - {country: Nigeria, iso3: NGA, pcode: NG036, name: Yobe}
 - {country: Nigeria, iso3: NGA, pcode: NG037, name: Zamfara}
-- {country: Pakistan, iso3: PAK, pcode: PK7, name: Balochistan}
-- {country: Pakistan, iso3: PAK, pcode: PK5, name: Federal Capital Territory}
-- {country: Pakistan, iso3: PAK, pcode: PK2, name: Khyber Pakhtunkhwa}
-- {country: Pakistan, iso3: PAK, pcode: PK6, name: Punjab}
-- {country: Pakistan, iso3: PAK, pcode: PK8, name: Sindh}
 - {country: Somalia, iso3: SOM, pcode: SO11, name: Awdal}
 - {country: Somalia, iso3: SOM, pcode: SO25, name: Bakool}
 - {country: Somalia, iso3: SOM, pcode: SO22, name: Banadir}
@@ -489,13 +484,3 @@
 - {country: Yemen, iso3: YEM, pcode: YE21, name: Shabwah}
 - {country: Yemen, iso3: YEM, pcode: YE32, name: Socotra}
 - {country: Yemen, iso3: YEM, pcode: YE15, name: Taiz}
-- {country: Zimbabwe, iso3: ZWE, pcode: ZW10, name: Bulawayo}
-- {country: Zimbabwe, iso3: ZWE, pcode: ZW19, name: Harare}
-- {country: Zimbabwe, iso3: ZWE, pcode: ZW11, name: Manicaland}
-- {country: Zimbabwe, iso3: ZWE, pcode: ZW12, name: Mashonaland Central}
-- {country: Zimbabwe, iso3: ZWE, pcode: ZW13, name: Mashonaland East}
-- {country: Zimbabwe, iso3: ZWE, pcode: ZW14, name: Mashonaland West}
-- {country: Zimbabwe, iso3: ZWE, pcode: ZW18, name: Masvingo}
-- {country: Zimbabwe, iso3: ZWE, pcode: ZW15, name: Matabeleland North}
-- {country: Zimbabwe, iso3: ZWE, pcode: ZW16, name: Matabeleland South}
-- {country: Zimbabwe, iso3: ZWE, pcode: ZW17, name: Midlands}
