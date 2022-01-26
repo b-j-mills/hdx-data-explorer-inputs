@@ -72,30 +72,28 @@ GHOs:
   - AFG
   - AGO
   - ARG
+  - BDI
+  - BFA
   - BGD
   - BOL
   - BRA
-  - BFA
-  - BDI
-  - CMR
   - CAF
-  - TCD
   - CHL
-  - COL
+  - CMR
+  - COD
   - COG
+  - COL
   - CRI
   - CUW
-  - COD
   - DJI
   - DOM
   - ECU
   - EGY
-  - SLV
   - ETH
   - GTM
   - GUY
-  - HTI
   - HND
+  - HTI
   - IRN
   - IRQ
   - JOR
@@ -103,29 +101,31 @@ GHOs:
   - LBN
   - LBY
   - MDG
-  - MLI
   - MEX
-  - MOZ
+  - MLI
   - MMR
+  - MOZ
   - NER
   - NGA
   - PAK
   - PAN
-  - PRY
   - PER
+  - PRY
+  - PSE
   - RWA
+  - SDN
+  - SLV
   - SOM
   - SSD
-  - PSE
-  - SDN
   - SYR
-  - TTO
+  - TCD
   - TJK
-  - TUR
   - TKM
+  - TTO
+  - TUR
+  - TZA
   - UGA
   - UKR
-  - TZA
   - URY
   - UZB
   - VEN

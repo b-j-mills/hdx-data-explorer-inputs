@@ -1,7 +1,7 @@
 import logging
 from glob import glob
-from os import remove, rename
-from os.path import join, basename, dirname
+from os import remove
+from os.path import join, dirname
 from helper_functions import copy_files_to_archive, remove_crs
 from geopandas import read_file, GeoDataFrame
 from pandas import isna
@@ -25,10 +25,6 @@ def main():
 
     copy_files_to_archive("adm0")
     copy_files_to_archive("adm1")
-    
-    latest_adm1 = glob(join("Geoprocessing", "latest", "adm1", "*.geojson"))
-    for lf in latest_adm1:
-        rename(lf, lf.replace(basename(lf)[:6], f"hrp{len(HRPs)}_"))
     
     logger.info("Made copies of all files")
 
@@ -142,7 +138,7 @@ def main():
                 logger.info(f"Done processing {adm_level}")
 
     # create admin1 lookup for COVID viz yml
-    latest_adm1 = glob(join("Geoprocessing", "latest", "adm1", "hrp[0-9]*polbnda*.geojson"))
+    latest_adm1 = glob(join("Geoprocessing", "latest", "adm1", "hrps*polbnda*.geojson"))
     try:
         latest_adm1 = latest_adm1[0]
     except IndexError:
