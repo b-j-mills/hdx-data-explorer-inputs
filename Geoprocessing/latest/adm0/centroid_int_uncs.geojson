@@ -60,10 +60,10 @@
 { "type": "Feature", "properties": { "ISO_3": "SLV", "Terr_ID": "222", "Terr_Name": "El Salvador" }, "geometry": { "type": "Point", "coordinates": [ -89.00207, 13.77721 ] } },
 { "type": "Feature", "properties": { "ISO_3": "HND", "Terr_ID": "340", "Terr_Name": "Honduras" }, "geometry": { "type": "Point", "coordinates": [ -86.89745, 14.96257 ] } },
 { "type": "Feature", "properties": { "ISO_3": "PAK", "Terr_ID": "586", "Terr_Name": "Pakistan" }, "geometry": { "type": "Point", "coordinates": [ 68.844288060076281, 29.818957206683272 ] } },
-{ "type": "Feature", "properties": { "ISO_3": "IRN", "Terr_ID": "0", "Terr_Name": "Iran (Islamic Republic of)" }, "geometry": { "type": "Point", "coordinates": [ 54.120767552073943, 32.435949500000049 ] } },
-{ "type": "Feature", "properties": { "ISO_3": "MDG", "Terr_ID": "0", "Terr_Name": "Madagascar" }, "geometry": { "type": "Point", "coordinates": [ 46.713680325116542, -18.784789236499904 ] } },
-{ "type": "Feature", "properties": { "ISO_3": "TJK", "Terr_ID": "0", "Terr_Name": "Tajikistan" }, "geometry": { "type": "Point", "coordinates": [ 70.947259948169673, 38.861359 ] } },
-{ "type": "Feature", "properties": { "ISO_3": "TKM", "Terr_ID": "0", "Terr_Name": "Turkmenistan" }, "geometry": { "type": "Point", "coordinates": [ 57.740357791366336, 38.966652500000038 ] } },
-{ "type": "Feature", "properties": { "ISO_3": "UZB", "Terr_ID": "0", "Terr_Name": "Uzbekistan" }, "geometry": { "type": "Point", "coordinates": [ 63.361442180554647, 41.393544999998866 ] } }
+{ "type": "Feature", "properties": { "ISO_3": "IRN", "Terr_ID": "364", "Terr_Name": "Iran (Islamic Republic of)" }, "geometry": { "type": "Point", "coordinates": [ 54.120767552073943, 32.435949500000049 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "MDG", "Terr_ID": "450", "Terr_Name": "Madagascar" }, "geometry": { "type": "Point", "coordinates": [ 46.713680325116542, -18.784789236499904 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "TJK", "Terr_ID": "762", "Terr_Name": "Tajikistan" }, "geometry": { "type": "Point", "coordinates": [ 70.947259948169673, 38.861359 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "TKM", "Terr_ID": "795", "Terr_Name": "Turkmenistan" }, "geometry": { "type": "Point", "coordinates": [ 57.740357791366336, 38.966652500000038 ] } },
+{ "type": "Feature", "properties": { "ISO_3": "UZB", "Terr_ID": "860", "Terr_Name": "Uzbekistan" }, "geometry": { "type": "Point", "coordinates": [ 63.361442180554647, 41.393544999998866 ] } }
 ]
 }

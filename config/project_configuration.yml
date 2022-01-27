@@ -131,3 +131,11 @@ GHOs:
   - VEN
   - YEM
   - ZMB
+
+regional:
+  format: "xlsx"
+  dataset: "unocha-office-locations"
+  sheet: 1
+  headers: 1
+  iso3: "ISO3"
+  region: "Regional_office"

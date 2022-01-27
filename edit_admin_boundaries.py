@@ -4,12 +4,14 @@ from os import remove
 from os.path import join, dirname
 from helper_functions import copy_files_to_archive, remove_crs
 from geopandas import read_file, GeoDataFrame
-from pandas import isna
+from shapely.geometry import box
 
 from hdx.api.configuration import Configuration
 from hdx.facades.simple import facade
+from hdx.utilities.downloader import Download
 from hdx.utilities.easy_logging import setup_logging
 from hdx.location.country import Country
+from hdx.scraper.readers import read_tabular, read_hdx_metadata
 
 setup_logging()
 logger = logging.getLogger()
@@ -25,6 +27,7 @@ def main():
 
     copy_files_to_archive("adm0")
     copy_files_to_archive("adm1")
+    copy_files_to_archive("bbox")
     
     logger.info("Made copies of all files")
 
@@ -79,7 +82,7 @@ def main():
                 adm_fields = fields.get(adm_level)
                 for adm_field in adm_fields:
                     if adm_field == "Terr_ID":
-                        new_lyr[adm_field] = 0
+                        new_lyr[adm_field] = Country.get_m49_from_iso3(iso)
                     if adm_field in ["ISO_3", "alpha_3"]:
                         new_lyr[adm_field] = iso.upper()
                     if adm_field in ["Terr_Name", "ADM0_REF"]:
@@ -166,13 +169,53 @@ def main():
 
     logger.info("Created admin1 lookup")
 
-    return
+    # create regional bb geojson
+    logger.info("Updating regional bbox json")
+    regional_file = join("Geoprocessing", "latest", "bbox", "ocha-regions-bbox.geojson")
+    regional_lyr = read_file(regional_file)
+
+    latest_adm0 = glob(join("Geoprocessing", "latest", "adm0", "*polbnda*.geojson"))
+    try:
+        latest_adm0 = latest_adm0[0]
+    except IndexError:
+        logger.error(f"Cannot find final admin0 boundary!")
+        return
+    adm0_lyr = read_file(latest_adm0)
+    adm0_lyr["region"] = ""
+    adm0_lyr["HRPs"] = ""
+    adm0_lyr.loc[adm0_lyr["ISO_3"].isin(HRPs), "HRPs"] = "HRPs"
+
+    regional_info = configuration.get("regional")
+    read_hdx_metadata(regional_info)
+    with Download() as downloader:
+        _, iterator = read_tabular(downloader, regional_info)
+        for row in iterator:
+            adm0_lyr.loc[adm0_lyr["ISO_3"] == row[regional_info["iso3"]], "region"] = row[regional_info["region"]]
+    adm0_dissolve = adm0_lyr.dissolve(by="region")
+    adm0_dissolve_HRPs = adm0_lyr[adm0_lyr["HRPs"] == "HRPs"].dissolve(by="HRPs")
+    adm0_dissolve = adm0_dissolve.append(adm0_dissolve_HRPs)
+    adm0_dissolve = adm0_dissolve.bounds
+    adm0_dissolve["bbox"] = "[" + adm0_dissolve["minx"].map(str) + ", " + adm0_dissolve["miny"].map(str) + ", " + adm0_dissolve["maxx"].map(str) + ", " + adm0_dissolve["maxy"].map(str) + "]"
+    adm0_dissolve["new_geometry"] = [box(l, b, r, t) for l, b, r, t in zip(adm0_dissolve["minx"], adm0_dissolve["miny"],
+                                                                       adm0_dissolve["maxx"], adm0_dissolve["maxy"])]
+    regional_lyr = regional_lyr.merge(
+        adm0_dissolve[["new_geometry", "bbox"]],
+        left_on="tbl_regcov_2020_ocha_Field3",
+        right_index=True
+    )
+    regional_lyr["geometry"] = regional_lyr["new_geometry"]
+    regional_lyr.drop(columns=["new_geometry"], inplace=True)
+    regional_lyr = regional_lyr[[regional_lyr.columns[0], "bbox", "geometry"]]
+    remove(regional_file)
+    regional_lyr.to_file(regional_file, driver="GeoJSON")
+    logger.info("Updated regional bbox json")
 
 
 if __name__ == "__main__":
     facade(
         main,
         hdx_read_only=True,
+        hdx_site="prod",
         user_agent="test",
         project_config_yaml=join("config", "project_configuration.yml"),
     )
