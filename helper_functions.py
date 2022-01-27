@@ -1,7 +1,7 @@
 import logging
-from json import load, dump
 from datetime import date
 from glob import glob
+from json import dump, load
 from os import remove
 from os.path import join
 from shutil import copyfile
@@ -72,13 +72,17 @@ def unzip_data(iso, downloaded_resource, data_category, file_type):
     return out_file[0]
 
 
-def remove_crs(in_path):
-    with open(in_path, 'r') as f_open:
+def replace_json(new_data, data_path):
+    remove(data_path)
+    with open(data_path, "w") as f_open:
+        dump(new_data, f_open)
+
+
+def remove_crs(data_path):
+    with open(data_path, "r") as f_open:
         data = load(f_open)
     new_data = {}
     for element in data:
         if not element == "crs":
             new_data[element] = data[element]
-    remove(in_path)
-    with open(in_path, 'w') as f_open:
-        dump(new_data, f_open)
+    replace_json(new_data, data_path)

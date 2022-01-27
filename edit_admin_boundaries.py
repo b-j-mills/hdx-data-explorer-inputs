@@ -1,17 +1,19 @@
 import logging
 from glob import glob
 from os import remove
-from os.path import join, dirname
-from helper_functions import copy_files_to_archive, remove_crs
-from geopandas import read_file, GeoDataFrame
+from os.path import dirname, join
+from geojson import load, loads
+from geopandas import GeoDataFrame, read_file
+from pandas import isna
 from shapely.geometry import box
 
 from hdx.api.configuration import Configuration
 from hdx.facades.simple import facade
+from hdx.location.country import Country
+from hdx.scraper.readers import read_hdx_metadata, read_tabular
 from hdx.utilities.downloader import Download
 from hdx.utilities.easy_logging import setup_logging
-from hdx.location.country import Country
-from hdx.scraper.readers import read_tabular, read_hdx_metadata
+from helper_functions import copy_files_to_archive, remove_crs, replace_json
 
 setup_logging()
 logger = logging.getLogger()
@@ -28,7 +30,7 @@ def main():
     copy_files_to_archive("adm0")
     copy_files_to_archive("adm1")
     copy_files_to_archive("bbox")
-    
+
     logger.info("Made copies of all files")
 
     for iso in params:
@@ -50,25 +52,31 @@ def main():
             if "alpha_3" in adm_lyr.columns:
                 adm0_field = "alpha_3"
             if "adm0" in dirname(lf):
-                adm_lyr.drop(adm_lyr.index[~adm_lyr[adm0_field].isin(GHOs)], inplace=True)
+                adm_lyr.drop(
+                    adm_lyr.index[~adm_lyr[adm0_field].isin(GHOs)], inplace=True
+                )
             if "adm1" in dirname(lf):
-                adm_lyr.drop(adm_lyr.index[~adm_lyr[adm0_field].isin(HRPs)], inplace=True)
+                adm_lyr.drop(
+                    adm_lyr.index[~adm_lyr[adm0_field].isin(HRPs)], inplace=True
+                )
             if action == "replace":
                 adm_lyr.drop(adm_lyr.index[adm_lyr[adm0_field] == iso], inplace=True)
             remove(lf)
             adm_lyr.to_file(lf, driver="GeoJSON")
 
         logger.info(f"Removed countries needing replacement or not in HRP or GHO lists")
-    
+
         if action in ["add", "replace"]:
 
             logger.info(f"Adding boundaries for {iso}")
 
             fields = {
                 "adm0": ["ISO_3", "Terr_ID", "Terr_Name"],
-                "adm1": ["ADM1_PCODE", "ADM1_REF", "ADM0_PCODE", "alpha_3", "ADM0_REF"]
-                      }
-            new_bounds = glob(join("Geoprocessing", "new", "adm*", iso.lower(), "*.shp"))
+                "adm1": ["ADM1_PCODE", "ADM1_REF", "ADM0_PCODE", "alpha_3", "ADM0_REF"],
+            }
+            new_bounds = glob(
+                join("Geoprocessing", "new", "adm*", iso.lower(), "*.shp")
+            )
 
             for new_bound in new_bounds:
                 # simplify
@@ -76,7 +84,9 @@ def main():
                 logger.info(f"Processing {adm_level}")
 
                 new_lyr = read_file(new_bound)
-                new_lyr.geometry = new_lyr.geometry.simplify(tolerance=0.001, preserve_topology=True)
+                new_lyr.geometry = new_lyr.geometry.simplify(
+                    tolerance=0.001, preserve_topology=True
+                )
 
                 # calculate fields
                 adm_fields = fields.get(adm_level)
@@ -90,8 +100,14 @@ def main():
                     if adm_field == "ADM1_REF":
                         adm1_name = ["ADM1_EN"]
                         if adm1_name[0] not in list(new_lyr.columns):
-                            adm1_name = [i for i in new_lyr.columns if
-                                         "ADM1" in i and "ALT" not in i and "PCODE" not in i and "REF" not in i]
+                            adm1_name = [
+                                i
+                                for i in new_lyr.columns
+                                if "ADM1" in i
+                                and "ALT" not in i
+                                and "PCODE" not in i
+                                and "REF" not in i
+                            ]
                         try:
                             adm1_name = adm1_name[0]
                         except IndexError:
@@ -100,17 +116,25 @@ def main():
                         if adm_field not in list(new_lyr.columns):
                             new_lyr[adm_field] = new_lyr[adm1_name]
                         else:
-                            new_lyr.loc[isna(new_lyr["ADM1_REF"]), "ADM1_REF"] = new_lyr[adm1_name]
+                            new_lyr.loc[
+                                isna(new_lyr["ADM1_REF"]), "ADM1_REF"
+                            ] = new_lyr[adm1_name]
 
                 # delete fields
                 new_lyr.drop(
-                    [f for f in new_lyr.columns.tolist() if f not in adm_fields and f.lower() != "geometry"],
+                    [
+                        f
+                        for f in new_lyr.columns.tolist()
+                        if f not in adm_fields and f.lower() != "geometry"
+                    ],
                     axis=1,
-                    inplace=True
+                    inplace=True,
                 )
 
                 # save edited file
-                edited_bound = join(dirname(new_bound), f"{iso.lower()}_polbnda.geojson")
+                edited_bound = join(
+                    dirname(new_bound), f"{iso.lower()}_polbnda.geojson"
+                )
                 new_lyr.to_file(edited_bound, driver="GeoJSON")
 
                 # convert to centroid
@@ -122,8 +146,12 @@ def main():
                 new_cent.to_file(cent_bound, driver="GeoJSON")
 
                 # Merge with existing JSONs
-                latest_polbndas = glob(join("Geoprocessing", "latest", adm_level, "*polbnda*.geojson"))
-                latest_centroids = glob(join("Geoprocessing", "latest", adm_level, "*centroid*.geojson"))
+                latest_polbndas = glob(
+                    join("Geoprocessing", "latest", adm_level, "*polbnda*.geojson")
+                )
+                latest_centroids = glob(
+                    join("Geoprocessing", "latest", adm_level, "*centroid*.geojson")
+                )
 
                 for latest_polbnda in latest_polbndas:
                     latest_lyr = read_file(latest_polbnda)
@@ -151,12 +179,14 @@ def main():
     latest_lyr = read_file(latest_adm1)
     attributes = list()
     for index, row in latest_lyr.iterrows():
-        attributes.append({
-            "country": row["ADM0_REF"],
-            "iso3": row["alpha_3"],
-            "pcode": row["ADM1_PCODE"],
-            "name": row["ADM1_REF"],
-        })
+        attributes.append(
+            {
+                "country": row["ADM0_REF"],
+                "iso3": row["alpha_3"],
+                "pcode": row["ADM1_PCODE"],
+                "name": row["ADM1_REF"],
+            }
+        )
     attributes = sorted(attributes, key=lambda i: (i["country"], i["name"]))
 
     with open(join("config", "adm1_attributes.txt"), "w") as f:
@@ -171,9 +201,10 @@ def main():
 
     # create regional bb geojson
     logger.info("Updating regional bbox json")
-    regional_file = join("Geoprocessing", "latest", "bbox", "ocha-regions-bbox.geojson")
-    regional_lyr = read_file(regional_file)
 
+    regional_file = join("Geoprocessing", "latest", "bbox", "ocha-regions-bbox.geojson")
+    with open(regional_file, "r") as f_open:
+        regional_lyr = load(f_open)
     latest_adm0 = glob(join("Geoprocessing", "latest", "adm0", "*polbnda*.geojson"))
     try:
         latest_adm0 = latest_adm0[0]
@@ -184,28 +215,51 @@ def main():
     adm0_lyr["region"] = ""
     adm0_lyr["HRPs"] = ""
     adm0_lyr.loc[adm0_lyr["ISO_3"].isin(HRPs), "HRPs"] = "HRPs"
-
     regional_info = configuration.get("regional")
     read_hdx_metadata(regional_info)
     with Download() as downloader:
         _, iterator = read_tabular(downloader, regional_info)
         for row in iterator:
-            adm0_lyr.loc[adm0_lyr["ISO_3"] == row[regional_info["iso3"]], "region"] = row[regional_info["region"]]
+            adm0_lyr.loc[
+                adm0_lyr["ISO_3"] == row[regional_info["iso3"]], "region"
+            ] = row[regional_info["region"]]
     adm0_dissolve = adm0_lyr.dissolve(by="region")
     adm0_dissolve_HRPs = adm0_lyr[adm0_lyr["HRPs"] == "HRPs"].dissolve(by="HRPs")
     adm0_dissolve = adm0_dissolve.append(adm0_dissolve_HRPs)
     adm0_dissolve = adm0_dissolve.bounds
-    adm0_dissolve["new_geometry"] = [box(l, b, r, t) for l, b, r, t in zip(adm0_dissolve["minx"], adm0_dissolve["miny"],
-                                                                           adm0_dissolve["maxx"], adm0_dissolve["maxy"])]
-    regional_lyr = regional_lyr.merge(
-        adm0_dissolve["new_geometry"],
-        left_on="tbl_regcov_2020_ocha_Field3",
-        right_index=True
-    )
-    regional_lyr["geometry"] = regional_lyr["new_geometry"]
-    regional_lyr.drop(columns=["new_geometry"], inplace=True)
-    remove(regional_file)
-    regional_lyr.to_file(regional_file, driver="GeoJSON")
+    adm0_dissolve["geometry"] = [
+        box(l, b, r, t)
+        for l, b, r, t in zip(
+            adm0_dissolve["minx"],
+            adm0_dissolve["miny"],
+            adm0_dissolve["maxx"],
+            adm0_dissolve["maxy"],
+        )
+    ]
+    adm0_dissolve = GeoDataFrame(adm0_dissolve["geometry"])
+    adm0_dissolve["tbl_regcov_2020_ocha_Field3"] = adm0_dissolve.index
+    adm0_json = adm0_dissolve.to_json(show_bbox=True, drop_id=True)
+    adm0_json = loads(adm0_json)
+    regional_lyr["bbox"] = adm0_json["bbox"]
+    for i in range(len(regional_lyr["features"])):
+        region = regional_lyr["features"][i]["properties"][
+            "tbl_regcov_2020_ocha_Field3"
+        ]
+        k = [
+            j for j in range(len(adm0_json["features"]))
+            if adm0_json["features"][j]["properties"]["tbl_regcov_2020_ocha_Field3"] == region
+        ]
+        if len(k) != 1:
+            logger.error(f"Cannot find region {region} in new boundaries")
+            continue
+        regional_lyr["features"][i]["geometry"]["coordinates"] = adm0_json["features"][k[0]]["geometry"]["coordinates"]
+        regional_lyr["features"][i] = {
+            "type": "Feature",
+            "properties": regional_lyr["features"][i]["properties"],
+            "bbox": adm0_json["features"][k[0]]["bbox"],
+            "geometry": regional_lyr["features"][i]["geometry"],
+        }
+    replace_json(regional_lyr, regional_file)
     logger.info("Updated regional bbox json")
 
 
