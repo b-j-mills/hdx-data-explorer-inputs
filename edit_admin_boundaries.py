@@ -195,17 +195,15 @@ def main():
     adm0_dissolve_HRPs = adm0_lyr[adm0_lyr["HRPs"] == "HRPs"].dissolve(by="HRPs")
     adm0_dissolve = adm0_dissolve.append(adm0_dissolve_HRPs)
     adm0_dissolve = adm0_dissolve.bounds
-    adm0_dissolve["bbox"] = "[" + adm0_dissolve["minx"].map(str) + ", " + adm0_dissolve["miny"].map(str) + ", " + adm0_dissolve["maxx"].map(str) + ", " + adm0_dissolve["maxy"].map(str) + "]"
     adm0_dissolve["new_geometry"] = [box(l, b, r, t) for l, b, r, t in zip(adm0_dissolve["minx"], adm0_dissolve["miny"],
-                                                                       adm0_dissolve["maxx"], adm0_dissolve["maxy"])]
+                                                                           adm0_dissolve["maxx"], adm0_dissolve["maxy"])]
     regional_lyr = regional_lyr.merge(
-        adm0_dissolve[["new_geometry", "bbox"]],
+        adm0_dissolve["new_geometry"],
         left_on="tbl_regcov_2020_ocha_Field3",
         right_index=True
     )
     regional_lyr["geometry"] = regional_lyr["new_geometry"]
     regional_lyr.drop(columns=["new_geometry"], inplace=True)
-    regional_lyr = regional_lyr[[regional_lyr.columns[0], "bbox", "geometry"]]
     remove(regional_file)
     regional_lyr.to_file(regional_file, driver="GeoJSON")
     logger.info("Updated regional bbox json")
