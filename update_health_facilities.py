@@ -19,7 +19,7 @@ def main():
     HRPs = configuration["HRPs"]
     health_facilities = configuration["health_facilities"]
     data_category = "health_facilities"
-    copy_files_to_archive("health_facilities")
+    copy_files_to_archive(data_category)
     admin1_json = read_file(
         join("Geoprocessing", "latest", "adm1", "hrp_polbnda_adm1(ish)_simplified_ocha.geojson")
     )
@@ -35,7 +35,7 @@ def main():
             logger.error(f"No health facilities for {iso}")
             continue
 
-        health_zip = retrieve_data(iso, health_facility, data_category)
+        health_zip = retrieve_data(iso, health_facility, data_category, "shp")
         if not health_zip:
             continue
 
