@@ -21,7 +21,7 @@ def main():
     data_category = "health_facilities"
     copy_files_to_archive(data_category)
     admin1_json = read_file(
-        join("Geoprocessing", "latest", "adm1", "hrp_polbnda_adm1(ish)_simplified_ocha.geojson")
+        join("Geoprocessing", "latest", "adm1", "hrps_polbnda_adm1(ish)_simplified_ocha.geojson")
     )
 
     admin1_json.drop(admin1_json.index[~admin1_json["alpha_3"].isin(HRPs)], inplace=True)
@@ -30,12 +30,12 @@ def main():
 
     for iso in HRPs:
         logger.info(f"Processing {iso}")
-        health_facility = health_facilities.get(iso.upper())
-        if not health_facility:
+        dataset_name = health_facilities.get(iso.upper())
+        if not dataset_name:
             logger.error(f"No health facilities for {iso}")
             continue
 
-        health_zip = retrieve_data(iso, health_facility, data_category, "shp")
+        health_zip = retrieve_data(iso, dataset_name, data_category, "shp")
         if not health_zip:
             continue
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         main,
         hdx_read_only=True,
         hdx_site="prod",
-        user_agent="hdx-scraper-covid-viz",
+        user_agent="hdx-covid-viz-data-inputs",
         preprefix="PREPREFIX",
         project_config_yaml=join("config", "project_configuration.yml"),
     )

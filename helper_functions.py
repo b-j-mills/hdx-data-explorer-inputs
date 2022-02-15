@@ -30,7 +30,7 @@ def copy_files_to_archive(data_type):
             continue
 
 
-def retrieve_data(iso, dataset_name, data_category, file_type, **kwargs):
+def retrieve_data(iso, dataset_name, data_category, file_type, kw=None):
     dataset = Dataset.read_from_hdx(dataset_name)
 
     if not dataset:
@@ -41,7 +41,14 @@ def retrieve_data(iso, dataset_name, data_category, file_type, **kwargs):
     resource = None
     for r in resources:
         if r.get_file_type() == file_type:
-            resource = r
+            if kw:
+                if kw.lower() in r["name"].lower():
+                    resource = r
+            else:
+                resource = r
+        if resource:
+            break
+
     if not resource:
         logger.error(f"Could not find {file_type} for {iso}")
         return None
