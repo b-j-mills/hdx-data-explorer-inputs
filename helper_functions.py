@@ -30,7 +30,7 @@ def copy_files_to_archive(data_type):
             continue
 
 
-def retrieve_data(iso, dataset_name, data_category, file_type, kw=None):
+def find_resource(iso, dataset_name, file_type, kw=None):
     dataset = Dataset.read_from_hdx(dataset_name)
 
     if not dataset:
@@ -53,6 +53,10 @@ def retrieve_data(iso, dataset_name, data_category, file_type, kw=None):
         logger.error(f"Could not find {file_type} for {iso}")
         return None
 
+    return resource
+
+
+def retrieve_data(iso, resource, data_category):
     working_folder = join("Geoprocessing", "new", data_category)
 
     try:

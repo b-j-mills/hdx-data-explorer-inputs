@@ -2,7 +2,7 @@ import logging
 from os.path import join
 from geopandas import read_file, sjoin
 from pandas import DataFrame
-from helper_functions import copy_files_to_archive, retrieve_data, unzip_data
+from helper_functions import copy_files_to_archive, find_resource, retrieve_data, unzip_data
 
 from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
@@ -34,8 +34,11 @@ def main():
         if not dataset_name:
             logger.error(f"No health facilities for {iso}")
             continue
+        health_resource = find_resource(iso, dataset_name, "shp")
+        if not health_resource:
+            continue
 
-        health_zip = retrieve_data(iso, dataset_name, data_category, "shp")
+        health_zip = retrieve_data(iso, health_resource, data_category)
         if not health_zip:
             continue
 
