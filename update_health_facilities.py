@@ -2,12 +2,17 @@ import logging
 from os.path import join
 from geopandas import read_file, sjoin
 from pandas import DataFrame
-from helper_functions import copy_files_to_archive, find_resource, retrieve_data, unzip_data
 
 from hdx.api.configuration import Configuration
 from hdx.data.dataset import Dataset
 from hdx.facades.simple import facade
 from hdx.utilities.easy_logging import setup_logging
+from helper_functions import (
+    copy_files_to_archive,
+    find_resource,
+    retrieve_data,
+    unzip_data,
+)
 
 setup_logging()
 logger = logging.getLogger()
@@ -21,10 +26,17 @@ def main():
     data_category = "health_facilities"
     copy_files_to_archive(data_category)
     admin1_json = read_file(
-        join("Geoprocessing", "latest", "adm1", "hrps_polbnda_adm1(ish)_simplified_ocha.geojson")
+        join(
+            "Geoprocessing",
+            "latest",
+            "adm1",
+            "hrps_polbnda_adm1(ish)_simplified_ocha.geojson",
+        )
     )
 
-    admin1_json.drop(admin1_json.index[~admin1_json["alpha_3"].isin(HRPs)], inplace=True)
+    admin1_json.drop(
+        admin1_json.index[~admin1_json["alpha_3"].isin(HRPs)], inplace=True
+    )
     admin1_json = admin1_json.sort_values(by=["ADM1_PCODE"])
     admin1_json["health_facility_count"] = 0
 
@@ -52,23 +64,37 @@ def main():
         join_lyr = join_lyr.groupby("ADM1_PCODE").size()
         for pcode in join_lyr.index:
             hfs = join_lyr[pcode]
-            admin1_json.loc[admin1_json["ADM1_PCODE"] == pcode, "health_facility_count"] += hfs
+            admin1_json.loc[
+                admin1_json["ADM1_PCODE"] == pcode, "health_facility_count"
+            ] += hfs
 
     admin1_json = admin1_json.drop(columns="geometry")
     admin1_json.to_csv(
-        join("Geoprocessing", "latest", "health_facilities", "health_facilities_by_admin1.csv"),
+        join(
+            "Geoprocessing",
+            "latest",
+            "health_facilities",
+            "health_facilities_by_admin1.csv",
+        ),
         index=False,
     )
 
-    # dataset = Dataset.read_from_hdx("dataset_name")
-    # resource = Dataset.get_resource(0)
-    # resource.set_file_to_upload(join("Geoprocessing", "latest", "health_facilities", "health_facilities_by_admin1.csv"))
-    # dataset.update_in_hdx(
-    #     remove_additional_resources=True,
-    #     hxl_update=False,
-    #     updated_by_script="HDX Scraper: CODS",
-    #     ignore_fields=["num_of_rows", "resource:description"],
-    # )
+    dataset = Dataset.read_from_hdx("dataset_name")
+    resource = dataset.get_resource(0)
+    resource.set_file_to_upload(
+        join(
+            "Geoprocessing",
+            "latest",
+            "health_facilities",
+            "health_facilities_by_admin1.csv",
+        )
+    )
+    dataset.update_in_hdx(
+        remove_additional_resources=True,
+        hxl_update=False,
+        updated_by_script="HDX Scraper: COVID viz inputs",
+        ignore_fields=["num_of_rows"],
+    )
 
 
 if __name__ == "__main__":
