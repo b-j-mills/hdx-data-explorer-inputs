@@ -136,4 +136,6 @@ scratch/*
 *.log
 .DS_Store
 
-Geoprocessing/*
+Geoprocessing/*/*/boundaries/*.geojson
+Geoprocessing/ukraine/*
+Geoprocessing/*/new/*
