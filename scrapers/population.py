@@ -12,12 +12,12 @@ def update_population(
     configuration, downloader, adm1_countries, adm1_json, temp_folder, countries=None
 ):
 
-    sc_configuration = configuration["population"]
+    configuration = configuration["population"]
 
     if not countries:
         countries = adm1_countries
 
-    exceptions = sc_configuration.get("exceptions")
+    exceptions = configuration.get("exceptions")
     if not exceptions:
         exceptions = {}
 
@@ -26,9 +26,9 @@ def update_population(
 
     for iso in countries:
         logger.info(f"Processing population for {iso}")
-        if iso in exceptions:
-            dataset_name = exceptions[iso]
-        else:
+
+        dataset_name = exceptions.get(iso)
+        if not dataset_name:
             dataset_name = f"cod-ps-{iso.lower()}"
 
         pop_resource = find_resource(dataset_name, "csv", kw="adm1")
@@ -98,7 +98,7 @@ def update_population(
 
     adm1_json.drop(columns="geometry", inplace=True)
 
-    dataset = Dataset.read_from_hdx(sc_configuration["dataset"])
+    dataset = Dataset.read_from_hdx(configuration["dataset"])
     resource = dataset.get_resource(0)
     updated_resource = update_csv_resource(resource, downloader, adm1_json, countries)
 
