@@ -1,136 +1,169 @@
-isos:
-  "IRN": "add"
-  "MDG": "add"
-  "TJK": "add"
-  "TKM": "add"
-  "UZB": "add"
-  "PAK": "remove"
-  "ZWE": "remove"
+boundaries:
+  dataset: "unmap-international-boundaries-15m"
+  exceptions:
+    - MMR: "mimu-geonode-myanmar-state-and-region-boundaries-mimu"
 
 health_facilities:
-  "AFG": "hotosm_afg_health_facilities"
-  "BDI": "hotosm_bdi_health_facilities"
-  "BFA": "hotosm_bfa_health_facilities"
-  "CAF": "hotosm_caf_health_facilities"
-  "CMR": "hotosm_cmr_health_facilities"
-  "COD": "hotosm_cod_health_facilities"
-  "COL": "hotosm_col_health_facilities"
-  "ETH": "hotosm_eth_health_facilities"
-  "GTM": "hotosm_gtm_health_facilities"
-  "HND": "hotosm_hnd_health_facilities"
-  "HTI": "hotosm_hti_health_facilities"
-  "IRQ": "hotosm_irq_health_facilities"
-  "LBY": "hotosm_lby_health_facilities"
-  "MLI": "hotosm_mali_health_facilities"
-  "MMR": "hotosm_mmr_health_facilities"
-  "MOZ": "hotosm_moz_health_facilities"
-  "NER": "hotosm_niger_health_facilities"
-  "NGA": "hotosm_nga_health_facilities"
-  "PSE": "hotosm_pse_health_facilities"
-  "SDN": "hotosm_sdn_health_facilities"
-  "SLV": "hotosm_slv_health_facilities"
-  "SOM": "hotosm_som_health_facilities"
-  "SSD": "hotosm_ssd_health_facilities"
-  "SYR": "hotosm_syr_health_facilities"
-  "TCD": "hotosm_chad_health_facilities"
-  "UKR": "hotosm_ukr_health_facilities"
-  "VEN": "hotosm_ven_health_facilities"
-  "YEM": "hotosm_yem_health_facilities"
+  dataset: "admin-1-health-facilities-for-data-explorers"
+  exceptions:
+    - NER: "hotosm_niger_health_facilities"
 
-HRPs:
-  - AFG
-  - BDI
-  - BFA
-  - CAF
-  - CMR
-  - COD
-  - COL
-  - ETH
-  - GTM
-  - HND
-  - HTI
-  - IRQ
-  - LBY
-  - MLI
-  - MMR
-  - MOZ
-  - NER
-  - NGA
-  - PSE
-  - SDN
-  - SLV
-  - SOM
-  - SSD
-  - SYR
-  - TCD
-  - UKR
-  - VEN
-  - YEM
+population:
+    dataset: "admin-1-population-statistics-for-data-explorers"
 
-GHOs:
-  - ABW
-  - AFG
-  - AGO
-  - ARG
-  - BDI
-  - BFA
-  - BGD
-  - BOL
-  - BRA
-  - CAF
-  - CHL
-  - CMR
-  - COD
-  - COG
-  - COL
-  - CRI
-  - CUW
-  - DJI
-  - DOM
-  - ECU
-  - EGY
-  - ETH
-  - GTM
-  - GUY
-  - HND
-  - HTI
-  - IRN
-  - IRQ
-  - JOR
-  - KEN
-  - LBN
-  - LBY
-  - MDG
-  - MEX
-  - MLI
-  - MMR
-  - MOZ
-  - NER
-  - NGA
-  - PAK
-  - PAN
-  - PER
-  - PRY
-  - PSE
-  - RWA
-  - SDN
-  - SLV
-  - SOM
-  - SSD
-  - SYR
-  - TCD
-  - TJK
-  - TKM
-  - TTO
-  - TUR
-  - TZA
-  - UGA
-  - UKR
-  - URY
-  - UZB
-  - VEN
-  - YEM
-  - ZMB
+mapbox:
+  covid:
+    adm1_polbnda: "humdata.b1o0ci53"
+    adm1_polbndl: ""
+    adm1_centroid: "humdata.63k3lb2z"
+    adm0_polbnda: "humdata.5qlwwz0l"
+    adm0_polbndl: "humdata.bkhifgb5"
+    adm0_centroid: "humdata.4w8b1b7g"
+  arab-states:
+    adm1_polbnda: "humdata.attm70id"
+    adm1_polbndl: ""
+    adm1_centroid: "humdata.8pyb1abd"
+    adm0_polbnda: "humdata.aioadufm"
+    adm0_polbndl: "humdata.bzo5ss37"
+    adm0_centroid: "humdata.d4ywfeza"
+
+adm1:
+  covid:
+    - AFG
+    - BDI
+    - BFA
+    - CAF
+    - CMR
+    - COD
+    - COL
+    - ETH
+    - GTM
+    - HND
+    - HTI
+    - IRQ
+    - LBY
+    - MLI
+    - MMR
+    - MOZ
+    - NER
+    - NGA
+    - PSE
+    - SDN
+    - SLV
+    - SOM
+    - SSD
+    - SYR
+    - TCD
+    - UKR
+    - VEN
+    - YEM
+  arab-states:
+    - IRQ
+    - LBY
+    - PSE
+    - SDN
+    - SOM
+    - SYR
+    - YEM
+
+adm0:
+  covid:
+    - ABW
+    - AFG
+    - AGO
+    - ARG
+    - BDI
+    - BFA
+    - BGD
+    - BOL
+    - BRA
+    - CAF
+    - CHL
+    - CMR
+    - COD
+    - COG
+    - COL
+    - CRI
+    - CUW
+    - DJI
+    - DOM
+    - ECU
+    - EGY
+    - ETH
+    - GTM
+    - GUY
+    - HND
+    - HTI
+    - IRN
+    - IRQ
+    - JOR
+    - KEN
+    - LBN
+    - LBY
+    - MDG
+    - MEX
+    - MLI
+    - MMR
+    - MOZ
+    - NER
+    - NGA
+    - PAK
+    - PAN
+    - PER
+    - PRY
+    - PSE
+    - RWA
+    - SDN
+    - SLV
+    - SOM
+    - SSD
+    - SYR
+    - TCD
+    - TJK
+    - TKM
+    - TTO
+    - TUR
+    - TZA
+    - UGA
+    - UKR
+    - URY
+    - UZB
+    - VEN
+    - YEM
+    - ZMB
+  arab-states:
+    - ARE
+    - BHR
+    - COM
+    - DJI
+    - DZA
+    - EGY
+    - IRQ
+    - JOR
+    - KWT
+    - LBN
+    - LBY
+    - MAR
+    - MRT
+    - OMN
+    - PSE
+    - QAT
+    - SAU
+    - SDN
+    - SOM
+    - SYR
+    - TUN
+    - YEM
+
+shapefile_attribute_mappings:
+  "ADM1_CODE": "ADM1_PCODE"
+  "adm1_id": "ADM1_PCODE"
+  "admin1Pcod": "ADM1_PCODE"
+  "ID_1": "ADM1_PCODE"
+  "ADM1_NAME": "ADM1_REF"
+  "ADM1_EN": "ADM1_REF"
+  "admin1Name": "ADM1_REF"
+  "NAME_1": "ADM1_REF"
 
 regional:
   format: "xlsx"
