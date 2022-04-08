@@ -135,5 +135,3 @@ dmypy.json
 scratch/*
 *.log
 .DS_Store
-
-Geoprocessing/*
