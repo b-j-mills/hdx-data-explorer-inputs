@@ -17,6 +17,9 @@ def update_population(
     if not countries:
         countries = adm1_countries
 
+    if len(countries) == 1 and countries[0].lower() == "all":
+        countries = adm1_countries
+
     exceptions = configuration.get("exceptions")
     if not exceptions:
         exceptions = {}
@@ -33,11 +36,13 @@ def update_population(
 
         pop_resource = find_resource(dataset_name, "csv", kw="adm1")
         if not pop_resource:
-            logger.info(f"No CODs pop data for {iso}")
             continue
 
+        if len(pop_resource) > 1:
+            logger.info(f"Found multiple resources for {iso}")
+
         headers, iterator = downloader.get_tabular_rows(
-            pop_resource["url"], headers=1, dict_form=True, format="csv"
+            pop_resource[0]["url"], headers=1, dict_form=True, format="csv"
         )
 
         pcode_header = None
@@ -112,4 +117,4 @@ def update_population(
         updated_by_script="HDX Scraper: Data Explorer inputs",
         ignore_fields=["num_of_rows"],
     )
-    return
+    return countries

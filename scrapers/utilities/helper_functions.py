@@ -1,4 +1,5 @@
 import logging
+import re
 from glob import glob
 from json import dump, load
 from os import remove
@@ -16,35 +17,43 @@ def find_resource(dataset_name, file_type, kw=None):
     dataset = Dataset.read_from_hdx(dataset_name)
 
     if not dataset:
-        logger.error(f"Could not find dataset")
+        logger.error(f"Could not find dataset {dataset_name}")
         return None
 
     resources = dataset.get_resources()
-    resource = None
+    resource_list = []
     for r in resources:
-        if r.get_file_type() == file_type:
+        if r.get_file_type().lower() == file_type.lower():
             if kw:
-                if kw.lower() in r["name"].lower():
-                    resource = r
+                if bool(re.match(f".*{kw}.*", r["name"], re.IGNORECASE)):
+                    resource_list.append(r)
             else:
-                resource = r
-        if resource:
-            break
+                resource_list.append(r)
 
-    if not resource:
-        logger.error(f"Could not find resource")
+    if len(resource_list) == 0:
+        logger.error(f"Could not find resource from {dataset_name}")
         return None
 
-    return resource
+    return resource_list
 
 
-def unzip_data(downloaded_resource, file_type):
-    temp_folder = basename(downloaded_resource)
+def download_unzip_data(downloader, resource, file_type):
+    try:
+        resource_zip = downloader.download_file(resource["url"])
+    except DownloadError:
+        logger.error(f"Could not download resource")
+        return None
 
-    with ZipFile(downloaded_resource, "r") as z:
+    temp_folder = basename(resource_zip)
+
+    with ZipFile(resource_zip, "r") as z:
         z.extractall(join(temp_folder, "unzipped"))
 
     out_files = glob(join(temp_folder, "unzipped", f"*.{file_type}"))
+
+    if len(out_files) == 0:
+        logger.error(f"Did not find the {file_type} in the zip")
+        return None
 
     return out_files
 
@@ -80,4 +89,3 @@ def update_csv_resource(resource, downloader, new_adm1_data, countries):
     adm1_data = concat([new_adm1_data, orig_data])
 
     return adm1_data
-
