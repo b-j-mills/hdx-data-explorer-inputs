@@ -156,14 +156,16 @@ adm0:
     - YEM
 
 shapefile_attribute_mappings:
-  "ADM1_CODE": "ADM1_PCODE"
-  "adm1_id": "ADM1_PCODE"
-  "admin1Pcod": "ADM1_PCODE"
-  "ID_1": "ADM1_PCODE"
-  "ADM1_NAME": "ADM1_REF"
-  "ADM1_EN": "ADM1_REF"
-  "admin1Name": "ADM1_REF"
-  "NAME_1": "ADM1_REF"
+  pcode:
+    - "ADM1_CODE"
+    - "ADM1_ID"
+    - "ADMIN1PCOD"
+    - "ID_1"
+  name:
+    - "ADM1_NAME"
+    - "ADM1_EN"
+    - "ADMIN1NAME"
+    - "NAME_1"
 
 regional:
   format: "xlsx"
