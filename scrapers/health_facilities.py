@@ -4,7 +4,11 @@ from geopandas import read_file
 from pandas import DataFrame
 
 from hdx.data.dataset import Dataset
-from scrapers.utilities.helper_functions import find_resource, download_unzip_data, update_csv_resource
+from scrapers.utilities.helper_functions import (
+    find_resource,
+    download_unzip_data,
+    update_csv_resource,
+)
 
 logger = logging.getLogger()
 
@@ -38,7 +42,7 @@ def update_health_facilities(
         if not health_resource:
             continue
 
-        health_shp = download_unzip_data(downloader, health_resource[0], "shp")
+        health_shp = download_unzip_data(downloader, health_resource[0], "shp", temp_folder)
         if not health_shp:
             continue
 

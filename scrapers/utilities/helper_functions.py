@@ -9,12 +9,17 @@ from pandas import DataFrame, concat
 
 from hdx.data.dataset import Dataset
 from hdx.utilities.downloader import DownloadError
+from hdx.data.hdxobject import HDXError
 
 logger = logging.getLogger()
 
 
 def find_resource(dataset_name, file_type, kw=None):
-    dataset = Dataset.read_from_hdx(dataset_name)
+    try:
+        dataset = Dataset.read_from_hdx(dataset_name)
+    except HDXError:
+        logger.error(f"Could not find dataset {dataset_name}")
+        return None
 
     if not dataset:
         logger.error(f"Could not find dataset {dataset_name}")
@@ -37,9 +42,9 @@ def find_resource(dataset_name, file_type, kw=None):
     return resource_list
 
 
-def download_unzip_data(downloader, resource, file_type):
+def download_unzip_data(downloader, resource, file_type, folder):
     try:
-        resource_zip = downloader.download_file(resource["url"])
+        resource_zip = downloader.download_file(resource["url"], path=folder)
     except DownloadError:
         logger.error(f"Could not download resource")
         return None
@@ -89,3 +94,11 @@ def update_csv_resource(resource, downloader, new_adm1_data, countries):
     adm1_data = concat([new_adm1_data, orig_data])
 
     return adm1_data
+
+
+def drop_fields(df, keep_fields):
+    df = df.drop(
+        [f for f in df.columns if f not in keep_fields and f.lower() != "geometry"],
+        axis=1,
+    )
+    return df

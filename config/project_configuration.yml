@@ -1,12 +1,12 @@
 boundaries:
   dataset: "unmap-international-boundaries-15m"
   exceptions:
-    - MMR: "mimu-geonode-myanmar-state-and-region-boundaries-mimu"
+    MMR: "mimu-geonode-myanmar-state-and-region-boundaries-mimu"
 
 health_facilities:
   dataset: "admin-1-health-facilities-for-data-explorers"
   exceptions:
-    - NER: "hotosm_niger_health_facilities"
+    NER: "hotosm_niger_health_facilities"
 
 population:
     dataset: "admin-1-population-statistics-for-data-explorers"
@@ -157,13 +157,16 @@ adm0:
 
 shapefile_attribute_mappings:
   pcode:
+    - "ADM1_PCODE"
     - "ADM1_CODE"
     - "ADM1_ID"
     - "ADMIN1PCOD"
     - "ID_1"
   name:
+    - "ADM1_REF"
     - "ADM1_NAME"
     - "ADM1_EN"
+    - "ADM1_REF"
     - "ADMIN1NAME"
     - "NAME_1"
 
