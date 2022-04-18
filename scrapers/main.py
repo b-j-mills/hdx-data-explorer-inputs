@@ -1,7 +1,7 @@
 import logging
 from geopandas import read_file
 
-#from scrapers.boundaries import update_boundaries
+from scrapers.boundaries import update_boundaries
 from scrapers.health_facilities import update_health_facilities
 from scrapers.population import update_population
 from scrapers.utilities.helper_functions import find_resource

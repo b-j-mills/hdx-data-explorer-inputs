@@ -16,7 +16,7 @@ from scrapers.utilities.helper_functions import (
     remove_crs,
     replace_json,
     drop_fields,
-    update_mapbox,
+    #update_mapbox,
 )
 
 logger = logging.getLogger()
@@ -48,6 +48,7 @@ def update_boundaries(
                 countries.add(country)
         countries = list(countries)
 
+    req_fields = ["alpha_3", "ADM0_REF", "ADM0_PCODE", "ADM1_REF", "ADM1_PCODE"]
     for iso in countries:
         logger.info(f"Processing admin1 boundaries for {iso}")
 
@@ -88,7 +89,7 @@ def update_boundaries(
 
         if len(boundary_shp) > 1:
             name_match = [
-                bool(re.match(".*adm(in){0,1}1.*", b, re.IGNORECASE)) for b in boundary_shp
+                bool(re.match(".*adm(in)?1.*", b, re.IGNORECASE)) for b in boundary_shp
             ]
             boundary_shp = [
                 boundary_shp[i] for i in range(len(boundary_shp)) if name_match[i]
@@ -107,7 +108,6 @@ def update_boundaries(
             boundary_lyr.to_crs(crs="EPSG:4326", inplace=True)
 
         # calculate fields
-        req_fields = ["alpha_3", "ADM0_REF", "ADM0_PCODE", "ADM1_REF", "ADM1_PCODE"]
         boundary_lyr["alpha_3"] = iso.upper()
         boundary_lyr["ADM0_REF"] = Country.get_country_name_from_iso3(iso)
         boundary_lyr["ADM0_PCODE"] = Country.get_iso2_from_iso3(iso)
@@ -287,8 +287,8 @@ def update_boundaries(
     logger.info("Updated regional bbox jsons")
 
     # update boundaries in MapBox
-    logger.info("Updating MapBox boundaries")
-    for visualization in visualizations:
-        update_mapbox(visualization, mapbox_auth, configuration)
+    #logger.info("Updating MapBox boundaries")
+    #for visualization in visualizations:
+    #    update_mapbox(visualization, mapbox_auth, configuration)
 
     return countries
