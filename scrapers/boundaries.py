@@ -10,10 +10,10 @@ from shapely.geometry import box
 from hdx.scraper.utilities.readers import read_hdx_metadata, read_tabular
 from hdx.data.dataset import Dataset
 from hdx.location.country import Country
+from hdx.data.hdxobject import HDXError
 from scrapers.utilities.helper_functions import (
     download_unzip_data,
     find_resource,
-    remove_crs,
     replace_json,
     drop_fields,
     #update_mapbox,
@@ -23,18 +23,23 @@ logger = logging.getLogger()
 
 
 def update_boundaries(
-    configuration,
-    downloader,
-    mapbox_auth,
-    temp_folder,
-    adm0_json,
-    adm1_json,
-    visualizations=None,
-    countries=None,
+        configuration,
+        downloader,
+        mapbox_auth,
+        temp_folder,
+        adm0_json,
+        adm1_json,
+        water_json,
+        visualizations=None,
+        countries=None,
 ):
-    exceptions = configuration["boundaries"].get("exceptions")
+    exceptions = configuration["boundaries"].get("dataset_exceptions")
     if not exceptions:
         exceptions = {}
+
+    resource_exceptions = configuration["boundaries"].get("resource_exceptions")
+    if not resource_exceptions:
+        resource_exceptions = {}
 
     if not visualizations:
         visualizations = [key for key in configuration["adm0"]]
@@ -44,33 +49,36 @@ def update_boundaries(
     elif len(countries) == 1 and countries[0].lower() == "all":
         countries = set()
         for viz in visualizations:
-            for country in configuration["adm1"][viz]:
-                countries.add(country)
+            for iso in configuration["adm1"][viz]:
+                countries.add(iso)
         countries = list(countries)
+    countries.sort()
 
     req_fields = ["alpha_3", "ADM0_REF", "ADM0_PCODE", "ADM1_REF", "ADM1_PCODE"]
     for iso in countries:
         logger.info(f"Processing admin1 boundaries for {iso}")
 
-        country_adm0 = adm0_json.loc[(adm0_json["ISO_3"] == iso) | (adm0_json["COLOR_CODE"] == iso)]
+        country_adm0 = adm0_json.loc[(adm0_json["ISO_3"] == iso) | (adm0_json["Color_Code"] == iso)]
+        country_adm0 = country_adm0.overlay(water_json, how="difference")
         country_adm0 = country_adm0.dissolve()
         country_adm0 = drop_fields(country_adm0, ["ISO_3"])
 
         dataset_name = exceptions.get(iso)
+        resource_name = resource_exceptions.get(iso)
         boundary_resource = None
         if dataset_name:
-            boundary_resource = find_resource(dataset_name, "SHP")
+            boundary_resource = find_resource(dataset_name, "SHP", kw=resource_name)
         if not boundary_resource:
-            boundary_resource = find_resource(f"cod-em-{iso.lower()}", "SHP")
+            boundary_resource = find_resource(f"cod-em-{iso.lower()}", "SHP", kw=resource_name)
         if not boundary_resource:
-            boundary_resource = find_resource(f"cod-ab-{iso.lower()}", "SHP")
+            boundary_resource = find_resource(f"cod-ab-{iso.lower()}", "SHP", kw=resource_name)
         if not boundary_resource:
             logger.error(f"Could not find boundary dataset for {iso}")
             continue
 
         if len(boundary_resource) > 1:
             name_match = [
-                bool(re.match(".*adm.*1.*", r["name"], re.IGNORECASE))
+                bool(re.match(".*adm(in)?1.*", r["name"], re.IGNORECASE))
                 for r in boundary_resource
             ]
             boundary_resource = [
@@ -89,7 +97,7 @@ def update_boundaries(
 
         if len(boundary_shp) > 1:
             name_match = [
-                bool(re.match(".*adm(in)?1.*", b, re.IGNORECASE)) for b in boundary_shp
+                bool(re.match(".*admbnda.*adm(in)?1.*", b, re.IGNORECASE)) for b in boundary_shp
             ]
             boundary_shp = [
                 boundary_shp[i] for i in range(len(boundary_shp)) if name_match[i]
