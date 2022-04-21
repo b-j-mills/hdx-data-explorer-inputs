@@ -18,11 +18,11 @@ def find_resource(dataset_name, file_type, kw=None):
     try:
         dataset = Dataset.read_from_hdx(dataset_name)
     except HDXError:
-        logger.error(f"Could not find dataset {dataset_name}")
+        logger.warning(f"Could not find dataset {dataset_name}")
         return None
 
     if not dataset:
-        logger.error(f"Could not find dataset {dataset_name}")
+        logger.warning(f"Could not find dataset {dataset_name}")
         return None
 
     resources = dataset.get_resources()
@@ -54,7 +54,7 @@ def download_unzip_data(downloader, resource, file_type, folder):
     with ZipFile(resource_zip, "r") as z:
         z.extractall(join(temp_folder, "unzipped"))
 
-    out_files = glob(join(temp_folder, "unzipped", f"*.{file_type}"))
+    out_files = glob(join(temp_folder, "unzipped", "**", f"*.{file_type}"), recursive=True)
 
     if len(out_files) == 0:
         logger.error(f"Did not find the {file_type} in the zip")
@@ -67,16 +67,6 @@ def replace_json(new_data, data_path):
     remove(data_path)
     with open(data_path, "w") as f_open:
         dump(new_data, f_open)
-
-
-def remove_crs(data_path):
-    with open(data_path, "r") as f_open:
-        data = load(f_open)
-    new_data = {}
-    for element in data:
-        if not element == "crs":
-            new_data[element] = data[element]
-    replace_json(new_data, data_path)
 
 
 def update_csv_resource(resource, downloader, new_adm1_data, countries):
