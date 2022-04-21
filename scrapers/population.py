@@ -20,7 +20,7 @@ def update_population(
     if len(countries) == 1 and countries[0].lower() == "all":
         countries = adm1_countries
 
-    exceptions = configuration.get("exceptions")
+    exceptions = configuration.get("dataset_exceptions")
     if not exceptions:
         exceptions = {}
 

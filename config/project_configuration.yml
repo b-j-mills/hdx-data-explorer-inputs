@@ -1,27 +1,29 @@
 boundaries:
-  dataset: "unmap-international-boundaries-15m"
-  exceptions:
+  dataset: "unmap-international-boundaries-1m"
+  dataset_exceptions:
     MMR: "mimu-geonode-myanmar-state-and-region-boundaries-mimu"
+  resource_exceptions:
+    HND: "hnd_adm_sinit_20161005_SHP.zip"
+    MOZ: "moz_adm_20190607b_SHP.zip"
+    SYR: "SYR Administrative Divisions Shapefiles.zip"
 
 health_facilities:
   dataset: "admin-1-health-facilities-for-data-explorers"
-  exceptions:
+  dataset_exceptions:
     NER: "hotosm_niger_health_facilities"
 
 population:
-    dataset: "admin-1-population-statistics-for-data-explorers"
+  dataset: "admin-1-population-statistics-for-data-explorers"
 
 mapbox:
   covid:
     adm1_polbnda: "humdata.b1o0ci53"
-    adm1_polbndl: ""
     adm1_centroid: "humdata.63k3lb2z"
     adm0_polbnda: "humdata.5qlwwz0l"
     adm0_polbndl: "humdata.bkhifgb5"
     adm0_centroid: "humdata.4w8b1b7g"
   arab-states:
     adm1_polbnda: "humdata.attm70id"
-    adm1_polbndl: ""
     adm1_centroid: "humdata.8pyb1abd"
     adm0_polbnda: "humdata.aioadufm"
     adm0_polbndl: "humdata.bzo5ss37"
@@ -162,13 +164,16 @@ shapefile_attribute_mappings:
     - "ADM1_ID"
     - "ADMIN1PCOD"
     - "ID_1"
+    - "ST_PCODE"
   name:
-    - "ADM1_REF"
     - "ADM1_NAME"
     - "ADM1_EN"
-    - "ADM1_REF"
+    - "ADM1_ES"
+    - "ADM1_FR"
+    - "ADM1_PT"
     - "ADMIN1NAME"
     - "NAME_1"
+    - "ST"
 
 regional:
   format: "xlsx"
