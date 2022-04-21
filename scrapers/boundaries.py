@@ -103,9 +103,9 @@ def update_boundaries(
 
         boundary_lyr = read_file(boundary_shp[0])
         if not boundary_lyr.crs:
-            boundary_lyr.set_crs(crs="EPSG:4326", inplace=True)
+            boundary_lyr = boundary_lyr.set_crs(crs="EPSG:4326")
         if not boundary_lyr.crs.name == "WGS 84":
-            boundary_lyr.to_crs(crs="EPSG:4326", inplace=True)
+            boundary_lyr = boundary_lyr.to_crs(crs="EPSG:4326")
 
         # calculate fields
         boundary_lyr["alpha_3"] = iso.upper()
@@ -142,9 +142,14 @@ def update_boundaries(
         boundary_lyr = drop_fields(boundary_lyr, req_fields)
 
         for index, row in boundary_lyr.iterrows():  # remove any special characters from names
-            new_name = row["ADM1_REF"].replace("-", " ")
-            new_name = normalize("NFKD", new_name).encode("ascii", "ignore").decode("ascii")
-            boundary_lyr.loc[index, "ADM1_REF"] = new_name
+            if row["ADM1_REF"]:
+                new_name = row["ADM1_REF"].replace("-", " ")
+                new_name = normalize("NFKD", new_name).encode("ascii", "ignore").decode("ascii")
+                boundary_lyr.loc[index, "ADM1_REF"] = new_name
+
+        na_count = boundary_lyr["ADM1_REF"].isna().sum()
+        if na_count > 0:
+            logger.warning(f"Found {na_count} null values in {iso} boundary")
 
         boundary_lyr = boundary_lyr.dissolve(by=req_fields, as_index=False)  # dissolve to single features
 
@@ -159,7 +164,7 @@ def update_boundaries(
         boundary_union = boundary_lyr.overlay(country_adm0, how="union")  # harmonize with country boundary
         boundary_slivers = boundary_union[["ISO_3", "geometry"]][boundary_union["alpha_3"].isna()]
         boundary_union.dropna(axis=0, inplace=True)
-        boundary_slivers = boundary_slivers.explode()
+        boundary_slivers = boundary_slivers.explode(ignore_index=True)
         boundary_slivers = boundary_slivers.sjoin(boundary_union, predicate="touches")
         boundary_union = boundary_union.append(boundary_slivers)
         boundary_union = boundary_union.dissolve(by=req_fields, as_index=False)
@@ -186,15 +191,13 @@ def update_boundaries(
                     )
             attributes = sorted(attributes, key=lambda i: (i["country"], i["name"]))
 
-            with open(join("../config", f"adm1-attributes-{visualization}.txt"), "w") as f:
+            with open(join("saved_outputs", f"adm1-attributes-{visualization}.txt"), "w") as f:
                 for row in attributes:
                     if "," in row["name"]:
                         row["name"] = '"' + row["name"] + '"'
                     if "'" in row["name"]:
                         row["name"] = row["name"].replace("'", "|")
                     f.write("- %s\n" % str(row).replace("'", "").replace("|", "'"))
-
-            logger.info(f"Updating regional bounding boxes")
 
         logger.info("Updated admin1 lookups")
 
@@ -208,21 +211,24 @@ def update_boundaries(
         centroid_lyr[req_fields] = adm1_json[req_fields]
         centroid_lyr.set_geometry("geometry", inplace=True)
         centroid_file = join(temp_folder, "centroid_adm1.geojson")
+        centroid_lyr.crs = None
         centroid_lyr.to_file(centroid_file, driver="GeoJSON")
-        remove_crs(centroid_file)
 
         dataset = Dataset.read_from_hdx(configuration["boundaries"]["dataset"])  # update in HDX
-        resource_a = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbnda_adm1")
+        resource_a = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbnda_adm1")[0]
         resource_a.set_file_to_upload(adm1_file)
-        resource_c = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="centroid_adm1")
+        resource_c = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="centroid_adm1")[0]
         resource_c.set_file_to_upload(centroid_file)
 
-        dataset.update_in_hdx(
-            remove_additional_resources=False,
-            hxl_update=False,
-            updated_by_script="HDX Scraper: Data Explorer inputs",
-            ignore_fields=["num_of_rows"],
-        )
+        try:
+            dataset.update_in_hdx(
+                remove_additional_resources=False,
+                hxl_update=False,
+                updated_by_script="HDX Scraper: Data Explorer inputs",
+                ignore_fields=["num_of_rows"],
+            )
+        except HDXError:
+            logger.error("Could not update boundary resource")
 
     # create regional bb geojson
     logger.info("Updating regional bbox jsons")
