@@ -74,7 +74,10 @@ def download_unzip_read_data(resource, file_type=None, unzip=False, read=False):
 
 
 def replace_json(new_data, data_path):
-    remove(data_path)
+    try:
+        remove(data_path)
+    except FileNotFoundError:
+        logger.info("File does not exist - creating!")
     with open(data_path, "w") as f_open:
         dump(new_data, f_open)
 

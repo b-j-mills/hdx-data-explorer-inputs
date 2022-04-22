@@ -3,7 +3,7 @@ import re
 from os.path import join
 from unicodedata import normalize
 import topojson as tp
-from geojson import load, loads
+from geojson import loads
 from geopandas import GeoDataFrame, read_file
 from shapely.geometry import box
 
@@ -229,23 +229,21 @@ def update_boundaries(
         resource_c.set_file_to_upload(centroid_file)
 
         try:
-            dataset.update_in_hdx(
-                remove_additional_resources=False,
-                hxl_update=False,
-                updated_by_script="HDX Scraper: Data Explorer inputs",
-                ignore_fields=["num_of_rows"],
-            )
+            resource_a.update_in_hdx()
         except HDXError:
-            logger.exception("Could not update boundary dataset")
+            logger.exception("Could not update polygon resource")
+        try:
+            resource_c.update_in_hdx()
+        except HDXError:
+            logger.exception("Could not update centroid resource")
 
     # create regional bb geojson
     logger.info("Updating regional bbox jsons")
     for visualization in visualizations:
+        regional_file = join("saved_outputs", f"ocha-regions-bbox-{visualization}.geojson")
 
-        regional_file = join("../saved_outputs", f"ocha-regions-bbox-{visualization}.geojson")
-        with open(regional_file, "r") as f_open:
-            regional_lyr = load(f_open)
-        adm0_region = adm0_json[adm0_json["ISO_3"].isin(configuration["adm0"][visualization])]
+        adm0_region = adm0_json.copy(deep=True)
+        adm0_region = adm0_region[adm0_region["ISO_3"].isin(configuration["adm0"][visualization])]
         adm0_region["region"] = ""
         adm0_region["HRPs"] = ""
         adm0_region.loc[adm0_region["ISO_3"].isin(configuration["adm1"][visualization]), "HRPs"] = "HRPs"
@@ -273,31 +271,11 @@ def update_boundaries(
         adm0_dissolve["tbl_regcov_2020_ocha_Field3"] = adm0_dissolve.index
         adm0_region = adm0_dissolve.to_json(show_bbox=True, drop_id=True)
         adm0_region = loads(adm0_region)
-        regional_lyr["bbox"] = adm0_region["bbox"]
-        for i in reversed(range(len(regional_lyr["features"]))):
-            region = regional_lyr["features"][i]["properties"][
-                "tbl_regcov_2020_ocha_Field3"
-            ]
-            k = [
-                j
-                for j in range(len(adm0_region["features"]))
-                if adm0_region["features"][j]["properties"]["tbl_regcov_2020_ocha_Field3"]
-                == region
-            ]
-            if len(k) != 1:
-                logger.error(f"Cannot find region {region} in new boundaries")
-                regional_lyr["features"].remove(regional_lyr["features"][i])
-                continue
-            regional_lyr["features"][i]["geometry"]["coordinates"] = adm0_region["features"][
-                k[0]
-            ]["geometry"]["coordinates"]
-            regional_lyr["features"][i] = {
-                "type": "Feature",
-                "properties": regional_lyr["features"][i]["properties"],
-                "bbox": adm0_region["features"][k[0]]["bbox"],
-                "geometry": regional_lyr["features"][i]["geometry"],
-            }
-        replace_json(regional_lyr, regional_file)
+        adm0_region["name"] = "ocha regions - bbox"
+        adm0_region["crs"] = {"type": "name", "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"}}
+        adm0_region = adm0_region
+        replace_json(adm0_region, regional_file)
+
     logger.info("Updated regional bbox jsons")
 
     # update boundaries in MapBox
