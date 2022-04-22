@@ -1,11 +1,9 @@
 import logging
-from geopandas import read_file
-from os import remove
 
 from scrapers.boundaries import update_boundaries
 from scrapers.health_facilities import update_health_facilities
 from scrapers.population import update_population
-from scrapers.utilities.helper_functions import find_resource
+from scrapers.utilities.helper_functions import find_resource, download_unzip_read_data
 
 logger = logging.getLogger(__name__)
 
@@ -30,14 +28,16 @@ def get_indicators(
         for country in configuration["adm1"][viz]:
             adm1_countries.add(country)
     adm1_countries = list(adm1_countries)
+    adm1_countries.sort()
 
     resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbnda_adm1")
     if not resource:
         logger.error(f"Could not find admin1 geojson!")
         return None
-    _, path = resource[0].download()
-    adm1_json = read_file(path)
-    remove(path)
+
+    adm1_json = download_unzip_read_data(downloader, resource[0], read=True)
+    if not adm1_json:
+        return None
     adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
 
     if "boundaries" in scrapers_to_run:
@@ -49,15 +49,17 @@ def get_indicators(
         if not resource:
             logger.error(f"Could not find admin0 geojson!")
             return None
-        _, path = resource[0].download()
-        adm0_json = read_file(path)
+        adm0_json = download_unzip_read_data(downloader, resource[0], read=True)
+        if not adm0_json:
+            return None
 
         resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="wrl_lakeresa")
         if not resource:
             logger.error(f"Could not find lakes geojson!")
             return None
-        _, path = resource[0].download()
-        water_json = read_file(path)
+        water_json = download_unzip_read_data(downloader, resource[0], read=True)
+        if not water_json:
+            return None
 
         boundaries = update_boundaries(
             configuration,

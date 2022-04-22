@@ -12,7 +12,7 @@ from hdx.data.dataset import Dataset
 from hdx.location.country import Country
 from hdx.data.hdxobject import HDXError
 from scrapers.utilities.helper_functions import (
-    download_unzip_data,
+    download_unzip_read_data,
     find_resource,
     replace_json,
     drop_fields,
@@ -91,7 +91,7 @@ def update_boundaries(
                 logger.error(f"Could not distinguish between resources for {iso}")
                 continue
 
-        boundary_shp = download_unzip_data(downloader, boundary_resource[0], "shp", temp_folder)
+        boundary_shp = download_unzip_read_data(downloader, boundary_resource[0], "shp")
         if not boundary_shp:
             continue
 

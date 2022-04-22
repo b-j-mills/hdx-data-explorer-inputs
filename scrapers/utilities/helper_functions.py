@@ -1,11 +1,12 @@
 import logging
 import re
 from glob import glob
-from json import dump, load
+from json import dump
 from os import remove
-from os.path import join, basename
+from os.path import join, basename, splitext
 from zipfile import ZipFile
 from pandas import DataFrame, concat
+from geopandas import read_file
 
 from hdx.data.dataset import Dataset
 from hdx.utilities.downloader import DownloadError
@@ -42,23 +43,32 @@ def find_resource(dataset_name, file_type, kw=None):
     return resource_list
 
 
-def download_unzip_data(downloader, resource, file_type, folder):
+def download_unzip_read_data(downloader, resource, file_type=None, read=False):
     try:
-        resource_zip = downloader.download_file(resource["url"], path=folder)
+        resource_file = downloader.download_file(resource["url"], overwrite=True)
     except DownloadError:
         logger.error(f"Could not download resource")
         return None
 
-    temp_folder = basename(resource_zip)
+    temp_folder = basename(resource_file)
 
-    with ZipFile(resource_zip, "r") as z:
-        z.extractall(join(temp_folder, "unzipped"))
-
-    out_files = glob(join(temp_folder, "unzipped", "**", f"*.{file_type}"), recursive=True)
+    if splitext(resource_file)[1].lower() == ".zip":
+        with ZipFile(resource_file, "r") as z:
+            z.extractall(join(temp_folder, "unzipped"))
+        out_files = glob(join(temp_folder, "unzipped", "**", f"*.{file_type}"), recursive=True)
+    else:
+        out_files = resource_file
 
     if len(out_files) == 0:
-        logger.error(f"Did not find the {file_type} in the zip")
+        logger.error(f"Did not find the file!")
         return None
+
+    if read:
+        if len(out_files) > 1:
+            logger.error(f"Found more than one file for {resource['name']}")
+            return None
+        lyr = read_file(out_files[0])
+        return lyr
 
     return out_files
 

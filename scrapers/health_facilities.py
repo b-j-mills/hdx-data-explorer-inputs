@@ -1,12 +1,11 @@
 import logging
 from os.path import join
-from geopandas import read_file
 from pandas import DataFrame
 
 from hdx.data.dataset import Dataset
 from scrapers.utilities.helper_functions import (
     find_resource,
-    download_unzip_data,
+    download_unzip_read_data,
     update_csv_resource,
 )
 
@@ -42,13 +41,10 @@ def update_health_facilities(
         if not health_resource:
             continue
 
-        health_shp = download_unzip_data(downloader, health_resource[0], "shp", temp_folder)
-        if not health_shp:
+        health_shp_lyr = download_unzip_read_data(downloader, health_resource[0], "shp", read=True)
+        if not health_shp_lyr:
             continue
 
-        health_shp = health_shp[0]
-
-        health_shp_lyr = read_file(health_shp)
         join_lyr = health_shp_lyr.sjoin(adm1_json)
         join_lyr = DataFrame(join_lyr)
         join_lyr = join_lyr.groupby("ADM1_PCODE").size()
