@@ -35,7 +35,7 @@ def get_indicators(
         logger.error(f"Could not find admin1 geojson!")
         return None
 
-    adm1_json = download_unzip_read_data(downloader, resource[0], read=True)
+    adm1_json = download_unzip_read_data(resource[0], read=True)
     if not adm1_json:
         return None
     adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
@@ -49,7 +49,7 @@ def get_indicators(
         if not resource:
             logger.error(f"Could not find admin0 geojson!")
             return None
-        adm0_json = download_unzip_read_data(downloader, resource[0], read=True)
+        adm0_json = download_unzip_read_data(resource[0], read=True)
         if not adm0_json:
             return None
 
@@ -57,7 +57,7 @@ def get_indicators(
         if not resource:
             logger.error(f"Could not find lakes geojson!")
             return None
-        water_json = download_unzip_read_data(downloader, resource[0], read=True)
+        water_json = download_unzip_read_data(resource[0], read=True)
         if not water_json:
             return None
 

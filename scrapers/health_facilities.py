@@ -41,7 +41,7 @@ def update_health_facilities(
         if not health_resource:
             continue
 
-        health_shp_lyr = download_unzip_read_data(downloader, health_resource[0], "shp", read=True)
+        health_shp_lyr = download_unzip_read_data(health_resource[0], "shp", read=True)
         if not health_shp_lyr:
             continue
 

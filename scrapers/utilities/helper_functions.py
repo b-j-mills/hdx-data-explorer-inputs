@@ -43,21 +43,20 @@ def find_resource(dataset_name, file_type, kw=None):
     return resource_list
 
 
-def download_unzip_read_data(downloader, resource, file_type=None, read=False):
+def download_unzip_read_data(resource, file_type=None, read=False):
     try:
-        resource_file = downloader.download_file(resource["url"], overwrite=True)
+        _, resource_file = resource.download()
     except DownloadError:
         logger.error(f"Could not download resource")
         return None
 
-    temp_folder = basename(resource_file)
-
     if splitext(resource_file)[1].lower() == ".zip":
+        temp_folder = basename(resource_file)
         with ZipFile(resource_file, "r") as z:
             z.extractall(join(temp_folder, "unzipped"))
         out_files = glob(join(temp_folder, "unzipped", "**", f"*.{file_type}"), recursive=True)
     else:
-        out_files = resource_file
+        out_files = [resource_file]
 
     if len(out_files) == 0:
         logger.error(f"Did not find the file!")

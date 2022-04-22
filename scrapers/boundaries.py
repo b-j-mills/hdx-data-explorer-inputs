@@ -91,7 +91,7 @@ def update_boundaries(
                 logger.error(f"Could not distinguish between resources for {iso}")
                 continue
 
-        boundary_shp = download_unzip_read_data(downloader, boundary_resource[0], "shp")
+        boundary_shp = download_unzip_read_data(boundary_resource[0], "shp")
         if not boundary_shp:
             continue
 
