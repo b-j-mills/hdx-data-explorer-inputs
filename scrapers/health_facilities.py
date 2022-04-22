@@ -42,7 +42,7 @@ def update_health_facilities(
             continue
 
         health_shp_lyr = download_unzip_read_data(health_resource[0], "shp", read=True)
-        if not health_shp_lyr:
+        if isinstance(health_shp_lyr, type(None)):
             continue
 
         join_lyr = health_shp_lyr.sjoin(adm1_json)

@@ -36,7 +36,7 @@ def get_indicators(
         return None
 
     adm1_json = download_unzip_read_data(resource[0], read=True)
-    if not adm1_json:
+    if isinstance(adm1_json, type(None)):
         return None
     adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
 
@@ -50,7 +50,7 @@ def get_indicators(
             logger.error(f"Could not find admin0 geojson!")
             return None
         adm0_json = download_unzip_read_data(resource[0], read=True)
-        if not adm0_json:
+        if isinstance(adm0_json, type(None)):
             return None
 
         resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="wrl_lakeresa")
@@ -58,7 +58,7 @@ def get_indicators(
             logger.error(f"Could not find lakes geojson!")
             return None
         water_json = download_unzip_read_data(resource[0], read=True)
-        if not water_json:
+        if isinstance(water_json, type(None)):
             return None
 
         boundaries = update_boundaries(
