@@ -183,32 +183,7 @@ def update_boundaries(
 
         logger.info(f"Finished processing admin1 boundaries for {iso}")
 
-    if countries:  # update HDX, admin1 lookups
-        for visualization in visualizations:
-            logger.info(f"Updating admin1 lookups for {visualization}")
-            attributes = list()
-            for index, row in adm1_json.iterrows():
-                if row["alpha_3"] in configuration["adm1"][visualization]:
-                    attributes.append(
-                        {
-                            "country": row["ADM0_REF"],
-                            "iso3": row["alpha_3"],
-                            "pcode": row["ADM1_PCODE"],
-                            "name": row["ADM1_REF"],
-                        }
-                    )
-            attributes = sorted(attributes, key=lambda i: (i["country"], i["name"]))
-
-            with open(join("saved_outputs", f"adm1-attributes-{visualization}.txt"), "w") as f:
-                for row in attributes:
-                    if "," in row["name"]:
-                        row["name"] = '"' + row["name"] + '"'
-                    if "'" in row["name"]:
-                        row["name"] = row["name"].replace("'", "")
-                    f.write("- %s\n" % str(row).replace("'", "").replace("|", "'"))
-
-        logger.info("Updated admin1 lookups")
-
+    if countries:
         logger.info(f"Updating HDX resources")
 
         adm1_file = join(temp_folder, "polbnda_adm1_simplified.geojson")  # save file to disk
@@ -237,6 +212,31 @@ def update_boundaries(
         except HDXError:
             logger.exception("Could not update centroid resource")
 
+    for visualization in visualizations:  # update admin1 lookups
+        logger.info(f"Updating admin1 lookups for {visualization}")
+        attributes = list()
+        for index, row in adm1_json.iterrows():
+            if row["alpha_3"] in configuration["adm1"][visualization]:
+                attributes.append(
+                    {
+                        "country": row["ADM0_REF"],
+                        "iso3": row["alpha_3"],
+                        "pcode": row["ADM1_PCODE"],
+                        "name": row["ADM1_REF"],
+                    }
+                )
+        attributes = sorted(attributes, key=lambda i: (i["country"], i["name"]))
+
+        with open(join("saved_outputs", f"adm1-attributes-{visualization}.txt"), "w") as f:
+            for row in attributes:
+                if "," in row["name"]:
+                    row["name"] = '"' + row["name"] + '"'
+                if "'" in row["name"]:
+                    row["name"] = row["name"].replace("'", "")
+                f.write("- %s\n" % str(row).replace("'", "").replace("|", "'"))
+
+    logger.info("Updated admin1 lookups")
+    
     # create regional bb geojson
     logger.info("Updating regional bbox jsons")
     for visualization in visualizations:
