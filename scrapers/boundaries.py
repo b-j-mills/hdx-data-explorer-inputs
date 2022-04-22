@@ -204,7 +204,7 @@ def update_boundaries(
                     if "," in row["name"]:
                         row["name"] = '"' + row["name"] + '"'
                     if "'" in row["name"]:
-                        row["name"] = row["name"].replace("'", "|")
+                        row["name"] = row["name"].replace("'", "")
                     f.write("- %s\n" % str(row).replace("'", "").replace("|", "'"))
 
         logger.info("Updated admin1 lookups")

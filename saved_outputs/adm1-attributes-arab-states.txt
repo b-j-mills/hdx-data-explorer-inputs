@@ -63,7 +63,7 @@
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY11, name: Ar Raqqa}
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY13, name: As Sweida}
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY01, name: Damascus}
-- {country: Syrian Arab Republic, iso3: SYR, pcode: SY12, name: Dar'a}
+- {country: Syrian Arab Republic, iso3: SYR, pcode: SY12, name: Dara}
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY09, name: Deir ez Zor}
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY05, name: Hama}
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY04, name: Homs}
@@ -73,7 +73,7 @@
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY03, name: Rural Damascus}
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY10, name: Tartous}
 - {country: Yemen, iso3: YEM, pcode: YE12, name: Abyan}
-- {country: Yemen, iso3: YEM, pcode: YE30, name: Ad Dali'}
+- {country: Yemen, iso3: YEM, pcode: YE30, name: Ad Dali}
 - {country: Yemen, iso3: YEM, pcode: YE24, name: Aden}
 - {country: Yemen, iso3: YEM, pcode: YE14, name: Al Bayda}
 - {country: Yemen, iso3: YEM, pcode: YE18, name: Al Hodeidah}
@@ -86,11 +86,11 @@
 - {country: Yemen, iso3: YEM, pcode: YE17, name: Hajjah}
 - {country: Yemen, iso3: YEM, pcode: YE11, name: Ibb}
 - {country: Yemen, iso3: YEM, pcode: YE25, name: Lahj}
-- {country: Yemen, iso3: YEM, pcode: YE26, name: Ma'rib}
+- {country: Yemen, iso3: YEM, pcode: YE26, name: Marib}
 - {country: Yemen, iso3: YEM, pcode: YE31, name: Raymah}
-- {country: Yemen, iso3: YEM, pcode: YE22, name: Sa'dah}
-- {country: Yemen, iso3: YEM, pcode: YE23, name: Sana'a}
-- {country: Yemen, iso3: YEM, pcode: YE13, name: Sana'a City}
+- {country: Yemen, iso3: YEM, pcode: YE22, name: Sadah}
+- {country: Yemen, iso3: YEM, pcode: YE23, name: Sanaa}
+- {country: Yemen, iso3: YEM, pcode: YE13, name: Sanaa City}
 - {country: Yemen, iso3: YEM, pcode: YE21, name: Shabwah}
 - {country: Yemen, iso3: YEM, pcode: YE32, name: Socotra}
-- {country: Yemen, iso3: YEM, pcode: YE15, name: Ta'iz}
+- {country: Yemen, iso3: YEM, pcode: YE15, name: Taiz}

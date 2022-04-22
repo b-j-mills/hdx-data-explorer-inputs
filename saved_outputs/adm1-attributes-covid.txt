@@ -84,7 +84,7 @@
 - {country: Central African Republic, iso3: CAF, pcode: CF62, name: Mbomou}
 - {country: Central African Republic, iso3: CAF, pcode: CF42, name: Nana Gribizi}
 - {country: Central African Republic, iso3: CAF, pcode: CF22, name: Nana Mambere}
-- {country: Central African Republic, iso3: CAF, pcode: CF11, name: Ombella M'Poko}
+- {country: Central African Republic, iso3: CAF, pcode: CF11, name: Ombella MPoko}
 - {country: Central African Republic, iso3: CAF, pcode: CF43, name: Ouaka}
 - {country: Central African Republic, iso3: CAF, pcode: CF32, name: Ouham}
 - {country: Central African Republic, iso3: CAF, pcode: CF31, name: Ouham Pende}
@@ -106,7 +106,7 @@
 - {country: Chad, iso3: TCD, pcode: TD11, name: Mayo Kebbi Est}
 - {country: Chad, iso3: TCD, pcode: TD12, name: Mayo Kebbi Ouest}
 - {country: Chad, iso3: TCD, pcode: TD13, name: Moyen Chari}
-- {country: Chad, iso3: TCD, pcode: TD18, name: N'Djamena}
+- {country: Chad, iso3: TCD, pcode: TD18, name: NDjamena}
 - {country: Chad, iso3: TCD, pcode: TD14, name: Ouaddai}
 - {country: Chad, iso3: TCD, pcode: TD15, name: Salamat}
 - {country: Chad, iso3: TCD, pcode: TD21, name: Sila}
@@ -116,9 +116,9 @@
 - {country: Colombia, iso3: COL, pcode: CO91, name: Amazonas}
 - {country: Colombia, iso3: COL, pcode: CO05, name: Antioquia}
 - {country: Colombia, iso3: COL, pcode: CO81, name: Arauca}
-- {country: Colombia, iso3: COL, pcode: CO88, name: "Archipielago de San Andres, Providencia y Santa Catalina"}
+- {country: Colombia, iso3: COL, pcode: CO88, name: ""Archipielago de San Andres, Providencia y Santa Catalina""}
 - {country: Colombia, iso3: COL, pcode: CO08, name: Atlantico}
-- {country: Colombia, iso3: COL, pcode: CO11, name: "Bogota, D.C."}
+- {country: Colombia, iso3: COL, pcode: CO11, name: ""Bogota, D.C.""}
 - {country: Colombia, iso3: COL, pcode: CO13, name: Bolivar}
 - {country: Colombia, iso3: COL, pcode: CO15, name: Boyaca}
 - {country: Colombia, iso3: COL, pcode: CO17, name: Caldas}
@@ -223,7 +223,7 @@
 - {country: Guatemala, iso3: GTM, pcode: GT19, name: Zacapa}
 - {country: Haiti, iso3: HTI, pcode: HT05, name: Artibonite}
 - {country: Haiti, iso3: HTI, pcode: HT06, name: Centre}
-- {country: Haiti, iso3: HTI, pcode: HT08, name: Grande'Anse}
+- {country: Haiti, iso3: HTI, pcode: HT08, name: GrandeAnse}
 - {country: Haiti, iso3: HTI, pcode: HT10, name: Nippes}
 - {country: Haiti, iso3: HTI, pcode: HT03, name: North}
 - {country: Haiti, iso3: HTI, pcode: HT04, name: North East}
@@ -405,7 +405,7 @@
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY11, name: Ar Raqqa}
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY13, name: As Sweida}
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY01, name: Damascus}
-- {country: Syrian Arab Republic, iso3: SYR, pcode: SY12, name: Dar'a}
+- {country: Syrian Arab Republic, iso3: SYR, pcode: SY12, name: Dara}
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY09, name: Deir ez Zor}
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY05, name: Hama}
 - {country: Syrian Arab Republic, iso3: SYR, pcode: SY04, name: Homs}
@@ -466,7 +466,7 @@
 - {country: Venezuela (Bolivarian Republic of), iso3: VEN, pcode: VE22, name: Yaracuy}
 - {country: Venezuela (Bolivarian Republic of), iso3: VEN, pcode: VE23, name: Zulia}
 - {country: Yemen, iso3: YEM, pcode: YE12, name: Abyan}
-- {country: Yemen, iso3: YEM, pcode: YE30, name: Ad Dali'}
+- {country: Yemen, iso3: YEM, pcode: YE30, name: Ad Dali}
 - {country: Yemen, iso3: YEM, pcode: YE24, name: Aden}
 - {country: Yemen, iso3: YEM, pcode: YE14, name: Al Bayda}
 - {country: Yemen, iso3: YEM, pcode: YE18, name: Al Hodeidah}
@@ -479,11 +479,11 @@
 - {country: Yemen, iso3: YEM, pcode: YE17, name: Hajjah}
 - {country: Yemen, iso3: YEM, pcode: YE11, name: Ibb}
 - {country: Yemen, iso3: YEM, pcode: YE25, name: Lahj}
-- {country: Yemen, iso3: YEM, pcode: YE26, name: Ma'rib}
+- {country: Yemen, iso3: YEM, pcode: YE26, name: Marib}
 - {country: Yemen, iso3: YEM, pcode: YE31, name: Raymah}
-- {country: Yemen, iso3: YEM, pcode: YE22, name: Sa'dah}
-- {country: Yemen, iso3: YEM, pcode: YE23, name: Sana'a}
-- {country: Yemen, iso3: YEM, pcode: YE13, name: Sana'a City}
+- {country: Yemen, iso3: YEM, pcode: YE22, name: Sadah}
+- {country: Yemen, iso3: YEM, pcode: YE23, name: Sanaa}
+- {country: Yemen, iso3: YEM, pcode: YE13, name: Sanaa City}
 - {country: Yemen, iso3: YEM, pcode: YE21, name: Shabwah}
 - {country: Yemen, iso3: YEM, pcode: YE32, name: Socotra}
-- {country: Yemen, iso3: YEM, pcode: YE15, name: Ta'iz}
+- {country: Yemen, iso3: YEM, pcode: YE15, name: Taiz}
