@@ -91,7 +91,7 @@ def update_boundaries(
                 logger.error(f"Could not distinguish between resources for {iso}")
                 continue
 
-        boundary_shp = download_unzip_read_data(boundary_resource[0], "shp")
+        boundary_shp = download_unzip_read_data(boundary_resource[0], "shp", unzip=True)
         if not boundary_shp:
             continue
 
@@ -236,7 +236,7 @@ def update_boundaries(
                 ignore_fields=["num_of_rows"],
             )
         except HDXError:
-            logger.error("Could not update boundary resource")
+            logger.exception("Could not update boundary dataset")
 
     # create regional bb geojson
     logger.info("Updating regional bbox jsons")

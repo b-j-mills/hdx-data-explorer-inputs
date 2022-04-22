@@ -3,7 +3,7 @@ import re
 from glob import glob
 from json import dump
 from os import remove
-from os.path import join, basename, splitext
+from os.path import join, dirname, basename
 from zipfile import ZipFile
 from pandas import DataFrame, concat
 from geopandas import read_file
@@ -43,18 +43,18 @@ def find_resource(dataset_name, file_type, kw=None):
     return resource_list
 
 
-def download_unzip_read_data(resource, file_type=None, read=False):
+def download_unzip_read_data(resource, file_type=None, unzip=False, read=False):
     try:
         _, resource_file = resource.download()
     except DownloadError:
         logger.error(f"Could not download resource")
         return None
 
-    if splitext(resource_file)[1].lower() == ".zip":
-        temp_folder = basename(resource_file)
+    if unzip:
+        temp_folder = join(dirname(resource_file), basename(resource_file).split(".")[0])
         with ZipFile(resource_file, "r") as z:
-            z.extractall(join(temp_folder, "unzipped"))
-        out_files = glob(join(temp_folder, "unzipped", "**", f"*.{file_type}"), recursive=True)
+            z.extractall(temp_folder)
+        out_files = glob(join(temp_folder, "**", f"*.{file_type}"), recursive=True)
     else:
         out_files = [resource_file]
 
@@ -67,6 +67,7 @@ def download_unzip_read_data(resource, file_type=None, read=False):
             logger.error(f"Found more than one file for {resource['name']}")
             return None
         lyr = read_file(out_files[0])
+        remove(out_files[0])
         return lyr
 
     return out_files
