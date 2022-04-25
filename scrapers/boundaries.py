@@ -78,7 +78,7 @@ def update_boundaries(
 
         if len(boundary_resource) > 1:
             name_match = [
-                bool(re.match(".*adm(in)?1.*", r["name"], re.IGNORECASE))
+                bool(re.match(".*adm(in)?(0)?1.*", r["name"], re.IGNORECASE))
                 for r in boundary_resource
             ]
             boundary_resource = [
@@ -97,7 +97,7 @@ def update_boundaries(
 
         if len(boundary_shp) > 1:
             name_match = [
-                bool(re.match(".*admbnda.*adm(in)?1.*", b, re.IGNORECASE)) for b in boundary_shp
+                bool(re.match(".*admbnda.*adm(in)?(0)?1.*", b, re.IGNORECASE)) for b in boundary_shp
             ]
             boundary_shp = [
                 boundary_shp[i] for i in range(len(boundary_shp)) if name_match[i]
