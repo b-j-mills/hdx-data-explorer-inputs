@@ -10,15 +10,14 @@ logger = logging.getLogger(__name__)
 
 def get_indicators(
         configuration,
-        retriever,
+        downloader,
+        temp_folder,
         scrapers_to_run=None,
         countries=None,
         visualizations=None,
         mapbox_auth=None,
         errors_on_exit=None,
 ):
-    downloader = retriever.downloader
-    temp_folder = retriever.temp_dir
 
     if not scrapers_to_run:
         scrapers_to_run = ["boundaries", "health_facilities", "population"]

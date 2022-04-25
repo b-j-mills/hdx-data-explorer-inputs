@@ -5,7 +5,6 @@ from os.path import join
 
 from hdx.api.configuration import Configuration
 from hdx.facades.keyword_arguments import facade
-from hdx.utilities.retriever import Retrieve
 from hdx.utilities.downloader import Download
 from hdx.utilities.easy_logging import setup_logging
 from hdx.utilities.errors_onexit import ErrorsOnExit
@@ -41,14 +40,12 @@ def main(
     with ErrorsOnExit() as errors_on_exit:
         with temp_dir() as temp_folder:
             with Download(rate_limit={"calls": 1, "period": 0.1}) as downloader:
-                retriever = Retrieve(
-                    downloader, temp_folder, "saved_data", temp_folder
-                )
                 if scrapers_to_run:
                     logger.info(f"Updating only scrapers: {scrapers_to_run}")
                 countries_to_save = get_indicators(
                     configuration,
-                    retriever,
+                    downloader,
+                    temp_folder,
                     scrapers_to_run,
                     countries,
                     visualizations,
