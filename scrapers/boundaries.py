@@ -150,12 +150,6 @@ def update_boundaries(
         boundary_lyr["ADM1_REF"] = boundary_lyr[name_field]
         boundary_lyr = drop_fields(boundary_lyr, req_fields)
 
-        for index, row in boundary_lyr.iterrows():  # remove any special characters from names
-            if row["ADM1_REF"]:
-                new_name = row["ADM1_REF"].replace("-", " ")
-                new_name = normalize("NFKD", new_name).encode("ascii", "ignore").decode("ascii")
-                boundary_lyr.loc[index, "ADM1_REF"] = new_name
-
         na_count = boundary_lyr["ADM1_REF"].isna().sum()
         if na_count > 0:
             logger.warning(f"Found {na_count} null values in {iso} boundary")
@@ -218,12 +212,14 @@ def update_boundaries(
         attributes = list()
         for index, row in adm1_json.iterrows():
             if row["alpha_3"] in configuration["adm1"][visualization]:
+                new_name = row["ADM1_REF"].replace("-", " ")
+                new_name = normalize("NFKD", new_name).encode("ascii", "ignore").decode("ascii")
                 attributes.append(
                     {
                         "country": row["ADM0_REF"],
                         "iso3": row["alpha_3"],
                         "pcode": row["ADM1_PCODE"],
-                        "name": row["ADM1_REF"],
+                        "name": new_name,
                     }
                 )
         attributes = sorted(attributes, key=lambda i: (i["country"], i["name"]))
