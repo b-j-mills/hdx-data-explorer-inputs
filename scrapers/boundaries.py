@@ -8,7 +8,6 @@ from geopandas import GeoDataFrame, read_file
 from shapely.geometry import box
 
 from hdx.scraper.utilities.readers import read_hdx_metadata, read_tabular
-from hdx.data.dataset import Dataset
 from hdx.location.country import Country
 from hdx.data.hdxobject import HDXError
 from scrapers.utilities.helper_functions import (
@@ -178,21 +177,21 @@ def update_boundaries(
 
         logger.info(f"Finished processing admin1 boundaries for {iso}")
 
+    centroid_lyr = GeoDataFrame(adm1_json.representative_point())  # convert to centroid
+    centroid_lyr.rename(columns={0: "geometry"}, inplace=True)
+    centroid_lyr[req_fields] = adm1_json[req_fields]
+    centroid_lyr.set_geometry("geometry", inplace=True)
+    centroid_lyr.crs = None
+
     if countries:
         logger.info(f"Updating HDX resources")
 
         adm1_file = join(temp_folder, "polbnda_adm1_simplified.geojson")  # save file to disk
         adm1_json.to_file(adm1_file, driver="GeoJSON")
-
-        centroid_lyr = GeoDataFrame(adm1_json.representative_point())  # convert to centroid
-        centroid_lyr.rename(columns={0: "geometry"}, inplace=True)
-        centroid_lyr[req_fields] = adm1_json[req_fields]
-        centroid_lyr.set_geometry("geometry", inplace=True)
         centroid_file = join(temp_folder, "centroid_adm1.geojson")
-        centroid_lyr.crs = None
         centroid_lyr.to_file(centroid_file, driver="GeoJSON")
 
-        dataset = Dataset.read_from_hdx(configuration["boundaries"]["dataset"])  # update in HDX
+        # update in HDX
         resource_a = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbnda_adm1")[0]
         resource_a.set_file_to_upload(adm1_file)
         resource_c = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="centroid_adm1")[0]
