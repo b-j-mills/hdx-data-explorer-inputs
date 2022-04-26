@@ -28,6 +28,7 @@ def update_boundaries(
         mapbox_auth,
         temp_folder,
         adm0_json,
+        adm0_c_json,
         adm1_json,
         water_json,
         visualizations=None,

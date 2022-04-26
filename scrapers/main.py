@@ -52,6 +52,14 @@ def get_indicators(
         if isinstance(adm0_json, type(None)):
             return None
 
+        resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="wrl_centroid")
+        if not resource:
+            logger.error(f"Could not find admin0 centroid geojson!")
+            return None
+        adm0_c_json = download_unzip_read_data(resource[0], read=True)
+        if isinstance(adm0_c_json, type(None)):
+            return None
+
         resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="wrl_lakeresa")
         if not resource:
             logger.error(f"Could not find lakes geojson!")
@@ -66,6 +74,7 @@ def get_indicators(
             mapbox_auth,
             temp_folder,
             adm0_json,
+            adm0_c_json,
             adm1_json,
             water_json,
             visualizations,
