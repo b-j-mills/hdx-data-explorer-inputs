@@ -16,7 +16,6 @@ def get_indicators(
         countries=None,
         visualizations=None,
         mapbox_auth=None,
-        errors_on_exit=None,
 ):
 
     if not scrapers_to_run:

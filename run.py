@@ -7,7 +7,6 @@ from hdx.api.configuration import Configuration
 from hdx.facades.keyword_arguments import facade
 from hdx.utilities.downloader import Download
 from hdx.utilities.easy_logging import setup_logging
-from hdx.utilities.errors_onexit import ErrorsOnExit
 from hdx.utilities.path import temp_dir
 from scrapers.main import get_indicators
 
@@ -37,21 +36,19 @@ def main(
 ):
     logger.info(f"##### hdx-viz-data-inputs ####")
     configuration = Configuration.read()
-    with ErrorsOnExit() as errors_on_exit:
-        with temp_dir() as temp_folder:
-            with Download(rate_limit={"calls": 1, "period": 0.1}) as downloader:
-                if scrapers_to_run:
-                    logger.info(f"Updating only scrapers: {scrapers_to_run}")
-                countries_to_save = get_indicators(
-                    configuration,
-                    downloader,
-                    temp_folder,
-                    scrapers_to_run,
-                    countries,
-                    visualizations,
-                    mapbox_auth,
-                    errors_on_exit,
-                )
+    with temp_dir() as temp_folder:
+        with Download(rate_limit={"calls": 1, "period": 0.1}) as downloader:
+            if scrapers_to_run:
+                logger.info(f"Updating only scrapers: {scrapers_to_run}")
+            countries_to_save = get_indicators(
+                configuration,
+                downloader,
+                temp_folder,
+                scrapers_to_run,
+                countries,
+                visualizations,
+                mapbox_auth,
+            )
 
 
 if __name__ == "__main__":
