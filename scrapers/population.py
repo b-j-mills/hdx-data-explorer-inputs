@@ -99,7 +99,13 @@ def update_population(
         for row in iterator:
             pcode = row[pcode_header]
             pop = row[pop_header]
+            if pcode not in adm1_json["ADM1_PCODE"]:
+                logger.info(f"Could not find unit {pcode} in boundaries for {iso}")
             adm1_json.loc[adm1_json["ADM1_PCODE"] == pcode, "Population"] = pop
+
+    for index, row in adm1_json.iterrows():
+        if row["Population"].isna():
+            logger.info(f"Could not find unit {row['ADM1_PCODE']} in statistics for {row['alpha_3']}")
 
     adm1_json.drop(columns="geometry", inplace=True)
 
