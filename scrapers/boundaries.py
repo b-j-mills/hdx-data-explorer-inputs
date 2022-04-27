@@ -56,6 +56,10 @@ def update_boundaries(
 
     req_fields = ["alpha_3", "ADM0_REF", "ADM0_PCODE", "ADM1_REF", "ADM1_PCODE"]
     for iso in countries:
+        if iso == "UKR":
+            logger.info("Not processing UKR for now")
+            continue
+
         logger.info(f"Processing admin1 boundaries for {iso}")
 
         country_adm0 = adm0_json.loc[(adm0_json["ISO_3"] == iso) | (adm0_json["Color_Code"] == iso)]
