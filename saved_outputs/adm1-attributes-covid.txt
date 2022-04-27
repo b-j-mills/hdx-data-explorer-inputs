@@ -116,9 +116,9 @@
 - {country: Colombia, iso3: COL, pcode: CO91, name: Amazonas}
 - {country: Colombia, iso3: COL, pcode: CO05, name: Antioquia}
 - {country: Colombia, iso3: COL, pcode: CO81, name: Arauca}
-- {country: Colombia, iso3: COL, pcode: CO88, name: ""Archipielago de San Andres, Providencia y Santa Catalina""}
+- {country: Colombia, iso3: COL, pcode: CO88, name: "Archipielago de San Andres, Providencia y Santa Catalina"}
 - {country: Colombia, iso3: COL, pcode: CO08, name: Atlantico}
-- {country: Colombia, iso3: COL, pcode: CO11, name: ""Bogota, D.C.""}
+- {country: Colombia, iso3: COL, pcode: CO11, name: "Bogota, D.C."}
 - {country: Colombia, iso3: COL, pcode: CO13, name: Bolivar}
 - {country: Colombia, iso3: COL, pcode: CO15, name: Boyaca}
 - {country: Colombia, iso3: COL, pcode: CO17, name: Caldas}

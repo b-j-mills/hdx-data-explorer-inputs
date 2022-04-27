@@ -17,17 +17,17 @@ population:
 
 mapbox:
   covid:
-    adm1_polbnda: "humdata.b1o0ci53"
-    adm1_centroid: "humdata.63k3lb2z"
-    adm0_polbnda: "humdata.5qlwwz0l"
-    adm0_polbndl: "humdata.bkhifgb5"
-    adm0_centroid: "humdata.4w8b1b7g"
+    adm1-polbnda: "humdata.b1o0ci53"
+    adm1-centroid: "humdata.63k3lb2z"
+    adm0-polbnda: "humdata.5qlwwz0l"
+    adm0-polbndl: "humdata.bkhifgb5"
+    adm0-centroid: "humdata.4w8b1b7g"
   arab-states:
-    adm1_polbnda: "humdata.attm70id"
-    adm1_centroid: "humdata.8pyb1abd"
-    adm0_polbnda: "humdata.aioadufm"
-    adm0_polbndl: "humdata.bzo5ss37"
-    adm0_centroid: "humdata.d4ywfeza"
+    adm1-polbnda: "humdata.attm70id"
+    adm1-centroid: "humdata.8pyb1abd"
+    adm0-polbnda: "humdata.aioadufm"
+    adm0-polbndl: "humdata.bzo5ss37"
+    adm0-centroid: "humdata.d4ywfeza"
 
 adm1:
   covid:
