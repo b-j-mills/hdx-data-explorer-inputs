@@ -45,7 +45,7 @@ def update_boundaries(
         visualizations = [key for key in configuration["adm0"]]
 
     if not countries:
-        countries = []
+        countries = ["all"]
     elif len(countries) == 1 and countries[0].lower() == "all":
         countries = set()
         for viz in visualizations:
