@@ -15,7 +15,7 @@ from scrapers.utilities.helper_functions import (
     find_resource,
     replace_json,
     drop_fields,
-    #update_mapbox,
+    update_mapbox,
 )
 
 logger = logging.getLogger()
@@ -275,8 +275,39 @@ def update_boundaries(
     logger.info("Updated regional bbox jsons")
 
     # update boundaries in MapBox
-    #logger.info("Updating MapBox boundaries")
-    #for visualization in visualizations:
-    #    update_mapbox(visualization, mapbox_auth, configuration)
+    logger.info("Updating MapBox boundaries")
+    for visualization in visualizations:
+        update_mapbox(
+            configuration["mapbox"][visualization]["adm1-polbnda"],
+            adm1_json[adm1_json["alpha_3"].isin(configuration["adm1"][visualization])],
+            mapbox_auth,
+            temp_folder,
+            f"{visualization}-adm1-polbnda",
+        )
+        update_mapbox(
+            configuration["mapbox"][visualization]["adm1-centroid"],
+            centroid_lyr[centroid_lyr["alpha_3"].isin(configuration["adm1"][visualization])],
+            mapbox_auth,
+            temp_folder,
+            f"{visualization}-adm1-centroid",
+        )
+        to_upload = adm0_json.copy(deep=True)
+        to_upload = to_upload[(to_upload["ISO_3"].isin(configuration["adm0"][visualization])) |
+                              (to_upload["Color_Code"].isin(configuration["adm0"][visualization]))]
+        to_upload.loc[to_upload["ISO_3"] == "XXX", "ISO_3"] = to_upload.loc[to_upload["ISO_3"] == "XXX", "Color_Code"]
+        update_mapbox(
+            configuration["mapbox"][visualization]["adm0-polbnda"],
+            to_upload,
+            mapbox_auth,
+            temp_folder,
+            f"{visualization}-adm0-polbnda",
+        )
+        update_mapbox(
+            configuration["mapbox"][visualization]["adm0_centroid"],
+            adm0_c_json[adm0_c_json["ISO_3"].isin(configuration["adm0"][visualization])],
+            mapbox_auth,
+            temp_folder,
+            f"{visualization}-adm0-centroid",
+        )
 
     return countries
