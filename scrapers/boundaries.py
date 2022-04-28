@@ -46,10 +46,10 @@ def update_boundaries(
 
     if not countries:
         countries = ["all"]
-    elif len(countries) == 1 and countries[0].lower() == "all":
+    if len(countries) == 1 and countries[0].lower() == "all":
         countries = set()
-        for viz in visualizations:
-            for iso in configuration["adm1"][viz]:
+        for visualization in visualizations:
+            for iso in configuration["adm1"][visualization]:
                 countries.add(iso)
         countries = list(countries)
     countries.sort()
