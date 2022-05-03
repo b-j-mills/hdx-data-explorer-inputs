@@ -3,12 +3,10 @@ import re
 from glob import glob
 from json import dump
 from os import remove
-from os.path import join, dirname, basename
+from os.path import join, dirname
 from zipfile import ZipFile, BadZipFile
 from pandas import DataFrame, concat
 from geopandas import read_file
-from mapbox import Uploader
-from time import sleep
 from uuid import uuid4
 
 from hdx.data.dataset import Dataset
@@ -112,22 +110,3 @@ def drop_fields(df, keep_fields):
         axis=1,
     )
     return df
-
-
-def update_mapbox(mapid, file_to_upload, mapbox_auth, temp_folder, name):
-    service = Uploader(access_token=mapbox_auth)
-    saved_file = join(temp_folder, "file_to_upload.geojson")
-    file_to_upload.to_file(saved_file, driver="GeoJSON")
-    with open(saved_file, 'rb') as src:
-        upload_resp = service.upload(src, mapid, name=name)
-    if upload_resp.status_code == 422:
-        for i in range(5):
-            sleep(5)
-            with open(saved_file, 'rb') as src:
-                upload_resp = service.upload(src, mapid, name=name)
-            if upload_resp.status_code != 422:
-                break
-    if upload_resp.status_code == 422:
-        logger.error(f"Could not upload {name}")
-        return None
-    return mapid
