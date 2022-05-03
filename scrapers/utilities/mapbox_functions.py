@@ -16,10 +16,16 @@ def download_from_mapbox(mapid, mapbox_auth):
     return feature_list
 
 
-def update_mapbox(mapid, file_to_upload, mapbox_auth, temp_folder, name):
+def replace_mapbox_tileset(mapid, mapbox_auth, name, path_to_upload=None, json_to_upload=None, temp_folder=None):
     service = Uploader(access_token=mapbox_auth)
-    saved_file = join(temp_folder, "file_to_upload.geojson")
-    file_to_upload.to_file(saved_file, driver="GeoJSON")
+    if not isinstance(path_to_upload, type(None)):
+        saved_file = path_to_upload
+    if not isinstance(json_to_upload, type(None)):
+        if temp_folder is None:
+            logger.error("Need to provide temp folder path")
+            return None
+        saved_file = join(temp_folder, "file_to_upload.geojson")
+        json_to_upload.to_file(saved_file, driver="GeoJSON")
     with open(saved_file, 'rb') as src:
         upload_resp = service.upload(src, mapid, name=name)
     if upload_resp.status_code == 422:

@@ -15,8 +15,8 @@ from scrapers.utilities.helper_functions import (
     find_resource,
     replace_json,
     drop_fields,
-    update_mapbox,
 )
+from scrapers.utilities.mapbox_functions import *
 
 logger = logging.getLogger()
 
@@ -283,37 +283,37 @@ def update_boundaries(
     # update boundaries in MapBox
     logger.info("Updating MapBox boundaries")
     for visualization in visualizations:
-        update_mapbox(
+        replace_mapbox_tileset(
             configuration["mapbox"][visualization]["adm1-polbnda"],
-            adm1_json[adm1_json["alpha_3"].isin(configuration["adm1"][visualization])],
             mapbox_auth,
-            temp_folder,
             f"{visualization}-adm1-polbnda",
+            json_to_upload=adm1_json[adm1_json["alpha_3"].isin(configuration["adm1"][visualization])],
+            temp_folder=temp_folder,
         )
-        update_mapbox(
+        replace_mapbox_tileset(
             configuration["mapbox"][visualization]["adm1-centroid"],
-            centroid_lyr[centroid_lyr["alpha_3"].isin(configuration["adm1"][visualization])],
             mapbox_auth,
-            temp_folder,
             f"{visualization}-adm1-centroid",
+            json_to_upload=centroid_lyr[centroid_lyr["alpha_3"].isin(configuration["adm1"][visualization])],
+            temp_folder=temp_folder,
         )
         to_upload = adm0_json.copy(deep=True)
         to_upload = to_upload[(to_upload["ISO_3"].isin(configuration["adm0"][visualization])) |
                               (to_upload["Color_Code"].isin(configuration["adm0"][visualization]))]
         to_upload.loc[to_upload["ISO_3"] == "XXX", "ISO_3"] = to_upload.loc[to_upload["ISO_3"] == "XXX", "Color_Code"]
-        update_mapbox(
+        replace_mapbox_tileset(
             configuration["mapbox"][visualization]["adm0-polbnda"],
-            to_upload,
             mapbox_auth,
-            temp_folder,
             f"{visualization}-adm0-polbnda",
+            json_to_upload=to_upload,
+            temp_folder=temp_folder,
         )
-        update_mapbox(
+        replace_mapbox_tileset(
             configuration["mapbox"][visualization]["adm0_centroid"],
-            adm0_c_json[adm0_c_json["ISO_3"].isin(configuration["adm0"][visualization])],
             mapbox_auth,
-            temp_folder,
             f"{visualization}-adm0-centroid",
+            json_to_upload=[adm0_c_json["ISO_3"].isin(configuration["adm0"][visualization])],
+            temp_folder=temp_folder,
         )
 
     return countries
