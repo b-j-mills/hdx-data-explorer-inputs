@@ -186,7 +186,7 @@ def update_boundaries(
     centroid_lyr = GeoDataFrame(adm1_json.representative_point())  # convert to centroid
     centroid_lyr.rename(columns={0: "geometry"}, inplace=True)
     centroid_lyr[req_fields] = adm1_json[req_fields]
-    centroid_lyr.set_geometry("geometry", inplace=True)
+    centroid_lyr = centroid_lyr.set_geometry("geometry")
     centroid_lyr.crs = None
 
     if countries:

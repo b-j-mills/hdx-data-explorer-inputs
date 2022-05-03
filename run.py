@@ -1,7 +1,9 @@
 import argparse
 import logging
+import warnings
 from os import getenv
 from os.path import join
+from shapely.errors import ShapelyDeprecationWarning
 
 from hdx.api.configuration import Configuration
 from hdx.facades.keyword_arguments import facade
@@ -12,6 +14,7 @@ from scrapers.main import get_indicators
 
 setup_logging()
 logger = logging.getLogger(__name__)
+warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
 
 
 def parse_args():
