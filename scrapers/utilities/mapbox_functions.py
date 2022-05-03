@@ -13,8 +13,8 @@ def replace_mapbox_dataset(mapid, mapbox_auth, json_to_upload):
         logger.error(f"Could not retrieve dataset {mapid}: error {response.status_code}")
         return None
     feature_list = response.json()
-    if len(feature_list) > 0:
-        for feature in feature_list:
+    if len(feature_list["features"]) > 0:
+        for feature in feature_list["features"]:
             fid = feature["id"]
             response = datasets.delete_feature(mapid, fid)
             if response.status_code != 204:

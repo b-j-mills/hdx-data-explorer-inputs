@@ -19,24 +19,14 @@ population:
 
 mapbox:
   global:
-    datasets:
-      adm1-polbnda: "cl2qdtczb0chh28lhq82qor46"
-      adm1-polbndl: "cl2qdzdzl19gr28r04iabhfs7"
-      adm1-centroid: "cl2qdtxar0hwd29tkct32yp5a"
-      adm0-polbnda: "cl2qdreq4003128mppop3aidz"
-      adm0-polbndl: "cl2qdzz3p093827mm46l6ojzx"
-      adm0-centroid: "cl2qdugrr5e1r27t85am5vsgr"
-      lakes: "cl2qcnlcg002v28lnpi69l0rs"
-      coastl: "cl2qe0f5x0ckd28lh5aig9rg3"
-    tilesets:
-      adm1-polbnda: ""
-      adm1-polbndl: ""
-      adm1-centroid: ""
-      adm0-polbnda: ""
-      adm0-polbndl: ""
-      adm0-centroid: ""
-      lake: "humdata.cl2qcnlcg002v28lnpi69l0rs-810xg"
-      coastl: ""
+    adm1-polbnda: "cl2qdtczb0chh28lhq82qor46"
+    adm1-polbndl: "cl2qdzdzl19gr28r04iabhfs7"
+    adm1-centroid: "cl2qdtxar0hwd29tkct32yp5a"
+    adm0-polbnda: "cl2qdreq4003128mppop3aidz"
+    adm0-polbndl: "cl2qdzz3p093827mm46l6ojzx"
+    adm0-centroid: "cl2qdugrr5e1r27t85am5vsgr"
+    lakes: "cl2qcnlcg002v28lnpi69l0rs"
+    coastl: "cl2qe0f5x0ckd28lh5aig9rg3"
   covid:
     adm1-polbnda: "humdata.b1o0ci53"
     adm1-polbndl: ""

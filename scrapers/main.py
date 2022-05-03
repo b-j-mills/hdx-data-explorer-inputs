@@ -43,7 +43,6 @@ def get_indicators(
         un_boundaries = update_un_boundaries(
             configuration,
             mapbox_auth,
-            temp_folder,
         )
     if "boundaries" in scrapers_to_run:
         if not mapbox_auth:
