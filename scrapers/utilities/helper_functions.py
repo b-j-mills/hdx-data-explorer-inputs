@@ -4,7 +4,7 @@ from glob import glob
 from json import dump
 from os import remove
 from os.path import join, dirname, basename
-from zipfile import ZipFile
+from zipfile import ZipFile, BadZipFile
 from pandas import DataFrame, concat
 from geopandas import read_file
 from mapbox import Uploader
@@ -55,14 +55,12 @@ def download_unzip_read_data(resource, file_type=None, unzip=False, read=False):
 
     if unzip:
         temp_folder = join(dirname(resource_file), uuid4().hex)
-        if ".rar" in basename(resource_file).lower():
-            remove(resource_file)
-            logger.error("Cannot unpack rar")
-            return None
-
-        if ".zip" in basename(resource_file).lower():
+        try:
             with ZipFile(resource_file, "r") as z:
                 z.extractall(temp_folder)
+        except BadZipFile:
+            logger.error("Could not unzip file - it might not be a zip!")
+            return None
         out_files = glob(join(temp_folder, "**", f"*.{file_type}"), recursive=True)
     else:
         out_files = [resource_file]
