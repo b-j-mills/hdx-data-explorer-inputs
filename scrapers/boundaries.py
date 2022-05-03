@@ -69,6 +69,8 @@ def update_boundaries(
 
         dataset_name = exceptions.get(iso)
         resource_name = resource_exceptions.get(iso)
+        if not resource_name:
+            resource_name = "adm"
         boundary_resource = None
         if dataset_name:
             boundary_resource = find_resource(dataset_name, "SHP", kw=resource_name)
@@ -82,7 +84,7 @@ def update_boundaries(
 
         if len(boundary_resource) > 1:
             name_match = [
-                bool(re.match(".*adm(in)?(0)?1.*", r["name"], re.IGNORECASE))
+                bool(re.match(".*adm(in)?(\s)?(0)?1.*", r["name"], re.IGNORECASE))
                 for r in boundary_resource
             ]
             boundary_resource = [

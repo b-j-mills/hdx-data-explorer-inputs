@@ -55,12 +55,12 @@ def download_unzip_read_data(resource, file_type=None, unzip=False, read=False):
 
     if unzip:
         temp_folder = join(dirname(resource_file), uuid4().hex)
-        if ".rar" in basename(resource_file):
+        if ".rar" in basename(resource_file).lower():
             remove(resource_file)
             logger.error("Cannot unpack rar")
             return None
 
-        if ".zip" in basename(resource_file):
+        if ".zip" in basename(resource_file).lower():
             with ZipFile(resource_file, "r") as z:
                 z.extractall(temp_folder)
         out_files = glob(join(temp_folder, "**", f"*.{file_type}"), recursive=True)
