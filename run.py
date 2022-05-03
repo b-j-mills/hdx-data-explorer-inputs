@@ -47,10 +47,10 @@ def main(
                 configuration,
                 downloader,
                 temp_folder,
+                mapbox_auth,
                 scrapers_to_run,
                 countries,
                 visualizations,
-                mapbox_auth,
             )
 
 

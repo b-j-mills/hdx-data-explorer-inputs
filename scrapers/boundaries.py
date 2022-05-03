@@ -26,10 +26,7 @@ def update_boundaries(
         downloader,
         mapbox_auth,
         temp_folder,
-        adm0_json,
-        adm0_c_json,
         adm1_json,
-        water_json,
         visualizations=None,
         countries=None,
 ):
@@ -53,6 +50,27 @@ def update_boundaries(
                 countries.add(iso)
         countries = list(countries)
     countries.sort()
+
+    # download all mapbox datasets that are needed
+    adm0_json = download_from_mapbox(configuration["mapbox"]["global"]["adm0-polbnda"], mapbox_auth)
+    if isinstance(adm0_json, type(None)):
+        return None
+    adm0_json = GeoDataFrame.from_features(adm0_json["features"])
+
+    adm0_l_json = download_from_mapbox(configuration["mapbox"]["global"]["adm0-polbndl"], mapbox_auth)
+    if isinstance(adm0_l_json, type(None)):
+        return None
+    adm0_l_json = GeoDataFrame.from_features(adm0_l_json["features"])
+
+    adm0_c_json = download_from_mapbox(configuration["mapbox"]["global"]["adm0-centroid"], mapbox_auth)
+    if isinstance(adm0_c_json, type(None)):
+        return None
+    adm0_c_json = GeoDataFrame.from_features(adm0_c_json["features"])
+
+    water_json = download_from_mapbox(configuration["mapbox"]["global"]["lakes"], mapbox_auth)
+    if isinstance(water_json, type(None)):
+        return None
+    water_json = GeoDataFrame.from_features(water_json["features"])
 
     req_fields = ["alpha_3", "ADM0_REF", "ADM0_PCODE", "ADM1_REF", "ADM1_PCODE"]
     for iso in countries:

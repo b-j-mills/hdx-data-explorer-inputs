@@ -26,7 +26,6 @@ mapbox:
     adm0-polbndl: "cl2qdzz3p093827mm46l6ojzx"
     adm0-centroid: "cl2qdugrr5e1r27t85am5vsgr"
     lakes: "cl2qcnlcg002v28lnpi69l0rs"
-    coastl: "cl2qe0f5x0ckd28lh5aig9rg3"
   covid:
     adm1-polbnda: "humdata.b1o0ci53"
     adm1-polbndl: ""
