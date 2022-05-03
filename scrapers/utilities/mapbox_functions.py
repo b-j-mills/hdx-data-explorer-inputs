@@ -6,6 +6,27 @@ from time import sleep
 logger = logging.getLogger()
 
 
+def replace_mapbox_dataset(mapid, mapbox_auth, json_to_upload):
+    datasets = Datasets(access_token=mapbox_auth)
+    response = datasets.list_features(dataset=mapid)
+    if response.status_code != 200:
+        logger.error(f"Could not retrieve dataset {mapid}: error {response.status_code}")
+        return None
+    feature_list = response.json()
+    if len(feature_list) > 0:
+        for feature in feature_list:
+            fid = feature["id"]
+            response = datasets.delete_feature(mapid, fid)
+            if response.status_code != 204:
+                logger.warning(f"Feature {fid} may not have been deleted from {mapid}: error {response.status_code}")
+    for i in range(len(json_to_upload["features"])):
+        fid = str(i+1)
+        response = datasets.update_feature(mapid, fid, json_to_upload["features"][i])
+        if response.status_code != 200:
+            logger.error(f"Could not update feature {i} in dataset {mapid}: error {response.status_code}")
+    return None
+
+
 def download_from_mapbox(mapid, mapbox_auth):
     datasets = Datasets(access_token=mapbox_auth)
     response = datasets.list_features(dataset=mapid)
