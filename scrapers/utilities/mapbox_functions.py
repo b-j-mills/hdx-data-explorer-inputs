@@ -31,18 +31,17 @@ def download_from_mapbox(mapid, mapbox_auth):
     datasets = Datasets(access_token=mapbox_auth)
     feature_list = {"type": "FeatureCollection",
                     "features": []}
-    for i in range(10):
-        response = datasets.list_features(dataset=mapid, start=i*100, limit=100)
-        if response.status_code != 200:
-            logger.error(f"Could not retrieve dataset {mapid}: error {response.status_code}")
-            return None
-        features = response.json()
-
-        if len(feature_list["features"]) == 0:
-            feature_list["features"] = features["features"]
+    nogos_in_a_row = 0
+    for i in range(1000):
+        response = datasets.read_feature(dataset=mapid, fid=str(i))
+        if response.status_code == 200:
+            nogos_in_a_row = 0
+            feature_list["features"].append(response.json())
         else:
-            for j in range(len(features["features"])):
-                feature_list["features"].append(features["features"][j])
+            nogos_in_a_row += 1
+        if nogos_in_a_row >= 10:
+            break
+
     return feature_list
 
 
