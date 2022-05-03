@@ -29,11 +29,20 @@ def replace_mapbox_dataset(mapid, mapbox_auth, json_to_upload):
 
 def download_from_mapbox(mapid, mapbox_auth):
     datasets = Datasets(access_token=mapbox_auth)
-    response = datasets.list_features(dataset=mapid)
-    if response.status_code != 200:
-        logger.error(f"Could not retrieve dataset {mapid}: error {response.status_code}")
-        return None
-    feature_list = response.json()
+    feature_list = {"type": "FeatureCollection",
+                    "features": []}
+    for i in range(10):
+        response = datasets.list_features(dataset=mapid, start=i*100, limit=100)
+        if response.status_code != 200:
+            logger.error(f"Could not retrieve dataset {mapid}: error {response.status_code}")
+            return None
+        features = response.json()
+
+        if len(feature_list["features"]) == 0:
+            feature_list["features"] = features["features"]
+        else:
+            for j in range(len(features["features"])):
+                feature_list["features"].append(features["features"][j])
     return feature_list
 
 
