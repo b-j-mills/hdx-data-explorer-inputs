@@ -13,10 +13,10 @@ def get_indicators(
         configuration,
         downloader,
         temp_folder,
+        mapbox_auth,
         scrapers_to_run=None,
         countries=None,
         visualizations=None,
-        mapbox_auth=None,
 ):
 
     if not scrapers_to_run:
