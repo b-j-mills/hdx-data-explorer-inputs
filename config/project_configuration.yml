@@ -4,6 +4,8 @@ boundaries:
     MMR: "mimu-geonode-myanmar-state-and-region-boundaries-mimu"
   resource_exceptions:
     HND: "hnd_adm_sinit_20161005_SHP.zip"
+    LBN: "lbn_adm_cdr_20200810.zip"
+    MMR: "Myanmar State and Region Boundaries MIMU v9.3 shapefile"
     MOZ: "moz_adm_20190607b_SHP.zip"
     SYR: "SYR Administrative Divisions Shapefiles.zip"
 
