@@ -132,6 +132,7 @@ dmypy.json
 .idea
 
 # other
-scratch/*
+scratch/
 *.log
 .DS_Store
+data_to_upload/

@@ -1,5 +1,6 @@
 import logging
 
+from scrapers.un_boundaries import update_un_boundaries
 from scrapers.boundaries import update_boundaries
 from scrapers.health_facilities import update_health_facilities
 from scrapers.population import update_population
@@ -38,6 +39,12 @@ def get_indicators(
         return None
     adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
 
+    if "un_boundaries" in scrapers_to_run:
+        un_boundaries = update_un_boundaries(
+            configuration,
+            mapbox_auth,
+            temp_folder,
+        )
     if "boundaries" in scrapers_to_run:
         if not mapbox_auth:
             logger.error("No MapBox authorization provided")
