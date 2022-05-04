@@ -9,7 +9,6 @@ from shapely.geometry import box
 
 from hdx.scraper.utilities.readers import read_hdx_metadata, read_tabular
 from hdx.location.country import Country
-from hdx.data.hdxobject import HDXError
 from scrapers.utilities.helper_functions import (
     download_unzip_read_data,
     find_resource,
@@ -205,30 +204,68 @@ def update_boundaries(
     centroid_lyr.rename(columns={0: "geometry"}, inplace=True)
     centroid_lyr[req_fields] = adm1_json[req_fields]
     centroid_lyr = centroid_lyr.set_geometry("geometry")
-    centroid_lyr.crs = None
 
-    if countries:
-        logger.info(f"Updating HDX resources")
+    adm1_line = GeoDataFrame(adm1_json.boundary)
+    adm1_line = adm1_line.set_geometry(0)
+    adm1_line["alpha_3"] = adm1_json["alpha_3"]
+    adm1_line = adm1_line.overlay(adm0_l_json, how="difference")
 
-        adm1_file = join(temp_folder, "polbnda_adm1_simplified.geojson")  # save file to disk
-        adm1_json.to_file(adm1_file, driver="GeoJSON")
-        centroid_file = join(temp_folder, "centroid_adm1.geojson")
-        centroid_lyr.to_file(centroid_file, driver="GeoJSON")
+    if len(countries) > 0:
+        logger.info(f"Updating Mapbox datasets")
+        adm1_json_to_upload = loads(adm1_json)
+        adm1_centroid_to_upload = loads(centroid_lyr)
+        replace_mapbox_dataset(configuration["mapbox"]["global"]["adm1-polbnda"], mapbox_auth, adm1_json_to_upload)
+        replace_mapbox_dataset(configuration["mapbox"]["global"]["adm1-centroid"], mapbox_auth, adm1_centroid_to_upload)
 
-        # update in HDX
-        resource_a = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbnda_adm1")[0]
-        resource_a.set_file_to_upload(adm1_file)
-        resource_c = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="centroid_adm1")[0]
-        resource_c.set_file_to_upload(centroid_file)
-
-        try:
-            resource_a.update_in_hdx()
-        except HDXError:
-            logger.exception("Could not update polygon resource")
-        try:
-            resource_c.update_in_hdx()
-        except HDXError:
-            logger.exception("Could not update centroid resource")
+    logger.info("Updating MapBox tilesets")
+    for visualization in visualizations:
+        replace_mapbox_tileset(
+            configuration["mapbox"][visualization]["adm1-polbnda"],
+            mapbox_auth,
+            f"{visualization}-adm1-polbnda",
+            json_to_upload=adm1_json[adm1_json["alpha_3"].isin(configuration["adm1"][visualization])],
+            temp_folder=temp_folder,
+        )
+        replace_mapbox_tileset(
+            configuration["mapbox"][visualization]["adm1-polbndl"],
+            mapbox_auth,
+            f"{visualization}-adm1-polbndl",
+            json_to_upload=adm1_line[adm1_line["alpha_3"].isin(configuration["adm1"][visualization])],
+            temp_folder=temp_folder,
+        )
+        replace_mapbox_tileset(
+            configuration["mapbox"][visualization]["adm1-centroid"],
+            mapbox_auth,
+            f"{visualization}-adm1-centroid",
+            json_to_upload=centroid_lyr[centroid_lyr["alpha_3"].isin(configuration["adm1"][visualization])],
+            temp_folder=temp_folder,
+        )
+        to_upload = adm0_json.copy(deep=True)
+        to_upload = to_upload[(to_upload["ISO_3"].isin(configuration["adm0"][visualization])) |
+                              (to_upload["Color_Code"].isin(configuration["adm0"][visualization]))]
+        to_upload.loc[to_upload["ISO_3"] == "XXX", "ISO_3"] = to_upload.loc[to_upload["ISO_3"] == "XXX", "Color_Code"]
+        replace_mapbox_tileset(
+            configuration["mapbox"][visualization]["adm0-polbnda"],
+            mapbox_auth,
+            f"{visualization}-adm0-polbnda",
+            json_to_upload=to_upload,
+            temp_folder=temp_folder,
+        )
+        replace_mapbox_tileset(
+            configuration["mapbox"][visualization]["adm0-polbndl"],
+            mapbox_auth,
+            f"{visualization}-adm0-polbndl",
+            json_to_upload=adm0_l_json[(adm0_l_json["BDY_CNT01"].isin(configuration["adm0"][visualization])) |
+                                       (adm0_l_json["BDY_CNT02"].isin(configuration["adm0"][visualization]))],
+            temp_folder=temp_folder,
+        )
+        replace_mapbox_tileset(
+            configuration["mapbox"][visualization]["adm0-centroid"],
+            mapbox_auth,
+            f"{visualization}-adm0-centroid",
+            json_to_upload=adm0_c_json["ISO_3"].isin(configuration["adm0"][visualization]),
+            temp_folder=temp_folder,
+        )
 
     for visualization in visualizations:  # update admin1 lookups
         logger.info(f"Updating admin1 lookups for {visualization}")
@@ -297,41 +334,5 @@ def update_boundaries(
         replace_json(adm0_region, regional_file)
 
     logger.info("Updated regional bbox jsons")
-
-    # update boundaries in MapBox
-    logger.info("Updating MapBox boundaries")
-    for visualization in visualizations:
-        replace_mapbox_tileset(
-            configuration["mapbox"][visualization]["adm1-polbnda"],
-            mapbox_auth,
-            f"{visualization}-adm1-polbnda",
-            json_to_upload=adm1_json[adm1_json["alpha_3"].isin(configuration["adm1"][visualization])],
-            temp_folder=temp_folder,
-        )
-        replace_mapbox_tileset(
-            configuration["mapbox"][visualization]["adm1-centroid"],
-            mapbox_auth,
-            f"{visualization}-adm1-centroid",
-            json_to_upload=centroid_lyr[centroid_lyr["alpha_3"].isin(configuration["adm1"][visualization])],
-            temp_folder=temp_folder,
-        )
-        to_upload = adm0_json.copy(deep=True)
-        to_upload = to_upload[(to_upload["ISO_3"].isin(configuration["adm0"][visualization])) |
-                              (to_upload["Color_Code"].isin(configuration["adm0"][visualization]))]
-        to_upload.loc[to_upload["ISO_3"] == "XXX", "ISO_3"] = to_upload.loc[to_upload["ISO_3"] == "XXX", "Color_Code"]
-        replace_mapbox_tileset(
-            configuration["mapbox"][visualization]["adm0-polbnda"],
-            mapbox_auth,
-            f"{visualization}-adm0-polbnda",
-            json_to_upload=to_upload,
-            temp_folder=temp_folder,
-        )
-        replace_mapbox_tileset(
-            configuration["mapbox"][visualization]["adm0_centroid"],
-            mapbox_auth,
-            f"{visualization}-adm0-centroid",
-            json_to_upload=[adm0_c_json["ISO_3"].isin(configuration["adm0"][visualization])],
-            temp_folder=temp_folder,
-        )
 
     return countries
