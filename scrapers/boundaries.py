@@ -42,14 +42,14 @@ def update_boundaries(
         visualizations = [key for key in configuration["adm0"]]
 
     if not countries:
-        countries = ["all"]
+        countries = []
     if len(countries) == 1 and countries[0].lower() == "all":
         countries = set()
         for visualization in visualizations:
             for iso in configuration["adm1"][visualization]:
                 countries.add(iso)
         countries = list(countries)
-    countries.sort()
+        countries.sort()
 
     # download all mapbox datasets that are needed
     adm0_json = download_from_mapbox(configuration["mapbox"]["global"]["adm0-polbnda"], mapbox_auth)
