@@ -216,8 +216,10 @@ def update_boundaries(
     if len(countries) > 0:
         logger.info(f"Updating Mapbox datasets")
         adm1_json_to_upload = loads(adm1_json)
+        adm1_line_to_upload = loads(adm1_line)
         adm1_centroid_to_upload = loads(centroid_lyr)
         replace_mapbox_dataset(configuration["mapbox"]["global"]["adm1-polbnda"], mapbox_auth, adm1_json_to_upload)
+        replace_mapbox_dataset(configuration["mapbox"]["global"]["adm1-polbndl"], mapbox_auth, adm1_line_to_upload)
         replace_mapbox_dataset(configuration["mapbox"]["global"]["adm1-centroid"], mapbox_auth, adm1_centroid_to_upload)
 
     logger.info("Updating MapBox tilesets")
@@ -333,7 +335,6 @@ def update_boundaries(
         adm0_region = loads(adm0_region)
         adm0_region["name"] = "ocha regions - bbox"
         adm0_region["crs"] = {"type": "name", "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"}}
-        adm0_region = adm0_region
         replace_json(adm0_region, regional_file)
 
     logger.info("Updated regional bbox jsons")
