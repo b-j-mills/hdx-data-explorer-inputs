@@ -83,6 +83,9 @@ def update_boundaries(
         country_adm0 = country_adm0.overlay(water_json, how="difference")
         country_adm0 = country_adm0.dissolve()
         country_adm0 = drop_fields(country_adm0, ["ISO_3"])
+        country_adm0["ISO_3"] = iso
+        if not country_adm0.crs:
+            country_adm0 = country_adm0.set_crs(crs="EPSG:4326")
 
         dataset_name = exceptions.get(iso)
         resource_name = resource_exceptions.get(iso)
