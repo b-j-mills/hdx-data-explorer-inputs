@@ -1,5 +1,4 @@
 boundaries:
-  dataset: "unmap-international-boundaries-1m"
   dataset_exceptions:
     MMR: "mimu-geonode-myanmar-state-and-region-boundaries-mimu"
     JOR: "geoboundaries-admin-boundaries-for-jordan"
