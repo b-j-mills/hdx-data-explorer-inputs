@@ -129,11 +129,15 @@ def update_boundaries(
                 boundary_shp[i] for i in range(len(boundary_shp)) if name_match[i]
             ]
 
-            if len(boundary_shp) != 1:
-                logger.error(
-                    f"Could not distinguish between downloaded shapefiles for {iso}"
-                )
-                continue
+        if len(boundary_shp) > 1:
+            simp_match = [bool(re.match(".*simplified.*", b, re.IGNORECASE)) for b in boundary_shp]
+            boundary_shp = [boundary_shp[i] for i in range(len(boundary_shp)) if not simp_match[i]]
+
+        if len(boundary_shp) != 1:
+            logger.error(
+                f"Could not distinguish between downloaded shapefiles for {iso}"
+            )
+            continue
 
         boundary_lyr = read_file(boundary_shp[0])
         if not boundary_lyr.crs:
@@ -167,11 +171,20 @@ def update_boundaries(
                 ):
                     name_field = field
 
-        if not pcode_field or not name_field:
-            logger.error(f"Could not map pcode or name fields for {iso}")
+        if not name_field:
+            logger.error(f"Could not map name field for {iso}")
             continue
 
-        boundary_lyr["ADM1_PCODE"] = boundary_lyr[pcode_field]
+        if not pcode_field:
+            logger.error(f"Could not map pcodes - assigning randomly!")
+            boundary_lyr["ADM1_PCODE"] = boundary_lyr["ADM0_PCODE"]
+            numrows = len(str(len(boundary_lyr.index)))
+            for i, _ in boundary_lyr.iterrows():
+                boundary_lyr.loc[i, "ADM1_PCODE"] = boundary_lyr.loc[i, "ADM1_PCODE"] + str(i+1).zfill(numrows)
+
+        if pcode_field:
+            boundary_lyr["ADM1_PCODE"] = boundary_lyr[pcode_field]
+
         boundary_lyr["ADM1_REF"] = boundary_lyr[name_field]
         boundary_lyr = drop_fields(boundary_lyr, req_fields)
 

@@ -2,6 +2,7 @@ boundaries:
   dataset: "unmap-international-boundaries-1m"
   dataset_exceptions:
     MMR: "mimu-geonode-myanmar-state-and-region-boundaries-mimu"
+    JOR: "geoboundaries-admin-boundaries-for-jordan"
   resource_exceptions:
     HND: "hnd_adm_sinit_20161005_SHP.zip"
     LBN: "lbn_adm_cdr_20200810.zip"
@@ -218,6 +219,7 @@ shapefile_attribute_mappings:
     - "ADMIN1NAME"
     - "NAME_1"
     - "ST"
+    - "shapeName"
 
 regional:
   format: "xlsx"
