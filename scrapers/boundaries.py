@@ -238,23 +238,23 @@ def update_boundaries(
     logger.info("Updating MapBox tilesets")
     for visualization in visualizations:
         replace_mapbox_tileset(
-            configuration["mapbox"][visualization]["adm1-polbnda"],
+            configuration["mapbox"][visualization]["adm1-polbnda"]["mapid"],
             mapbox_auth,
-            f"{visualization}-adm1-polbnda",
+            configuration["mapbox"][visualization]["adm1-polbnda"]["name"],
             json_to_upload=adm1_json[adm1_json["alpha_3"].isin(configuration["adm1"][visualization])],
             temp_folder=temp_folder,
         )
         replace_mapbox_tileset(
-            configuration["mapbox"][visualization]["adm1-polbndl"],
+            configuration["mapbox"][visualization]["adm1-polbndl"]["mapid"],
             mapbox_auth,
-            f"{visualization}-adm1-polbndl",
+            configuration["mapbox"][visualization]["adm1-polbndl"]["name"],
             json_to_upload=adm1_line[adm1_line["alpha_3"].isin(configuration["adm1"][visualization])],
             temp_folder=temp_folder,
         )
         replace_mapbox_tileset(
-            configuration["mapbox"][visualization]["adm1-centroid"],
+            configuration["mapbox"][visualization]["adm1-centroid"]["mapid"],
             mapbox_auth,
-            f"{visualization}-adm1-centroid",
+            configuration["mapbox"][visualization]["adm1-centroid"]["name"],
             json_to_upload=centroid_lyr[centroid_lyr["alpha_3"].isin(configuration["adm1"][visualization])],
             temp_folder=temp_folder,
         )
@@ -263,24 +263,24 @@ def update_boundaries(
                               (to_upload["Color_Code"].isin(configuration["adm0"][visualization]))]
         to_upload.loc[to_upload["ISO_3"] == "XXX", "ISO_3"] = to_upload.loc[to_upload["ISO_3"] == "XXX", "Color_Code"]
         replace_mapbox_tileset(
-            configuration["mapbox"][visualization]["adm0-polbnda"],
+            configuration["mapbox"][visualization]["adm0-polbnda"]["mapid"],
             mapbox_auth,
-            f"{visualization}-adm0-polbnda",
+            configuration["mapbox"][visualization]["adm0-polbnda"]["name"],
             json_to_upload=to_upload,
             temp_folder=temp_folder,
         )
         replace_mapbox_tileset(
-            configuration["mapbox"][visualization]["adm0-polbndl"],
+            configuration["mapbox"][visualization]["adm0-polbndl"]["mapid"],
             mapbox_auth,
-            f"{visualization}-adm0-polbndl",
+            configuration["mapbox"][visualization]["adm0-polbndl"]["name"],
             json_to_upload=adm0_l_json[(adm0_l_json["BDY_CNT01"].isin(configuration["adm0"][visualization])) |
                                        (adm0_l_json["BDY_CNT02"].isin(configuration["adm0"][visualization]))],
             temp_folder=temp_folder,
         )
         replace_mapbox_tileset(
-            configuration["mapbox"][visualization]["adm0-centroid"],
+            configuration["mapbox"][visualization]["adm0-centroid"]["mapid"],
             mapbox_auth,
-            f"{visualization}-adm0-centroid",
+            configuration["mapbox"][visualization]["adm0-centroid"]["name"],
             json_to_upload=adm0_c_json["ISO_3"].isin(configuration["adm0"][visualization]),
             temp_folder=temp_folder,
         )

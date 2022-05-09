@@ -27,26 +27,62 @@ mapbox:
     adm0-centroid: "cl2qdugrr5e1r27t85am5vsgr"
     lakes: "cl2qcnlcg002v28lnpi69l0rs"
   covid:
-    adm1-polbnda: "humdata.b1o0ci53"
-    adm1-polbndl: "humdata.1a2n5p4n"
-    adm1-centroid: "humdata.63k3lb2z"
-    adm0-polbnda: "humdata.5qlwwz0l"
-    adm0-polbndl: "humdata.bkhifgb5"
-    adm0-centroid: "humdata.4w8b1b7g"
-  arab-states:
-    adm1-polbnda: "humdata.attm70id"
-    adm1-polbndl: "humdata.6tv02ole"
-    adm1-centroid: "humdata.8pyb1abd"
-    adm0-polbnda: "humdata.aioadufm"
-    adm0-polbndl: "humdata.bzo5ss37"
-    adm0-centroid: "humdata.d4ywfeza"
+    adm1-polbnda:
+      mapid: "humdata.b1o0ci53"
+      name: "hrps_polbnda_adm1ish_simplifi-5zbg3c"
+    adm1-polbndl:
+      mapid: "humdata.1a2n5p4n"
+      name: "hrps_polbndl_adm1ish_simplifi-0vrhhc"
+    adm1-centroid:
+      mapid: "humdata.63k3lb2z"
+      name: "hrps_centroid_adm1ish_simplif-3sb5to"
+    adm0-polbnda:
+      mapid: "humdata.5qlwwz0l"
+      name: "polbnda_int_uncs-6zgtye"
+    adm0-polbndl:
+      mapid: "humdata.bkhifgb5"
+      name: "polbndl_int_uncs-1hvbzf"
+    adm0-centroid:
+      mapid: "humdata.4w8b1b7g"
+      name: "centroid_int_uncs-avvnhr"
+  arableague:
+    adm1-polbnda:
+      mapid: "humdata.attm70id"
+      name: "arab_states_polbnda_adm1_1m_u-17b61m"
+    adm1-polbndl:
+      mapid: "humdata.6tv02ole"
+      name: "arab_states_polbndl_adm1_1m_u-1qvxne"
+    adm1-centroid:
+      mapid: "humdata.8pyb1abd"
+      name: "arab_states_centroid_adm1_1m_-4nnaer"
+    adm0-polbnda:
+      mapid: "humdata.aioadufm"
+      name: "arab-states-adm0-polbnda"
+    adm0-polbndl:
+      mapid: "humdata.bzo5ss37"
+      name: "arab_states_polbndl_int_1m_un-b74b2t"
+    adm0-centroid:
+      mapid: "humdata.d4ywfeza"
+      name: "arab_states_centroid_int_1m_u-9kgyhy"
   ukraine:
-    adm1-polbnda: "humdata.7mw1qwu2"
-    adm1-polbndl: "humdata.afes2yub"
-    adm1-centroid: "humdata.b2dsq510"
-    adm0-polbnda: "humdata.090db5y9"
-    adm0-polbndl: "humdata.8lxpktpe"
-    adm0-centroid: "humdata.av64hwpt"
+    adm1-polbnda:
+      mapid: "humdata.7mw1qwu2"
+      name: "ukr_polbnda_adm1_uncs-bg6hqp"
+    adm1-polbndl:
+      mapid: "humdata.afes2yub"
+      name: "ukr_polbndl_adm1_uncs-9oa22d"
+    adm1-centroid:
+      mapid: "humdata.b2dsq510"
+      name: "ukr_centroid_adm1_uncs-9bv7sv"
+    adm0-polbnda:
+      mapid: "humdata.090db5y9"
+      name: "ee_polbnda_int_15m_uncs-81dn3v"
+    adm0-polbndl:
+      mapid: "humdata.8lxpktpe"
+      name: "ee_polbndl_int_uncs-1loovm"
+    adm0-centroid:
+      mapid: "humdata.av64hwpt"
+      name: "ee_centroid_int_15m_uncs-2w4rn4"
 
 adm1:
   covid:
@@ -78,7 +114,7 @@ adm1:
     - UKR
     - VEN
     - YEM
-  arab-states:
+  arableague:
     - ARE
     - BHR
     - COM
@@ -169,7 +205,7 @@ adm0:
     - VEN
     - YEM
     - ZMB
-  arab-states:
+  arableague:
     - ARE
     - BHR
     - COM
