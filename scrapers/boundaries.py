@@ -125,13 +125,15 @@ def update_boundaries(
             name_match = [
                 bool(re.match(".*admbnda.*adm(in)?(0)?1.*", b, re.IGNORECASE)) for b in boundary_shp
             ]
-            boundary_shp = [
-                boundary_shp[i] for i in range(len(boundary_shp)) if name_match[i]
-            ]
+            if any(name_match):
+                boundary_shp = [
+                    boundary_shp[i] for i in range(len(boundary_shp)) if name_match[i]
+                ]
 
         if len(boundary_shp) > 1:
             simp_match = [bool(re.match(".*simplified.*", b, re.IGNORECASE)) for b in boundary_shp]
-            boundary_shp = [boundary_shp[i] for i in range(len(boundary_shp)) if not simp_match[i]]
+            if any(simp_match):
+                boundary_shp = [boundary_shp[i] for i in range(len(boundary_shp)) if not simp_match[i]]
 
         if len(boundary_shp) != 1:
             logger.error(

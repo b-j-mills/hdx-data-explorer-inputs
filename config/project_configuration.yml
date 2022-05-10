@@ -254,7 +254,7 @@ shapefile_attribute_mappings:
     - "ADMIN1NAME"
     - "NAME_1"
     - "ST"
-    - "shapeName"
+    - "SHAPENAME"
 
 regional:
   format: "xlsx"
