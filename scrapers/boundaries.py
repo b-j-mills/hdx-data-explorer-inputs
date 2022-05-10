@@ -233,19 +233,16 @@ def update_boundaries(
             configuration["mapbox"]["global"]["adm1-polbnda"],
             mapbox_auth,
             json_to_upload=adm1_json,
-            temp_folder=temp_folder,
         )
         replace_mapbox_dataset(
             configuration["mapbox"]["global"]["adm1-polbndl"],
             mapbox_auth,
             json_to_upload=adm1_line,
-            temp_folder=temp_folder,
         )
         replace_mapbox_dataset(
             configuration["mapbox"]["global"]["adm1-centroid"],
             mapbox_auth,
             json_to_upload=adm1_centroid,
-            temp_folder=temp_folder,
         )
 
     logger.info("Updating MapBox tilesets")
