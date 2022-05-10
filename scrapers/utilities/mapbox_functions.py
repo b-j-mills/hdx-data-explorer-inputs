@@ -14,8 +14,8 @@ def replace_mapbox_dataset(mapid, mapbox_auth, path_to_upload=None, json_to_uplo
         with open(path_to_upload) as f:
             data_to_upload = load(f)
     if not isinstance(json_to_upload, type(None)):
-        data_to_upload = json_to_upload.to_json()
-        data_to_upload = loads(data_to_upload, drop_id=True)
+        data_to_upload = json_to_upload.to_json(drop_id=True)
+        data_to_upload = loads(data_to_upload)
     if not data_to_upload:
         logger.error("No data to upload!")
         return None
