@@ -331,7 +331,7 @@ def update_boundaries(
         adm0_region = adm0_region[adm0_region["ISO_3"].isin(configuration["adm0"][visualization])]
         adm0_region["region"] = ""
         adm0_region["HRPs"] = ""
-        adm0_region.loc[adm0_region["ISO_3"].isin(configuration["adm1"][visualization]), "HRPs"] = "HRPs"
+        adm0_region.loc[adm0_region["ISO_3"].isin(configuration["HRPs"]), "HRPs"] = "HRPs"
         regional_info = configuration.get("regional")
         read_hdx_metadata(regional_info)
         _, iterator = read_tabular(downloader, regional_info)

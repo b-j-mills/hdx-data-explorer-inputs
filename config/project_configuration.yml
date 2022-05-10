@@ -237,6 +237,36 @@ adm0:
     - SVK
     - UKR
 
+HRPs:
+  - AFG
+  - BDI
+  - BFA
+  - CAF
+  - CMR
+  - COD
+  - COL
+  - ETH
+  - GTM
+  - HND
+  - HTI
+  - IRQ
+  - LBY
+  - MLI
+  - MMR
+  - MOZ
+  - NER
+  - NGA
+  - PSE
+  - SDN
+  - SLV
+  - SOM
+  - SSD
+  - SYR
+  - TCD
+  - UKR
+  - VEN
+  - YEM
+
 shapefile_attribute_mappings:
   pcode:
     - "ADM1_PCODE"
