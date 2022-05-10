@@ -3,7 +3,6 @@ import re
 from os.path import join
 from unicodedata import normalize
 import topojson as tp
-from geojson import loads
 from geopandas import GeoDataFrame, read_file
 from shapely.geometry import box
 
@@ -218,10 +217,10 @@ def update_boundaries(
 
         logger.info(f"Finished processing admin1 boundaries for {iso}")
 
-    centroid_lyr = GeoDataFrame(adm1_json.representative_point())  # convert to centroid
-    centroid_lyr.rename(columns={0: "geometry"}, inplace=True)
-    centroid_lyr[req_fields] = adm1_json[req_fields]
-    centroid_lyr = centroid_lyr.set_geometry("geometry")
+    adm1_centroid = GeoDataFrame(adm1_json.representative_point())  # convert to centroid
+    adm1_centroid.rename(columns={0: "geometry"}, inplace=True)
+    adm1_centroid[req_fields] = adm1_json[req_fields]
+    adm1_centroid = adm1_centroid.set_geometry("geometry")
 
     adm1_line = GeoDataFrame(adm1_json.boundary)
     adm1_line = adm1_line.set_geometry(0)
@@ -230,12 +229,24 @@ def update_boundaries(
 
     if len(countries) > 0:
         logger.info(f"Updating Mapbox datasets")
-        adm1_json_to_upload = loads(adm1_json)
-        adm1_line_to_upload = loads(adm1_line)
-        adm1_centroid_to_upload = loads(centroid_lyr)
-        replace_mapbox_dataset(configuration["mapbox"]["global"]["adm1-polbnda"], mapbox_auth, adm1_json_to_upload)
-        replace_mapbox_dataset(configuration["mapbox"]["global"]["adm1-polbndl"], mapbox_auth, adm1_line_to_upload)
-        replace_mapbox_dataset(configuration["mapbox"]["global"]["adm1-centroid"], mapbox_auth, adm1_centroid_to_upload)
+        replace_mapbox_dataset(
+            configuration["mapbox"]["global"]["adm1-polbnda"],
+            mapbox_auth,
+            json_to_upload=adm1_json,
+            temp_folder=temp_folder,
+        )
+        replace_mapbox_dataset(
+            configuration["mapbox"]["global"]["adm1-polbndl"],
+            mapbox_auth,
+            json_to_upload=adm1_line,
+            temp_folder=temp_folder,
+        )
+        replace_mapbox_dataset(
+            configuration["mapbox"]["global"]["adm1-centroid"],
+            mapbox_auth,
+            json_to_upload=adm1_centroid,
+            temp_folder=temp_folder,
+        )
 
     logger.info("Updating MapBox tilesets")
     for visualization in visualizations:
@@ -257,7 +268,7 @@ def update_boundaries(
             configuration["mapbox"][visualization]["adm1-centroid"]["mapid"],
             mapbox_auth,
             configuration["mapbox"][visualization]["adm1-centroid"]["name"],
-            json_to_upload=centroid_lyr[centroid_lyr["alpha_3"].isin(configuration["adm1"][visualization])],
+            json_to_upload=adm1_centroid[adm1_centroid["alpha_3"].isin(configuration["adm1"][visualization])],
             temp_folder=temp_folder,
         )
         to_upload = adm0_json.copy(deep=True)
