@@ -5,6 +5,7 @@ from unicodedata import normalize
 import topojson as tp
 from geopandas import GeoDataFrame, read_file
 from shapely.geometry import box
+from pandas.api.types import is_numeric_dtype
 
 from hdx.scraper.utilities.readers import read_hdx_metadata, read_tabular
 from hdx.location.country import Country
@@ -183,13 +184,13 @@ def update_boundaries(
                 boundary_lyr.loc[i, "ADM1_PCODE"] = boundary_lyr.loc[i, "ADM0_PCODE"] + str(i+1).zfill(numrows)
 
         if pcode_field:
-            if "PCOD" not in pcode_field and "int" in str(boundary_lyr[pcode_field].dtype):
+            if "PCOD" not in pcode_field and is_numeric_dtype(boundary_lyr[pcode_field]):
                 numrows = len(str(len(boundary_lyr.index)))
                 for i, _ in boundary_lyr.iterrows():
                     boundary_lyr.loc[i, "ADM1_PCODE"] = boundary_lyr.loc[i, "ADM0_PCODE"] + \
-                                                        str(boundary_lyr.loc[i, pcode_field]).zfill(numrows)
+                                                        str(int(boundary_lyr.loc[i, pcode_field])).zfill(numrows)
             else:
-                boundary_lyr["ADM1_PCODE"] = boundary_lyr[pcode_field].astype(str)
+                boundary_lyr["ADM1_PCODE"] = boundary_lyr[pcode_field].astype(int).astype(str)
 
         boundary_lyr["ADM1_REF"] = boundary_lyr[name_field]
         boundary_lyr = drop_fields(boundary_lyr, req_fields)
