@@ -178,13 +178,18 @@ def update_boundaries(
 
         if not pcode_field:
             logger.error(f"Could not map pcodes - assigning randomly!")
-            boundary_lyr["ADM1_PCODE"] = boundary_lyr["ADM0_PCODE"]
             numrows = len(str(len(boundary_lyr.index)))
             for i, _ in boundary_lyr.iterrows():
-                boundary_lyr.loc[i, "ADM1_PCODE"] = boundary_lyr.loc[i, "ADM1_PCODE"] + str(i+1).zfill(numrows)
+                boundary_lyr.loc[i, "ADM1_PCODE"] = boundary_lyr.loc[i, "ADM0_PCODE"] + str(i+1).zfill(numrows)
 
         if pcode_field:
-            boundary_lyr["ADM1_PCODE"] = boundary_lyr[pcode_field]
+            if "PCOD" not in pcode_field and "int" in str(boundary_lyr[pcode_field].dtype):
+                numrows = len(str(len(boundary_lyr.index)))
+                for i, _ in boundary_lyr.iterrows():
+                    boundary_lyr.loc[i, "ADM1_PCODE"] = boundary_lyr.loc[i, "ADM0_PCODE"] + \
+                                                        str(boundary_lyr.loc[i, pcode_field]).zfill(numrows)
+            else:
+                boundary_lyr["ADM1_PCODE"] = boundary_lyr[pcode_field].astype(str)
 
         boundary_lyr["ADM1_REF"] = boundary_lyr[name_field]
         boundary_lyr = drop_fields(boundary_lyr, req_fields)
