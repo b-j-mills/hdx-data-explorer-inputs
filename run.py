@@ -43,6 +43,8 @@ def main(
         with Download(rate_limit={"calls": 1, "period": 0.1}) as downloader:
             if scrapers_to_run:
                 logger.info(f"Updating only scrapers: {scrapers_to_run}")
+            if visualizations:
+                logger.info(f"Updating only visualizations: {visualizations}")
             countries_to_save = get_indicators(
                 configuration,
                 downloader,
