@@ -33,7 +33,6 @@ def get_indicators(
     if isinstance(adm1_json, type(None)):
         return None
     adm1_json = GeoDataFrame.from_features(adm1_json["features"])
-    adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
 
     if "un_boundaries" in scrapers_to_run:
         un_boundaries = update_un_boundaries(

@@ -217,6 +217,8 @@ def update_boundaries(
 
         logger.info(f"Finished processing admin1 boundaries for {iso}")
 
+    adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
+
     adm1_centroid = GeoDataFrame(adm1_json.representative_point())  # convert to centroid
     adm1_centroid.rename(columns={0: "geometry"}, inplace=True)
     adm1_centroid[req_fields] = adm1_json[req_fields]
