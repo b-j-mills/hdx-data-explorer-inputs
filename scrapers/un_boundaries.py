@@ -1,7 +1,8 @@
 import logging
 from glob import glob
 from os.path import join
-from json import load
+from geojson import load
+from geopandas import GeoDataFrame
 from scrapers.utilities.mapbox_functions import (
     replace_mapbox_dataset,
 )
@@ -25,7 +26,8 @@ def update_un_boundaries(
             continue
         with open(in_files[0]) as f:
             in_json = load(f)
-        replace_mapbox_dataset(dataset_mapid, mapbox_auth, in_json)
+        in_json = GeoDataFrame.from_features(in_json["features"])
+        replace_mapbox_dataset(dataset_mapid, mapbox_auth, json_to_upload=in_json)
         logger.info(f"Finished processing {dataset_name}")
 
     return mapids
