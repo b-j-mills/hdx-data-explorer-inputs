@@ -22,6 +22,12 @@ def get_indicators(
     if not scrapers_to_run:
         scrapers_to_run = ["boundaries", "health_facilities", "population"]
 
+    if "un_boundaries" in scrapers_to_run:
+        un_boundaries = update_un_boundaries(
+            configuration,
+            mapbox_auth,
+        )
+
     adm1_countries = set()
     for viz in configuration["adm1"]:
         for country in configuration["adm1"][viz]:
@@ -34,11 +40,6 @@ def get_indicators(
         return None
     adm1_json = GeoDataFrame.from_features(adm1_json["features"])
 
-    if "un_boundaries" in scrapers_to_run:
-        un_boundaries = update_un_boundaries(
-            configuration,
-            mapbox_auth,
-        )
     if "boundaries" in scrapers_to_run:
         boundaries = update_boundaries(
             configuration,
