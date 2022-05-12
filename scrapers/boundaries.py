@@ -79,7 +79,8 @@ def update_boundaries(
 
         logger.info(f"Processing admin1 boundaries for {iso}")
 
-        country_adm0 = adm0_json.loc[(adm0_json["ISO_3"] == iso) | (adm0_json["Color_Code"] == iso)]
+        country_adm0 = adm0_json.copy(deep=True)
+        country_adm0 = country_adm0.loc[(country_adm0["ISO_3"] == iso) | (country_adm0["Color_Code"] == iso)]
         country_adm0 = country_adm0.overlay(water_json, how="difference")
         country_adm0 = country_adm0.dissolve()
         country_adm0 = drop_fields(country_adm0, ["ISO_3"])
