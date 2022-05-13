@@ -263,10 +263,8 @@ HRPs:
 shapefile_attribute_mappings:
   pcode:
     - "ADM1_PCODE"
-    - "ADM1_CODE"
     - "ADM1_ID"
     - "ADMIN1PCOD"
-    - "ID_1"
     - "ST_PCODE"
   name:
     - "ADM1_NAME"

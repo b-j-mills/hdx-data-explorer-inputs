@@ -288,7 +288,7 @@ def update_boundaries(
             configuration["mapbox"][visualization]["adm0-centroid"]["mapid"],
             mapbox_auth,
             configuration["mapbox"][visualization]["adm0-centroid"]["name"],
-            json_to_upload=adm0_c_json["ISO_3"].isin(configuration["adm0"][visualization]),
+            json_to_upload=adm0_c_json[adm0_c_json["ISO_3"].isin(configuration["adm0"][visualization])],
             temp_folder=temp_folder,
         )
 
@@ -297,7 +297,7 @@ def update_boundaries(
         attributes = list()
         for index, row in adm1_json.iterrows():
             if row["alpha_3"] in configuration["adm1"][visualization]:
-                new_name = row["ADM1_REF"].replace("-", " ")
+                new_name = row["ADM1_REF"].replace("-", " ").replace("`", "")
                 new_name = normalize("NFKD", new_name).encode("ascii", "ignore").decode("ascii")
                 attributes.append(
                     {
