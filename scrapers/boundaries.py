@@ -295,7 +295,7 @@ def update_boundaries(
     for visualization in visualizations:  # update admin1 lookups
         logger.info(f"Updating admin1 lookups for {visualization}")
         attributes = list()
-        for index, row in adm1_json.iterrows():
+        for _, row in adm1_json.iterrows():
             if row["alpha_3"] in configuration["adm1"][visualization]:
                 new_name = row["ADM1_REF"].replace("-", " ").replace("`", "")
                 new_name = normalize("NFKD", new_name).encode("ascii", "ignore").decode("ascii")
@@ -325,7 +325,12 @@ def update_boundaries(
         regional_file = join("saved_outputs", f"ocha-regions-bbox-{visualization}.geojson")
 
         adm0_region = adm0_json.copy(deep=True)
-        adm0_region = adm0_region[adm0_region["ISO_3"].isin(configuration["adm0"][visualization])]
+        adm0_region = adm0_region[(adm0_region["ISO_3"].isin(configuration["adm0"][visualization])) |
+                                  (adm0_region["Color_Code"].isin(configuration["adm0"][visualization]))]
+        adm0_region.loc[adm0_region["ISO_3"] == "XXX", "ISO_3"] = adm0_region.loc[adm0_region["ISO_3"] == "XXX",
+                                                                                  "Color_Code"]
+        adm0_region.loc[adm0_region["ISO_3"].isna(), "ISO_3"] = adm0_region.loc[adm0_region["ISO_3"].isna(),
+                                                                                "Color_Code"]
         adm0_region["region"] = ""
         adm0_region["HRPs"] = ""
         adm0_region.loc[adm0_region["ISO_3"].isin(configuration["HRPs"]), "HRPs"] = "HRPs"
