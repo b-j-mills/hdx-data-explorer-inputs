@@ -20,7 +20,6 @@ population:
 mapbox:
   global:
     adm1-polbnda: "cl2qdtczb0chh28lhq82qor46"
-    adm1-polbndl: "cl2qdzdzl19gr28r04iabhfs7"
     adm1-centroid: "cl2qdtxar0hwd29tkct32yp5a"
     adm0-polbnda: "cl2qdreq4003128mppop3aidz"
     adm0-polbndl: "cl2qdzz3p093827mm46l6ojzx"
@@ -30,9 +29,6 @@ mapbox:
     adm1-polbnda:
       mapid: "humdata.b1o0ci53"
       name: "hrps_polbnda_adm1ish_simplifi-5zbg3c"
-    adm1-polbndl:
-      mapid: "humdata.1a2n5p4n"
-      name: "hrps_polbndl_adm1ish_simplifi-0vrhhc"
     adm1-centroid:
       mapid: "humdata.63k3lb2z"
       name: "hrps_centroid_adm1ish_simplif-3sb5to"
@@ -49,9 +45,6 @@ mapbox:
     adm1-polbnda:
       mapid: "humdata.attm70id"
       name: "arab_states_polbnda_adm1_1m_u-17b61m"
-    adm1-polbndl:
-      mapid: "humdata.6tv02ole"
-      name: "arab_states_polbndl_adm1_1m_u-1qvxne"
     adm1-centroid:
       mapid: "humdata.8pyb1abd"
       name: "arab_states_centroid_adm1_1m_-4nnaer"

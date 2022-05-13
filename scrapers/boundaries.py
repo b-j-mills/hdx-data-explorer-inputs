@@ -234,22 +234,12 @@ def update_boundaries(
     adm1_centroid[req_fields] = adm1_json[req_fields]
     adm1_centroid = adm1_centroid.set_geometry("geometry")
 
-    adm1_line = GeoDataFrame(adm1_json.boundary)
-    adm1_line = adm1_line.set_geometry(0)
-    adm1_line["alpha_3"] = adm1_json["alpha_3"]
-    adm1_line = adm1_line.overlay(adm0_l_json, how="difference")
-
     if len(countries) > 0:
         logger.info(f"Updating Mapbox datasets")
         replace_mapbox_dataset(
             configuration["mapbox"]["global"]["adm1-polbnda"],
             mapbox_auth,
             json_to_upload=adm1_json,
-        )
-        replace_mapbox_dataset(
-            configuration["mapbox"]["global"]["adm1-polbndl"],
-            mapbox_auth,
-            json_to_upload=adm1_line,
         )
         replace_mapbox_dataset(
             configuration["mapbox"]["global"]["adm1-centroid"],
@@ -264,13 +254,6 @@ def update_boundaries(
             mapbox_auth,
             configuration["mapbox"][visualization]["adm1-polbnda"]["name"],
             json_to_upload=adm1_json[adm1_json["alpha_3"].isin(configuration["adm1"][visualization])],
-            temp_folder=temp_folder,
-        )
-        replace_mapbox_tileset(
-            configuration["mapbox"][visualization]["adm1-polbndl"]["mapid"],
-            mapbox_auth,
-            configuration["mapbox"][visualization]["adm1-polbndl"]["name"],
-            json_to_upload=adm1_line[adm1_line["alpha_3"].isin(configuration["adm1"][visualization])],
             temp_folder=temp_folder,
         )
         replace_mapbox_tileset(
