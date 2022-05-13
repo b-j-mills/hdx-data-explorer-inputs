@@ -179,10 +179,7 @@ def update_boundaries(
             continue
 
         if not pcode_field:
-            logger.error(f"Could not map pcodes - assigning randomly!")
-            numrows = len(str(len(boundary_lyr.index)))
-            for i, _ in boundary_lyr.iterrows():
-                boundary_lyr.loc[i, "ADM1_PCODE"] = boundary_lyr.loc[i, "ADM0_PCODE"] + str(i+1).zfill(numrows)
+            boundary_lyr["ADM1_PCODE"] = ""
 
         if pcode_field:
             if is_numeric_dtype(boundary_lyr[pcode_field]):
@@ -194,16 +191,21 @@ def update_boundaries(
                 else:
                     boundary_lyr["ADM1_PCODE"] = boundary_lyr[pcode_field].astype(int).astype(str)
             else:
-                boundary_lyr["ADM1_PCODE"] = boundary_lyr[pcode_field].astype(str)
+                boundary_lyr["ADM1_PCODE"] = boundary_lyr[pcode_field]
 
         boundary_lyr["ADM1_REF"] = boundary_lyr[name_field]
         boundary_lyr = drop_fields(boundary_lyr, req_fields)
+        boundary_lyr = boundary_lyr.dissolve(by=req_fields, as_index=False)  # dissolve to single features
+
+        if not pcode_field:
+            logger.error(f"Could not map pcodes - assigning randomly!")
+            numrows = len(str(len(boundary_lyr.index)))
+            for i, _ in boundary_lyr.iterrows():
+                boundary_lyr.loc[i, "ADM1_PCODE"] = boundary_lyr.loc[i, "ADM0_PCODE"] + str(i+1).zfill(numrows)
 
         na_count = boundary_lyr["ADM1_REF"].isna().sum()
         if na_count > 0:
             logger.warning(f"Found {na_count} null values in {iso} boundary")
-
-        boundary_lyr = boundary_lyr.dissolve(by=req_fields, as_index=False)  # dissolve to single features
 
         boundary_topo = tp.Topology(boundary_lyr)  # simplify
         boundary_topo = boundary_topo.toposimplify(
