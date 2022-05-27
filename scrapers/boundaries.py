@@ -53,22 +53,22 @@ def update_boundaries(
 
     # download all datasets that are needed
     if data_source == "hdx":
-        resource = find_resource(configuration["boundaries"], "geojson", kw="polbnda_int")
+        resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbnda_int")
         if not resource:
             return None
         adm0_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
 
-        resource = find_resource(configuration["boundaries"], "geojson", kw="polbndl_int")
+        resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbndl_int")
         if not resource:
             return None
         adm0_l_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
 
-        resource = find_resource(configuration["boundaries"], "geojson", kw="polbndp_int")
+        resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbndp_int")
         if not resource:
             return None
         adm0_c_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
 
-        resource = find_resource(configuration["boundaries"], "geojson", kw="lake")
+        resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="lake")
         if not resource:
             return None
         water_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
