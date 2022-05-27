@@ -1,4 +1,5 @@
 boundaries:
+  dataset: "unmap-international-boundaries-1-1m"
   dataset_exceptions:
     MMR: "mimu-geonode-myanmar-state-and-region-boundaries-mimu"
     JOR: "geoboundaries-admin-boundaries-for-jordan"
@@ -19,61 +20,62 @@ population:
 
 mapbox:
   global:
-    adm1-polbnda: "cl2qdtczb0chh28lhq82qor46"
-    adm1-centroid: "cl2qdtxar0hwd29tkct32yp5a"
-    adm0-polbnda: "cl2qdreq4003128mppop3aidz"
-    adm0-polbndl: "cl2qdzz3p093827mm46l6ojzx"
-    adm0-centroid: "cl2qdugrr5e1r27t85am5vsgr"
-    lakes: "cl2qcnlcg002v28lnpi69l0rs"
+    polbnda_adm1: "cl2qdtczb0chh28lhq82qor46"
+    polbndp_adm1: "cl2qdtxar0hwd29tkct32yp5a"
+    polbnda_int: "cl2qdreq4003128mppop3aidz"
+    polbndl_int: "cl2qdzz3p093827mm46l6ojzx"
+    polbndp_int: "cl2qdugrr5e1r27t85am5vsgr"
+    lake: "cl2qcnlcg002v28lnpi69l0rs"
+    coastl: "cl3oq12z32p9u21pksj5t31id"
   covid:
-    adm1-polbnda:
+    polbnda_adm1:
       mapid: "humdata.b1o0ci53"
       name: "hrps_polbnda_adm1ish_simplifi-5zbg3c"
-    adm1-centroid:
+    polbndp_adm1:
       mapid: "humdata.63k3lb2z"
       name: "hrps_centroid_adm1ish_simplif-3sb5to"
-    adm0-polbnda:
+    polbnda_int:
       mapid: "humdata.5qlwwz0l"
       name: "polbnda_int_uncs-6zgtye"
-    adm0-polbndl:
+    polbndl_int:
       mapid: "humdata.bkhifgb5"
       name: "polbndl_int_uncs-1hvbzf"
-    adm0-centroid:
+    polbndp_int:
       mapid: "humdata.4w8b1b7g"
       name: "centroid_int_uncs-avvnhr"
   arableague:
-    adm1-polbnda:
+    polbnda_adm1:
       mapid: "humdata.attm70id"
       name: "arab_states_polbnda_adm1_1m_u-17b61m"
-    adm1-centroid:
+    polbndp_adm1:
       mapid: "humdata.8pyb1abd"
       name: "arab_states_centroid_adm1_1m_-4nnaer"
-    adm0-polbnda:
+    polbnda_int:
       mapid: "humdata.aioadufm"
       name: "arab-states-adm0-polbnda"
-    adm0-polbndl:
+    polbndl_int:
       mapid: "humdata.bzo5ss37"
       name: "arab_states_polbndl_int_1m_un-b74b2t"
-    adm0-centroid:
+    polbndp_int:
       mapid: "humdata.d4ywfeza"
       name: "arab_states_centroid_int_1m_u-9kgyhy"
   ukraine:
-    adm1-polbnda:
+    polbnda_adm1:
       mapid: "humdata.7mw1qwu2"
       name: "ukr_polbnda_adm1_uncs-bg6hqp"
-    adm1-polbndl:
+    polbndl_adm1:
       mapid: "humdata.afes2yub"
       name: "ukr_polbndl_adm1_uncs-9oa22d"
-    adm1-centroid:
+    polbndp_adm1:
       mapid: "humdata.b2dsq510"
       name: "ukr_centroid_adm1_uncs-9bv7sv"
-    adm0-polbnda:
+    polbnda_int:
       mapid: "humdata.090db5y9"
       name: "ee_polbnda_int_15m_uncs-81dn3v"
-    adm0-polbndl:
+    polbndl_int:
       mapid: "humdata.8lxpktpe"
       name: "ee_polbndl_int_uncs-1loovm"
-    adm0-centroid:
+    polbndp_int:
       mapid: "humdata.av64hwpt"
       name: "ee_centroid_int_15m_uncs-2w4rn4"
 

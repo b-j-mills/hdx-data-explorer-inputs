@@ -35,7 +35,8 @@ def get_indicators(
     adm1_countries = list(adm1_countries)
     adm1_countries.sort()
 
-    adm1_json = download_from_mapbox(configuration["mapbox"]["global"]["adm1-polbnda"], mapbox_auth)
+    adm1_resource = find_resource(configuration["boundaries"], "SHP", kw=)
+    adm1_json = download_from_mapbox(configuration["mapbox"]["global"]["polbnda_adm1"], mapbox_auth)
     if isinstance(adm1_json, type(None)):
         return None
     adm1_json = GeoDataFrame.from_features(adm1_json["features"])
