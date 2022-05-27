@@ -38,8 +38,10 @@ def get_indicators(
     adm1_countries.sort()
 
     if data_source == "hdx":
-        adm1_resource = find_resource(configuration["boundaries"], "GEOJSON", kw="polbnda_adm1")
-        adm1_json = download_unzip_read_data(adm1_resource, file_type="GEOJSON", unzip=False, read=True)
+        resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbnda_adm1")
+        if not resource:
+            return None
+        adm1_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
     if data_source == "mapbox":
         adm1_json = download_from_mapbox(configuration["mapbox"]["global"]["polbnda_adm1"], mapbox_auth)
         if isinstance(adm1_json, type(None)):

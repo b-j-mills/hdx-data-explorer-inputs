@@ -106,4 +106,5 @@ if __name__ == "__main__":
         countries=countries,
         visualizations=visualizations,
         mapbox_auth=mapbox_auth,
+        data_source=data_source,
     )

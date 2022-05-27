@@ -2,7 +2,7 @@ import logging
 import re
 from os.path import join
 from unicodedata import normalize
-import topojson as tp
+from topojson import Topology
 from geopandas import GeoDataFrame, read_file
 from shapely.geometry import box
 from pandas.api.types import is_numeric_dtype
@@ -56,22 +56,22 @@ def update_boundaries(
         resource = find_resource(configuration["boundaries"], "geojson", kw="polbnda_int")
         if not resource:
             return None
-        adm0_json = download_unzip_read_data(resource, file_type="geojson", unzip=False, read=True)
+        adm0_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
 
         resource = find_resource(configuration["boundaries"], "geojson", kw="polbndl_int")
         if not resource:
             return None
-        adm0_l_json = download_unzip_read_data(resource, file_type="geojson", unzip=False, read=True)
+        adm0_l_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
 
         resource = find_resource(configuration["boundaries"], "geojson", kw="polbndp_int")
         if not resource:
             return None
-        adm0_c_json = download_unzip_read_data(resource, file_type="geojson", unzip=False, read=True)
+        adm0_c_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
 
         resource = find_resource(configuration["boundaries"], "geojson", kw="lake")
         if not resource:
             return None
-        water_json = download_unzip_read_data(resource, file_type="geojson", unzip=False, read=True)
+        water_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
 
     if data_source == "mapbox":
         adm0_json = download_from_mapbox(configuration["mapbox"]["global"]["polbnda_int"], mapbox_auth)
@@ -230,7 +230,7 @@ def update_boundaries(
         if na_count > 0:
             logger.warning(f"Found {na_count} null values in {iso} boundary")
 
-        boundary_topo = tp.Topology(boundary_lyr)  # simplify
+        boundary_topo = Topology(boundary_lyr)  # simplify
         boundary_topo = boundary_topo.toposimplify(
             epsilon=0.01,
             simplify_algorithm="dp",
