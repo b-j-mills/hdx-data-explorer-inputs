@@ -7,7 +7,6 @@ from geopandas import GeoDataFrame, read_file
 from shapely.geometry import box
 from pandas.api.types import is_numeric_dtype
 
-from hdx.scraper.utilities.readers import read_hdx_metadata, read_tabular
 from hdx.location.country import Country
 from hdx.data.hdxobject import HDXError
 from scrapers.utilities.helper_functions import (
@@ -380,9 +379,9 @@ def update_boundaries(
         adm0_region["region"] = ""
         adm0_region["HRPs"] = ""
         adm0_region.loc[adm0_region["ISO_3"].isin(configuration["HRPs"]), "HRPs"] = "HRPs"
-        regional_info = configuration.get("regional")
-        read_hdx_metadata(regional_info)
-        _, iterator = read_tabular(downloader, regional_info)
+        regional_info = configuration["regional"]
+        resource = find_resource(regional_info["dataset"], regional_info["format"])
+        _, iterator = downloader.get_tabular_rows(resource[0]["url"])
         for row in iterator:
             adm0_region.loc[
                 adm0_region["ISO_3"] == row[regional_info["iso3"]], "region"
