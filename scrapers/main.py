@@ -6,6 +6,7 @@ from scrapers.boundaries import update_boundaries
 from scrapers.health_facilities import update_health_facilities
 from scrapers.population import update_population
 from scrapers.utilities.mapbox_functions import download_from_mapbox
+from scrapers.utilities.helper_functions import find_resource, download_unzip_read_data
 logger = logging.getLogger(__name__)
 
 
@@ -14,6 +15,7 @@ def get_indicators(
         downloader,
         temp_folder,
         mapbox_auth,
+        data_source,
         scrapers_to_run=None,
         countries=None,
         visualizations=None,
@@ -35,11 +37,14 @@ def get_indicators(
     adm1_countries = list(adm1_countries)
     adm1_countries.sort()
 
-    adm1_resource = find_resource(configuration["boundaries"], "SHP", kw=)
-    adm1_json = download_from_mapbox(configuration["mapbox"]["global"]["polbnda_adm1"], mapbox_auth)
-    if isinstance(adm1_json, type(None)):
-        return None
-    adm1_json = GeoDataFrame.from_features(adm1_json["features"])
+    if data_source == "hdx":
+        adm1_resource = find_resource(configuration["boundaries"], "GEOJSON", kw="polbnda_adm1")
+        adm1_json = download_unzip_read_data(adm1_resource, file_type="GEOJSON", unzip=False, read=True)
+    if data_source == "mapbox":
+        adm1_json = download_from_mapbox(configuration["mapbox"]["global"]["polbnda_adm1"], mapbox_auth)
+        if isinstance(adm1_json, type(None)):
+            return None
+        adm1_json = GeoDataFrame.from_features(adm1_json["features"])
 
     if "boundaries" in scrapers_to_run:
         boundaries = update_boundaries(
@@ -48,6 +53,7 @@ def get_indicators(
             mapbox_auth,
             temp_folder,
             adm1_json,
+            data_source,
             visualizations,
             countries,
         )

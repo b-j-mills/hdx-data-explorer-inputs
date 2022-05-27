@@ -26,6 +26,7 @@ def update_boundaries(
         mapbox_auth,
         temp_folder,
         adm1_json,
+        data_source,
         visualizations=None,
         countries=None,
 ):
@@ -50,7 +51,7 @@ def update_boundaries(
         countries = list(countries)
         countries.sort()
 
-    # download all mapbox datasets that are needed
+    # download all datasets that are needed
     adm0_json = download_from_mapbox(configuration["mapbox"]["global"]["polbnda_int"], mapbox_auth)
     if isinstance(adm0_json, type(None)):
         return None

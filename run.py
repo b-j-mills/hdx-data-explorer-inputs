@@ -26,6 +26,7 @@ def parse_args():
     parser.add_argument("-co", "--countries", default=None, help="Which countries to update")
     parser.add_argument("-vi", "--visualizations", default=None, help="Which visualizations to update")
     parser.add_argument("-ma", "--mapbox_auth", default=None, help="Credentials for accessing MapBox data")
+    parser.add_argument("-so", "--data_source", default="HDX", help="Where to pull UN boundaries from")
     args = parser.parse_args()
     return args
 
@@ -35,6 +36,7 @@ def main(
         countries,
         visualizations,
         mapbox_auth,
+        data_source,
         **ignore,
 ):
     logger.info(f"##### hdx-viz-data-inputs ####")
@@ -50,6 +52,7 @@ def main(
                 downloader,
                 temp_folder,
                 mapbox_auth,
+                data_source,
                 scrapers_to_run,
                 countries,
                 visualizations,
@@ -84,6 +87,7 @@ if __name__ == "__main__":
     mapbox_auth = args.mapbox_auth
     if mapbox_auth is None:
         mapbox_auth = getenv("MAPBOX_AUTH")
+    data_source = args.data_source.lower()
     facade(
         main,
         user_agent=user_agent,
