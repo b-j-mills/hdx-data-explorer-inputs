@@ -32,7 +32,7 @@ def update_un_boundaries(
             try:
                 resource = resource[0]
             except IndexError:
-                logger.error(f"Could not find resource}")
+                logger.error(f"Could not find resource")
             resource.set_file_to_upload(in_files[0])
 
             try:
