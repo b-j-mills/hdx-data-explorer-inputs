@@ -88,6 +88,9 @@ if __name__ == "__main__":
     if mapbox_auth is None:
         mapbox_auth = getenv("MAPBOX_AUTH")
     data_source = args.data_source.lower()
+    if data_source not in ["hdx", "mapbox"]:
+        logger.info("Unknown data source, defaulting to HDX")
+        data_source = "hdx"
     facade(
         main,
         user_agent=user_agent,
