@@ -9,6 +9,7 @@ from pandas.api.types import is_numeric_dtype
 
 from hdx.scraper.utilities.readers import read_hdx_metadata, read_tabular
 from hdx.location.country import Country
+from hdx.data.hdxobject import HDXError
 from scrapers.utilities.helper_functions import (
     download_unzip_read_data,
     find_resource,
@@ -52,25 +53,47 @@ def update_boundaries(
         countries.sort()
 
     # download all datasets that are needed
-    adm0_json = download_from_mapbox(configuration["mapbox"]["global"]["polbnda_int"], mapbox_auth)
-    if isinstance(adm0_json, type(None)):
-        return None
-    adm0_json = GeoDataFrame.from_features(adm0_json["features"])
+    if data_source == "hdx":
+        resource = find_resource(configuration["boundaries"], "geojson", kw="polbnda_int")
+        if not resource:
+            return None
+        adm0_json = download_unzip_read_data(resource, file_type="geojson", unzip=False, read=True)
 
-    adm0_l_json = download_from_mapbox(configuration["mapbox"]["global"]["polbndl_int"], mapbox_auth)
-    if isinstance(adm0_l_json, type(None)):
-        return None
-    adm0_l_json = GeoDataFrame.from_features(adm0_l_json["features"])
+        resource = find_resource(configuration["boundaries"], "geojson", kw="polbndl_int")
+        if not resource:
+            return None
+        adm0_l_json = download_unzip_read_data(resource, file_type="geojson", unzip=False, read=True)
 
-    adm0_c_json = download_from_mapbox(configuration["mapbox"]["global"]["polbndp_int"], mapbox_auth)
-    if isinstance(adm0_c_json, type(None)):
-        return None
-    adm0_c_json = GeoDataFrame.from_features(adm0_c_json["features"])
+        resource = find_resource(configuration["boundaries"], "geojson", kw="polbndp_int")
+        if not resource:
+            return None
+        adm0_c_json = download_unzip_read_data(resource, file_type="geojson", unzip=False, read=True)
 
-    water_json = download_from_mapbox(configuration["mapbox"]["global"]["lake"], mapbox_auth)
-    if isinstance(water_json, type(None)):
-        return None
-    water_json = GeoDataFrame.from_features(water_json["features"])
+        resource = find_resource(configuration["boundaries"], "geojson", kw="lake")
+        if not resource:
+            return None
+        water_json = download_unzip_read_data(resource, file_type="geojson", unzip=False, read=True)
+
+    if data_source == "mapbox":
+        adm0_json = download_from_mapbox(configuration["mapbox"]["global"]["polbnda_int"], mapbox_auth)
+        if isinstance(adm0_json, type(None)):
+            return None
+        adm0_json = GeoDataFrame.from_features(adm0_json["features"])
+
+        adm0_l_json = download_from_mapbox(configuration["mapbox"]["global"]["polbndl_int"], mapbox_auth)
+        if isinstance(adm0_l_json, type(None)):
+            return None
+        adm0_l_json = GeoDataFrame.from_features(adm0_l_json["features"])
+
+        adm0_c_json = download_from_mapbox(configuration["mapbox"]["global"]["polbndp_int"], mapbox_auth)
+        if isinstance(adm0_c_json, type(None)):
+            return None
+        adm0_c_json = GeoDataFrame.from_features(adm0_c_json["features"])
+
+        water_json = download_from_mapbox(configuration["mapbox"]["global"]["lake"], mapbox_auth)
+        if isinstance(water_json, type(None)):
+            return None
+        water_json = GeoDataFrame.from_features(water_json["features"])
 
     req_fields = ["alpha_3", "ADM0_REF", "ADM0_PCODE", "ADM1_REF", "ADM1_PCODE"]
     for iso in countries:
@@ -238,17 +261,39 @@ def update_boundaries(
     adm1_centroid = adm1_centroid.set_geometry("geometry")
 
     if len(countries) > 0:
-        logger.info(f"Updating Mapbox datasets")
-        replace_mapbox_dataset(
-            configuration["mapbox"]["global"]["polbnda_adm1"],
-            mapbox_auth,
-            json_to_upload=adm1_json,
-        )
-        replace_mapbox_dataset(
-            configuration["mapbox"]["global"]["polbndp_adm1"],
-            mapbox_auth,
-            json_to_upload=adm1_centroid,
-        )
+        if data_source == "hdx":
+            logger.info(f"Updating HDX datasets")
+            adm1_file = join(temp_folder, "polbnda_adm1_1m_ocha.geojson")  # save file to disk
+            adm1_json.to_file(adm1_file, driver="GeoJSON")
+            centroid_file = join(temp_folder, "polbndp_adm1_1m_ocha.geojson")
+            adm1_centroid.to_file(centroid_file, driver="GeoJSON")
+
+            resource_a = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbnda_adm1")[0]
+            resource_a.set_file_to_upload(adm1_file)
+            resource_c = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbndp_adm1")[0]
+            resource_c.set_file_to_upload(centroid_file)
+
+            try:
+                resource_a.update_in_hdx()
+            except HDXError:
+                logger.exception("Could not update polygon resource")
+            try:
+                resource_c.update_in_hdx()
+            except HDXError:
+                logger.exception("Could not update point resource")
+
+        if data_source == "mapbox":
+            logger.info(f"Updating Mapbox datasets")
+            replace_mapbox_dataset(
+                configuration["mapbox"]["global"]["polbnda_adm1"],
+                mapbox_auth,
+                json_to_upload=adm1_json,
+            )
+            replace_mapbox_dataset(
+                configuration["mapbox"]["global"]["polbndp_adm1"],
+                mapbox_auth,
+                json_to_upload=adm1_centroid,
+            )
 
     logger.info("Updating MapBox tilesets")
     for visualization in visualizations:
