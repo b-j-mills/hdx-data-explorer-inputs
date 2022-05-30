@@ -117,9 +117,9 @@
 - {country: Jordan, iso3: JOR, pcode: JO05, name: Irbid}
 - {country: Jordan, iso3: JOR, pcode: JO06, name: Jarash}
 - {country: Jordan, iso3: JOR, pcode: JO07, name: Karak}
-- {country: Jordan, iso3: JOR, pcode: JO10, name: Maaan}
 - {country: Jordan, iso3: JOR, pcode: JO08, name: Madaba}
 - {country: Jordan, iso3: JOR, pcode: JO09, name: Mafraq}
+- {country: Jordan, iso3: JOR, pcode: JO10, name: "Ma'an"}
 - {country: Jordan, iso3: JOR, pcode: JO11, name: Tafilah}
 - {country: Jordan, iso3: JOR, pcode: JO12, name: Zarqa}
 - {country: Kuwait, iso3: KWT, pcode: KW01, name: Al Ahmadi}
