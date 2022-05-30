@@ -16,7 +16,7 @@ from hdx.data.hdxobject import HDXError
 logger = logging.getLogger()
 
 
-def find_resource(dataset_name, file_type, kw=None):
+def find_resource(dataset_name, file_type=None, kw=None):
     try:
         dataset = Dataset.read_from_hdx(dataset_name)
     except HDXError:
@@ -30,7 +30,14 @@ def find_resource(dataset_name, file_type, kw=None):
     resources = dataset.get_resources()
     resource_list = []
     for r in resources:
-        if r.get_file_type().lower() == file_type.lower():
+        if file_type:
+            if r.get_file_type().lower() == file_type.lower():
+                if kw:
+                    if bool(re.match(f".*{kw}.*", r["name"], re.IGNORECASE)):
+                        resource_list.append(r)
+                else:
+                    resource_list.append(r)
+        else:
             if kw:
                 if bool(re.match(f".*{kw}.*", r["name"], re.IGNORECASE)):
                     resource_list.append(r)
