@@ -24,6 +24,10 @@ def update_population(
     if not exceptions:
         exceptions = {}
 
+    resource_exceptions = configuration.get("resource_exceptions")
+    if not resource_exceptions:
+        resource_exceptions = {}
+
     adm1_json["Population"] = None
     adm1_json.drop(adm1_json.index[~adm1_json["alpha_3"].isin(countries)], inplace=True)
 
@@ -31,10 +35,13 @@ def update_population(
         logger.info(f"Processing population for {iso}")
 
         dataset_name = exceptions.get(iso)
+        resource_name = resource_exceptions.get(iso)
+        if not resource_name:
+            resource_name = "adm1"
         if not dataset_name:
             dataset_name = f"cod-ps-{iso.lower()}"
 
-        pop_resource = find_resource(dataset_name, "csv", kw="adm1")
+        pop_resource = find_resource(dataset_name, "csv", kw=resource_name)
         if not pop_resource:
             continue
 

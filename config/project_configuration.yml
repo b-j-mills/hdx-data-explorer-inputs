@@ -17,6 +17,10 @@ health_facilities:
 
 population:
   dataset: "admin-1-population-statistics-for-data-explorers"
+  resource_exceptions:
+    DJI: "djibouti_population_statistics-2009.xlsx"
+    EGY: "egypt_population_estimate_compas_2012_v1.1_0_fis.csv"
+    NER: "ner_pplp_2022.xlsx"
 
 mapbox:
   global:
