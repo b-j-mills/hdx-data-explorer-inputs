@@ -105,8 +105,10 @@ def update_csv_resource(resource, downloader, new_adm1_data, countries):
     orig_data["ADM1_PCODE"] = orig_data.index
     orig_data.index.names = ["ADM1_PCODE"]
     orig_data.drop(orig_data.index[orig_data["alpha_3"].isin(countries)], inplace=True)
+    new_adm1_data.drop(new_adm1_data.index[~new_adm1_data["alpha_3"].isin(countries)], inplace=True)
 
     adm1_data = concat([new_adm1_data, orig_data])
+    adm1_data.sort_values(by=["ADM1_PCODE"], inplace=True)
 
     return adm1_data
 
