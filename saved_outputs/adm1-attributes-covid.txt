@@ -433,7 +433,7 @@
 - {country: Ukraine, iso3: UKR, pcode: UA51, name: Odeska}
 - {country: Ukraine, iso3: UKR, pcode: UA53, name: Poltavska}
 - {country: Ukraine, iso3: UKR, pcode: UA56, name: Rivnenska}
-- {country: Ukraine, iso3: UKR, pcode: UA85, name: Sevastopol}
+- {country: Ukraine, iso3: UKR, pcode: UA85, name: Sevastopilska}
 - {country: Ukraine, iso3: UKR, pcode: UA59, name: Sumska}
 - {country: Ukraine, iso3: UKR, pcode: UA61, name: Ternopilska}
 - {country: Ukraine, iso3: UKR, pcode: UA05, name: Vinnytska}
