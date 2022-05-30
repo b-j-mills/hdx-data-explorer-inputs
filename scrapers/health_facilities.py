@@ -2,7 +2,7 @@ import logging
 from os.path import join
 from pandas import DataFrame
 
-from hdx.data.dataset import Dataset
+from hdx.data.hdxobject import HDXError
 from scrapers.utilities.helper_functions import (
     find_resource,
     download_unzip_read_data,
@@ -55,19 +55,19 @@ def update_health_facilities(
             ] += hfs
 
     adm1_json = adm1_json.drop(columns="geometry")
-
-    dataset = Dataset.read_from_hdx(configuration["dataset"])
-    resource = dataset.get_resource(0)
-    updated_resource = update_csv_resource(resource, downloader, adm1_json, countries)
-
+    resource = find_resource(configuration["dataset"], "csv")[0]
+    updated_resource = update_csv_resource(
+        resource,
+        downloader,
+        adm1_json,
+        list(set(adm1_json["alpha_3"][~adm1_json["Population"].isna()])),
+    )
     updated_resource.to_csv(join(temp_folder, "health_facilities_by_adm1.csv"), index=False)
 
     resource.set_file_to_upload(join(temp_folder, "health_facilities_by_adm1.csv"))
+    try:
+        resource.update_in_hdx()
+    except HDXError:
+        logger.exception("Could not update health facilities resource")
 
-    dataset.update_in_hdx(
-        remove_additional_resources=True,
-        hxl_update=False,
-        updated_by_script="HDX Scraper: Data Explorer inputs",
-        ignore_fields=["num_of_rows"],
-    )
     return countries
