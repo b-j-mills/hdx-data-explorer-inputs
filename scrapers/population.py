@@ -60,11 +60,12 @@ def update_population(
                     pcode_header = header
             popmatch = bool(
                 re.search(
-                    "(population|both|total|proj|pop|t|ensemble)",
+                    "(population|both|total|proj|pop|ensemble)",
                     header,
                     re.IGNORECASE,
                 )
             )
+            tmatch = bool(re.search("t", header, re.IGNORECASE))
             sexyearmatch = bool(
                 re.search("_f|_m|m_|f_|year|female|male", header, re.IGNORECASE)
             )
@@ -74,7 +75,7 @@ def update_population(
             agewordmatch = bool(re.search("(age|adult)", header, re.IGNORECASE))
             yearmatch = len(re.findall("\d{4}", header, re.IGNORECASE))
             if (
-                popmatch
+                (popmatch or tmatch)
                 and not sexyearmatch
                 and not agematch
                 and not agewordmatch
@@ -82,7 +83,9 @@ def update_population(
             ):
                 if not pop_header:
                     pop_header = header
-                elif yearmatch > 0:
+                elif popmatch:
+                    pop_header = header
+                if pop_header and yearmatch > 0:
                     try:
                         h1year = re.search("20\d{2}", pop_header).group(0)
                     except AttributeError:
