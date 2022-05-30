@@ -383,7 +383,7 @@ def update_boundaries(
         adm0_region.loc[adm0_region["ISO_3"].isin(configuration["HRPs"]), "HRPs"] = "HRPs"
         regional_info = configuration["regional"]
         resource = find_resource(regional_info["dataset"], regional_info["format"])
-        _, iterator = downloader.get_tabular_rows(resource[0]["url"])
+        _, iterator = downloader.get_tabular_rows(resource[0]["url"], dict_form=True)
         for row in iterator:
             adm0_region.loc[
                 adm0_region["ISO_3"] == row[regional_info["iso3"]], "region"
@@ -405,6 +405,9 @@ def update_boundaries(
         adm0_dissolve["tbl_regcov_2020_ocha_Field3"] = adm0_dissolve.index
         adm0_region = adm0_dissolve.to_json(show_bbox=True, drop_id=True)
         adm0_region = loads(adm0_region)
+        for i in reversed(range(len(adm0_region["features"]))):
+            if adm0_region["features"][i]["properties"]["tbl_regcov_2020_ocha_Field3"] == "NO COVERAGE":
+                adm0_region["features"].remove(adm0_region["features"][i])
         adm0_region["name"] = "ocha regions - bbox"
         adm0_region["crs"] = {"type": "name", "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"}}
         replace_json(adm0_region, regional_file)
