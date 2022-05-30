@@ -14,6 +14,8 @@ health_facilities:
   dataset: "admin-1-health-facilities-for-data-explorers"
   dataset_exceptions:
     NER: "hotosm_niger_health_facilities"
+    MLI: "hotosm_mali_health_facilities"
+    TCD: "hotosm_chad_health_facilities"
 
 population:
   dataset: "admin-1-population-statistics-for-data-explorers"
