@@ -2,7 +2,7 @@ import logging
 import re
 from os.path import join
 
-from hdx.data.dataset import Dataset
+from hdx.data.hdxobject import HDXError
 from scrapers.utilities.helper_functions import find_resource, update_csv_resource
 
 logger = logging.getLogger()
@@ -48,9 +48,7 @@ def update_population(
         if len(pop_resource) > 1:
             logger.info(f"Found multiple resources for {iso}")
 
-        headers, iterator = downloader.get_tabular_rows(
-            pop_resource[0]["url"], headers=1, dict_form=True, format="csv"
-        )
+        headers, iterator = downloader.get_tabular_rows(pop_resource[0]["url"], dict_form=True)
 
         pcode_header = None
         pop_header = None
@@ -116,18 +114,17 @@ def update_population(
 
     adm1_json.drop(columns="geometry", inplace=True)
 
-    dataset = Dataset.read_from_hdx(configuration["dataset"])
-    resource = dataset.get_resource(0)
-    updated_resource = update_csv_resource(resource, downloader, adm1_json, countries)
-
+    resource = find_resource(configuration["dataset"], "csv")[0]
+    updated_resource = update_csv_resource(
+        resource,
+        downloader,
+    )
     updated_resource.to_csv(join(temp_folder, "population_by_adm1.csv"), index=False)
 
     resource.set_file_to_upload(join(temp_folder, "population_by_adm1.csv"))
+    try:
+        resource.update_in_hdx()
+    except HDXError:
+        logger.exception("Could not update population resource")
 
-    dataset.update_in_hdx(
-        remove_additional_resources=True,
-        hxl_update=False,
-        updated_by_script="HDX Scraper: Data Explorer inputs",
-        ignore_fields=["num_of_rows"],
-    )
     return countries
