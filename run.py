@@ -26,6 +26,7 @@ def parse_args():
     parser.add_argument("-sc", "--scrapers", default=None, help="Scrapers to run")
     parser.add_argument("-co", "--countries", default=None, help="Which countries to update")
     parser.add_argument("-vi", "--visualizations", default=None, help="Which visualizations to update")
+    parser.add_argument("-ut", "--update_tilesets", default=False, help="Update mapbox tilesets (Y/N)")
     parser.add_argument("-ma", "--mapbox_auth", default=None, help="Credentials for accessing MapBox data")
     parser.add_argument("-so", "--data_source", default="HDX", help="Where to pull UN boundaries from")
     args = parser.parse_args()
@@ -38,6 +39,7 @@ def main(
         visualizations,
         mapbox_auth,
         data_source,
+        update_tilesets,
         **ignore,
 ):
     logger.info(f"##### hdx-viz-data-inputs ####")
@@ -54,6 +56,7 @@ def main(
                 temp_folder,
                 mapbox_auth,
                 data_source,
+                update_tilesets,
                 scrapers_to_run,
                 countries,
                 visualizations,
@@ -88,6 +91,11 @@ if __name__ == "__main__":
         visualizations = args.visualizations.split(",")
     else:
         visualizations = None
+    if args.update_tilesets:
+        if args.update_tilesets.lower() == "true":
+            update_tilesets = True
+        else:
+            update_tilesets = False
     mapbox_auth = args.mapbox_auth
     if mapbox_auth is None:
         mapbox_auth = getenv("MAPBOX_AUTH")
@@ -105,6 +113,7 @@ if __name__ == "__main__":
         scrapers_to_run=scrapers_to_run,
         countries=countries,
         visualizations=visualizations,
+        update_tilesets=update_tilesets,
         mapbox_auth=mapbox_auth,
         data_source=data_source,
     )

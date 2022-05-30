@@ -16,6 +16,7 @@ def get_indicators(
         temp_folder,
         mapbox_auth,
         data_source,
+        update_tilesets,
         scrapers_to_run=None,
         countries=None,
         visualizations=None,
@@ -56,6 +57,7 @@ def get_indicators(
             temp_folder,
             adm1_json,
             data_source,
+            update_tilesets,
             visualizations,
             countries,
         )
