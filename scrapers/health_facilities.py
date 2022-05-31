@@ -52,15 +52,19 @@ def update_health_facilities(
             hfs = join_lyr[pcode]
             adm1_json.loc[
                 adm1_json["ADM1_PCODE"] == pcode, "Health_Facilities"
-            ] += hfs
+            ] = hfs
 
     adm1_json = adm1_json.drop(columns="geometry")
+    adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
+    updated_countries = list(set(adm1_json["alpha_3"][~adm1_json["Health_Facilities"].isna()]))
+    adm1_json.loc[adm1_json["Health_Facilities"].isna() &
+                  adm1_json["alpha_3"].isin(updated_countries), "Health_Facilities"] = 0
     resource = find_resource(configuration["dataset"], "csv")[0]
     updated_resource = update_csv_resource(
         resource,
         downloader,
         adm1_json,
-        list(set(adm1_json["alpha_3"][~adm1_json["Health_Facilities"].isna()])),
+        updated_countries,
     )
     updated_resource.to_csv(join(temp_folder, "health_facilities_by_adm1.csv"), index=False)
 
