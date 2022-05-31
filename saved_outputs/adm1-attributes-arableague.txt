@@ -46,17 +46,10 @@
 - {country: Algeria, iso3: DZA, pcode: DZ046, name: Tissemsilt}
 - {country: Algeria, iso3: DZA, pcode: DZ047, name: Tizi Ouzou}
 - {country: Algeria, iso3: DZA, pcode: DZ048, name: Tlemcen}
-- {country: Bahrain, iso3: BHR, pcode: BH01, name: Central Region}
-- {country: Bahrain, iso3: BHR, pcode: BH02, name: Hamad Town}
-- {country: Bahrain, iso3: BHR, pcode: BH03, name: Hawar Island}
-- {country: Bahrain, iso3: BHR, pcode: BH05, name: Isa Town}
-- {country: Bahrain, iso3: BHR, pcode: BH06, name: Jidhafs}
-- {country: Bahrain, iso3: BHR, pcode: BH07, name: Manama}
-- {country: Bahrain, iso3: BHR, pcode: BH08, name: Muharraq}
-- {country: Bahrain, iso3: BHR, pcode: BH09, name: Northern Region}
-- {country: Bahrain, iso3: BHR, pcode: BH10, name: Riffa}
-- {country: Bahrain, iso3: BHR, pcode: BH11, name: Sitra}
-- {country: Bahrain, iso3: BHR, pcode: BH12, name: Western Region}
+- {country: Bahrain, iso3: BHR, pcode: BH13, name: Capital}
+- {country: Bahrain, iso3: BHR, pcode: BH15, name: Muharraq}
+- {country: Bahrain, iso3: BHR, pcode: BH17, name: Northern}
+- {country: Bahrain, iso3: BHR, pcode: BH14, name: Southern}
 - {country: Comoros, iso3: COM, pcode: KM1, name: Anjouan (Ndzouani)}
 - {country: Comoros, iso3: COM, pcode: KM2, name: Grande Comore (Ngazidja)}
 - {country: Comoros, iso3: COM, pcode: KM3, name: Moheli (Mwali)}
