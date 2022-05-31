@@ -117,13 +117,14 @@ def update_population(
             logger.info(f"Could not find unit {row['ADM1_PCODE']} in statistics for {row['alpha_3']}")
 
     adm1_json.drop(columns="geometry", inplace=True)
-
+    adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
+    updated_countries = list(set(adm1_json["alpha_3"][~adm1_json["Population"].isna()]))
     resource = find_resource(configuration["dataset"], "csv")[0]
     updated_resource = update_csv_resource(
         resource,
         downloader,
         adm1_json,
-        list(set(adm1_json["alpha_3"][~adm1_json["Population"].isna()])),
+        updated_countries,
     )
     updated_resource.to_csv(join(temp_folder, "population_by_adm1.csv"), index=False)
 
