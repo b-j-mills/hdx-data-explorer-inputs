@@ -2,13 +2,15 @@ import logging
 import re
 from os.path import join
 from unicodedata import normalize
-from topojson import Topology
 from geopandas import GeoDataFrame, read_file
-from shapely.geometry import box
+from pandas import merge
 from pandas.api.types import is_numeric_dtype
+from shapely.geometry import box
+from topojson import Topology
 
-from hdx.location.country import Country
 from hdx.data.hdxobject import HDXError
+from hdx.location.country import Country
+from scrapers.utilities.hdx_functions import download_unzip_read_data, find_resource
 from scrapers.utilities.helper_functions import (
     download_unzip_read_data,
     find_resource,
@@ -21,15 +23,15 @@ logger = logging.getLogger()
 
 
 def update_boundaries(
-        configuration,
-        downloader,
-        mapbox_auth,
-        temp_folder,
-        adm1_json,
-        data_source,
-        update_tilesets,
-        visualizations=None,
-        countries=None,
+    configuration,
+    downloader,
+    mapbox_auth,
+    temp_folder,
+    adm1_json,
+    data_source,
+    update_tilesets,
+    visualizations=None,
+    countries=None,
 ):
     exceptions = configuration["boundaries"].get("dataset_exceptions")
     if not exceptions:
@@ -54,43 +56,76 @@ def update_boundaries(
 
     # download all datasets that are needed
     if data_source == "hdx":
-        resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbnda_int")
+        resource = find_resource(
+            configuration["boundaries"]["dataset"], "geojson", kw="polbnda_int"
+        )
         if not resource:
             return None
-        adm0_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
+        adm0_json = download_unzip_read_data(
+            resource[0], file_type="geojson", unzip=False, read=True
+        )
 
-        resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbndl_int")
+        resource = find_resource(
+            configuration["boundaries"]["dataset"], "geojson", kw="polbnda_int_15m"
+        )
         if not resource:
             return None
-        adm0_l_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
+        adm0_json_lr = download_unzip_read_data(
+            resource[0], file_type="geojson", unzip=False, read=True
+        )
 
-        resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbndp_int")
+        resource = find_resource(
+            configuration["boundaries"]["dataset"], "geojson", kw="polbndl_int"
+        )
         if not resource:
             return None
-        adm0_c_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
+        adm0_l_json = download_unzip_read_data(
+            resource[0], file_type="geojson", unzip=False, read=True
+        )
 
-        resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="lake")
+        resource = find_resource(
+            configuration["boundaries"]["dataset"], "geojson", kw="polbndp_int"
+        )
         if not resource:
             return None
-        water_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
+        adm0_c_json = download_unzip_read_data(
+            resource[0], file_type="geojson", unzip=False, read=True
+        )
+
+        resource = find_resource(
+            configuration["boundaries"]["dataset"], "geojson", kw="lake"
+        )
+        if not resource:
+            return None
+        water_json = download_unzip_read_data(
+            resource[0], file_type="geojson", unzip=False, read=True
+        )
 
     if data_source == "mapbox":
-        adm0_json = download_from_mapbox(configuration["mapbox"]["global"]["polbnda_int"], mapbox_auth)
+        adm0_json = download_from_mapbox(
+            configuration["mapbox"]["global"]["polbnda_int"], mapbox_auth
+        )
         if isinstance(adm0_json, type(None)):
             return None
         adm0_json = GeoDataFrame.from_features(adm0_json["features"])
 
-        adm0_l_json = download_from_mapbox(configuration["mapbox"]["global"]["polbndl_int"], mapbox_auth)
+        adm0_l_json = download_from_mapbox(
+            configuration["mapbox"]["global"]["polbndl_int"], mapbox_auth
+        )
         if isinstance(adm0_l_json, type(None)):
             return None
         adm0_l_json = GeoDataFrame.from_features(adm0_l_json["features"])
 
-        adm0_c_json = download_from_mapbox(configuration["mapbox"]["global"]["polbndp_int"], mapbox_auth)
+        adm0_c_json = download_from_mapbox(
+            configuration["mapbox"]["global"]["polbndp_int"], mapbox_auth
+        )
         if isinstance(adm0_c_json, type(None)):
             return None
         adm0_c_json = GeoDataFrame.from_features(adm0_c_json["features"])
 
-        water_json = download_from_mapbox(configuration["mapbox"]["global"]["lake"], mapbox_auth)
+        water_json = download_from_mapbox(
+            configuration["mapbox"]["global"]["lake"], mapbox_auth
+        )
         if isinstance(water_json, type(None)):
             return None
         water_json = GeoDataFrame.from_features(water_json["features"])
@@ -104,7 +139,9 @@ def update_boundaries(
         logger.info(f"Processing admin1 boundaries for {iso}")
 
         country_adm0 = adm0_json.copy(deep=True)
-        country_adm0 = country_adm0.loc[(country_adm0["ISO_3"] == iso) | (country_adm0["Color_Code"] == iso)]
+        country_adm0 = country_adm0.loc[
+            (country_adm0["ISO_3"] == iso) | (country_adm0["Color_Code"] == iso)
+        ]
         country_adm0 = country_adm0.overlay(water_json, how="difference")
         country_adm0 = country_adm0.dissolve()
         country_adm0 = drop_fields(country_adm0, ["ISO_3"])
@@ -120,9 +157,13 @@ def update_boundaries(
         if dataset_name:
             boundary_resource = find_resource(dataset_name, "SHP", kw=resource_name)
         if not boundary_resource:
-            boundary_resource = find_resource(f"cod-em-{iso.lower()}", "SHP", kw=resource_name)
+            boundary_resource = find_resource(
+                f"cod-em-{iso.lower()}", "SHP", kw=resource_name
+            )
         if not boundary_resource:
-            boundary_resource = find_resource(f"cod-ab-{iso.lower()}", "SHP", kw=resource_name)
+            boundary_resource = find_resource(
+                f"cod-ab-{iso.lower()}", "SHP", kw=resource_name
+            )
         if not boundary_resource:
             logger.error(f"Could not find boundary dataset for {iso}")
             continue
@@ -148,7 +189,8 @@ def update_boundaries(
 
         if len(boundary_shp) > 1:
             name_match = [
-                bool(re.match(".*admbnda.*adm(in)?(0)?1.*", b, re.IGNORECASE)) for b in boundary_shp
+                bool(re.match(".*admbnda.*adm(in)?(0)?1.*", b, re.IGNORECASE))
+                for b in boundary_shp
             ]
             if any(name_match):
                 boundary_shp = [
@@ -156,9 +198,15 @@ def update_boundaries(
                 ]
 
         if len(boundary_shp) > 1:
-            simp_match = [bool(re.match(".*simplified.*", b, re.IGNORECASE)) for b in boundary_shp]
+            simp_match = [
+                bool(re.match(".*simplified.*", b, re.IGNORECASE)) for b in boundary_shp
+            ]
             if any(simp_match):
-                boundary_shp = [boundary_shp[i] for i in range(len(boundary_shp)) if not simp_match[i]]
+                boundary_shp = [
+                    boundary_shp[i]
+                    for i in range(len(boundary_shp))
+                    if not simp_match[i]
+                ]
 
         if len(boundary_shp) != 1:
             logger.error(
@@ -210,22 +258,27 @@ def update_boundaries(
                 if "PCOD" not in pcode_field:
                     numrows = len(str(len(boundary_lyr.index)))
                     for i, _ in boundary_lyr.iterrows():
-                        boundary_lyr.loc[i, "ADM1_PCODE"] = boundary_lyr.loc[i, "ADM0_PCODE"] + \
-                                                            str(int(boundary_lyr.loc[i, pcode_field])).zfill(numrows)
+                        boundary_lyr.loc[i, "ADM1_PCODE"] = boundary_lyr.loc[
+                            i, "ADM0_PCODE"
+                        ] + str(int(boundary_lyr.loc[i, pcode_field])).zfill(numrows)
                 else:
-                    boundary_lyr["ADM1_PCODE"] = boundary_lyr[pcode_field].astype(int).astype(str)
+                    boundary_lyr["ADM1_PCODE"] = (
+                        boundary_lyr[pcode_field].astype(int).astype(str)
+                    )
             else:
                 boundary_lyr["ADM1_PCODE"] = boundary_lyr[pcode_field]
 
         boundary_lyr["ADM1_REF"] = boundary_lyr[name_field]
         boundary_lyr = drop_fields(boundary_lyr, req_fields)
-        boundary_lyr = boundary_lyr.dissolve(by=req_fields, as_index=False)  # dissolve to single features
+        boundary_lyr = boundary_lyr.dissolve(by=req_fields, as_index=False)
 
         if not pcode_field:
             logger.error(f"Could not map pcodes - assigning randomly!")
             numrows = len(str(len(boundary_lyr.index)))
             for i, _ in boundary_lyr.iterrows():
-                boundary_lyr.loc[i, "ADM1_PCODE"] = boundary_lyr.loc[i, "ADM0_PCODE"] + str(i+1).zfill(numrows)
+                boundary_lyr.loc[i, "ADM1_PCODE"] = boundary_lyr.loc[
+                    i, "ADM0_PCODE"
+                ] + str(i + 1).zfill(numrows)
 
         na_count = boundary_lyr["ADM1_REF"].isna().sum()
         if na_count > 0:
@@ -239,7 +292,7 @@ def update_boundaries(
         )
         boundary_lyr = boundary_topo.to_gdf(crs="EPSG:4326")
 
-        boundary_union = boundary_lyr.overlay(country_adm0, how="union")  # harmonize with country boundary
+        boundary_union = boundary_lyr.overlay(country_adm0, how="union")
         boundary_slivers = boundary_union[["ISO_3", "geometry"]][boundary_union["alpha_3"].isna()]
         boundary_union.dropna(axis=0, inplace=True)
         boundary_slivers = boundary_slivers.explode(ignore_index=True)
@@ -255,7 +308,7 @@ def update_boundaries(
 
     adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
 
-    adm1_centroid = GeoDataFrame(adm1_json.representative_point())  # convert to centroid
+    adm1_centroid = GeoDataFrame(adm1_json.representative_point())
     adm1_centroid.rename(columns={0: "geometry"}, inplace=True)
     adm1_centroid[req_fields] = adm1_json[req_fields]
     adm1_centroid = adm1_centroid.set_geometry("geometry")
@@ -263,14 +316,18 @@ def update_boundaries(
     if len(countries) > 0:
         if data_source == "hdx":
             logger.info(f"Updating HDX datasets")
-            adm1_file = join(temp_folder, "polbnda_adm1_1m_ocha.geojson")  # save file to disk
+            adm1_file = join(temp_folder, "polbnda_adm1_1m_ocha.geojson")
             adm1_json.to_file(adm1_file, driver="GeoJSON")
             centroid_file = join(temp_folder, "polbndp_adm1_1m_ocha.geojson")
             adm1_centroid.to_file(centroid_file, driver="GeoJSON")
 
-            resource_a = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbnda_adm1")[0]
+            resource_a = find_resource(
+                configuration["boundaries"]["dataset"], "geojson", kw="polbnda_adm1"
+            )[0]
             resource_a.set_file_to_upload(adm1_file)
-            resource_c = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbndp_adm1")[0]
+            resource_c = find_resource(
+                configuration["boundaries"]["dataset"], "geojson", kw="polbndp_adm1"
+            )[0]
             resource_c.set_file_to_upload(centroid_file)
 
             try:
@@ -302,14 +359,18 @@ def update_boundaries(
                 configuration["mapbox"][visualization]["polbnda_adm1"]["mapid"],
                 mapbox_auth,
                 configuration["mapbox"][visualization]["polbnda_adm1"]["name"],
-                json_to_upload=adm1_json[adm1_json["alpha_3"].isin(configuration["adm1"][visualization])],
+                json_to_upload=adm1_json[
+                    adm1_json["alpha_3"].isin(configuration["adm1"][visualization])
+                ],
                 temp_folder=temp_folder,
             )
             replace_mapbox_tileset(
                 configuration["mapbox"][visualization]["polbndp_adm1"]["mapid"],
                 mapbox_auth,
                 configuration["mapbox"][visualization]["polbndp_adm1"]["name"],
-                json_to_upload=adm1_centroid[adm1_centroid["alpha_3"].isin(configuration["adm1"][visualization])],
+                json_to_upload=adm1_centroid[
+                    adm1_centroid["alpha_3"].isin(configuration["adm1"][visualization])
+                ],
                 temp_folder=temp_folder,
             )
             # to_upload = adm0_json.copy(deep=True)
@@ -344,15 +405,19 @@ def update_boundaries(
                 configuration["mapbox"][visualization]["polbndl_int"]["mapid"],
                 mapbox_auth,
                 configuration["mapbox"][visualization]["polbndl_int"]["name"],
-                json_to_upload=adm0_l_json[(adm0_l_json["BDY_CNT01"].isin(configuration["adm0"][visualization])) |
-                                           (adm0_l_json["BDY_CNT02"].isin(configuration["adm0"][visualization]))],
+                json_to_upload=adm0_l_json[
+                    (adm0_l_json["BDY_CNT01"].isin(configuration["adm0"][visualization]))
+                    | (adm0_l_json["BDY_CNT02"].isin(configuration["adm0"][visualization]))
+                ],
                 temp_folder=temp_folder,
             )
             replace_mapbox_tileset(
                 configuration["mapbox"][visualization]["polbndp_int"]["mapid"],
                 mapbox_auth,
                 configuration["mapbox"][visualization]["polbndp_int"]["name"],
-                json_to_upload=adm0_c_json[adm0_c_json["ISO_3"].isin(configuration["adm0"][visualization])],
+                json_to_upload=adm0_c_json[
+                    adm0_c_json["ISO_3"].isin(configuration["adm0"][visualization])
+                ],
                 temp_folder=temp_folder,
             )
 
@@ -362,7 +427,11 @@ def update_boundaries(
         for _, row in adm1_json.iterrows():
             if row["alpha_3"] in configuration["adm1"][visualization]:
                 new_name = row["ADM1_REF"].replace("-", " ").replace("`", "")
-                new_name = normalize("NFKD", new_name).encode("ascii", "ignore").decode("ascii")
+                new_name = (
+                    normalize("NFKD", new_name)
+                    .encode("ascii", "ignore")
+                    .decode("ascii")
+                )
                 attributes.append(
                     {
                         "country": row["ADM0_REF"],
@@ -373,31 +442,39 @@ def update_boundaries(
                 )
         attributes = sorted(attributes, key=lambda i: (i["country"], i["name"]))
 
-        with open(join("saved_outputs", f"adm1-attributes-{visualization}.txt"), "w") as f:
+        with open(
+            join("saved_outputs", f"adm1-attributes-{visualization}.txt"), "w"
+        ) as f:
             for row in attributes:
                 if "," in row["name"]:
                     row["name"] = '"' + row["name"] + '"'
-                if "'" in row["name"]:
-                    row["name"] = row["name"].replace("'", "")
                 f.write("- %s\n" % str(row).replace("'", "").replace("|", "'"))
 
     logger.info("Updated admin1 lookups")
-    
+
     # create regional bb geojson
     logger.info("Updating regional bbox jsons")
     for visualization in visualizations:
-        regional_file = join("saved_outputs", f"ocha-regions-bbox-{visualization}.geojson")
+        regional_file = join(
+            "saved_outputs", f"ocha-regions-bbox-{visualization}.geojson"
+        )
 
         adm0_region = adm0_json.copy(deep=True)
-        adm0_region = adm0_region[(adm0_region["ISO_3"].isin(configuration["adm0"][visualization])) |
-                                  (adm0_region["Color_Code"].isin(configuration["adm0"][visualization]))]
-        adm0_region.loc[adm0_region["ISO_3"] == "XXX", "ISO_3"] = adm0_region.loc[adm0_region["ISO_3"] == "XXX",
-                                                                                  "Color_Code"]
-        adm0_region.loc[adm0_region["ISO_3"].isna(), "ISO_3"] = adm0_region.loc[adm0_region["ISO_3"].isna(),
-                                                                                "Color_Code"]
+        adm0_region = adm0_region[
+            (adm0_region["ISO_3"].isin(configuration["adm0"][visualization]))
+            | (adm0_region["Color_Code"].isin(configuration["adm0"][visualization]))
+        ]
+        adm0_region.loc[adm0_region["ISO_3"] == "XXX", "ISO_3"] = adm0_region.loc[
+            adm0_region["ISO_3"] == "XXX", "Color_Code"
+        ]
+        adm0_region.loc[adm0_region["ISO_3"].isna(), "ISO_3"] = adm0_region.loc[
+            adm0_region["ISO_3"].isna(), "Color_Code"
+        ]
         adm0_region["region"] = ""
         adm0_region["HRPs"] = ""
-        adm0_region.loc[adm0_region["ISO_3"].isin(configuration["HRPs"]), "HRPs"] = "HRPs"
+        adm0_region.loc[
+            adm0_region["ISO_3"].isin(configuration["HRPs"]), "HRPs"
+        ] = "HRPs"
         regional_info = configuration["regional"]
         resource = find_resource(regional_info["dataset"], regional_info["format"])
         _, iterator = downloader.get_tabular_rows(resource[0]["url"], dict_form=True)
@@ -406,7 +483,9 @@ def update_boundaries(
                 adm0_region["ISO_3"] == row[regional_info["iso3"]], "region"
             ] = row[regional_info["region"]]
         adm0_dissolve = adm0_region.dissolve(by="region")
-        adm0_dissolve_HRPs = adm0_region[adm0_region["HRPs"] == "HRPs"].dissolve(by="HRPs")
+        adm0_dissolve_HRPs = adm0_region[adm0_region["HRPs"] == "HRPs"].dissolve(
+            by="HRPs"
+        )
         adm0_dissolve = adm0_dissolve.append(adm0_dissolve_HRPs)
         adm0_dissolve = adm0_dissolve.bounds
         adm0_dissolve["geometry"] = [
@@ -423,10 +502,15 @@ def update_boundaries(
         adm0_region = adm0_dissolve.to_json(show_bbox=True, drop_id=True)
         adm0_region = loads(adm0_region)
         for i in reversed(range(len(adm0_region["features"]))):
-            if adm0_region["features"][i]["properties"]["tbl_regcov_2020_ocha_Field3"] == "NO COVERAGE":
+            if (
+                adm0_region["features"][i]["properties"]["tbl_regcov_2020_ocha_Field3"] == "NO COVERAGE"
+            ):
                 adm0_region["features"].remove(adm0_region["features"][i])
         adm0_region["name"] = "ocha regions - bbox"
-        adm0_region["crs"] = {"type": "name", "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"}}
+        adm0_region["crs"] = {
+            "type": "name",
+            "properties": {"name": "urn:ogc:def:crs:OGC:1.3:CRS84"},
+        }
         replace_json(adm0_region, regional_file)
 
     logger.info("Updated regional bbox jsons")
