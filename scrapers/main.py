@@ -6,7 +6,8 @@ from scrapers.boundaries import update_boundaries
 from scrapers.health_facilities import update_health_facilities
 from scrapers.population import update_population
 from scrapers.utilities.mapbox_functions import download_from_mapbox
-from scrapers.utilities.helper_functions import find_resource, download_unzip_read_data
+from scrapers.utilities.hdx_functions import find_resource, download_unzip_read_data
+
 logger = logging.getLogger(__name__)
 
 

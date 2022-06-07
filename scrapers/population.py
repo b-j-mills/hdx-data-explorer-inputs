@@ -3,7 +3,7 @@ import re
 from os.path import join
 
 from hdx.data.hdxobject import HDXError
-from scrapers.utilities.helper_functions import find_resource, update_csv_resource
+from scrapers.utilities.hdx_functions import find_resource, update_csv_resource
 
 logger = logging.getLogger()
 

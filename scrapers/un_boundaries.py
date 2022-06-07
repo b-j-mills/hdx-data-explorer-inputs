@@ -4,7 +4,7 @@ from os.path import join
 from geojson import load
 from geopandas import GeoDataFrame
 from scrapers.utilities.mapbox_functions import replace_mapbox_dataset
-from scrapers.utilities.helper_functions import find_resource
+from scrapers.utilities.hdx_functions import find_resource
 from hdx.data.hdxobject import HDXError
 
 logger = logging.getLogger()

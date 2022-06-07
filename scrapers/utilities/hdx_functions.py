@@ -1,7 +1,6 @@
 import logging
 import re
 from glob import glob
-from json import dump
 from os import remove
 from os.path import join, dirname
 from zipfile import ZipFile, BadZipFile
@@ -85,15 +84,6 @@ def download_unzip_read_data(resource, file_type=None, unzip=False, read=False):
     return out_files
 
 
-def replace_json(new_data, data_path):
-    try:
-        remove(data_path)
-    except FileNotFoundError:
-        logger.info("File does not exist - creating!")
-    with open(data_path, "w") as f_open:
-        dump(new_data, f_open)
-
-
 def update_csv_resource(resource, downloader, new_adm1_data, countries):
     try:
         orig_data = downloader.download_tabular_rows_as_dicts(resource["url"])
@@ -111,11 +101,3 @@ def update_csv_resource(resource, downloader, new_adm1_data, countries):
     adm1_data.sort_values(by=["ADM1_PCODE"], inplace=True)
 
     return adm1_data
-
-
-def drop_fields(df, keep_fields):
-    df = df.drop(
-        [f for f in df.columns if f not in keep_fields and f.lower() != "geometry"],
-        axis=1,
-    )
-    return df

@@ -3,7 +3,7 @@ from os.path import join
 from pandas import DataFrame
 
 from hdx.data.hdxobject import HDXError
-from scrapers.utilities.helper_functions import (
+from scrapers.utilities.hdx_functions import (
     find_resource,
     download_unzip_read_data,
     update_csv_resource,
