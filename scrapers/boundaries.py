@@ -312,10 +312,27 @@ def update_boundaries(
                 json_to_upload=adm1_centroid[adm1_centroid["alpha_3"].isin(configuration["adm1"][visualization])],
                 temp_folder=temp_folder,
             )
-            to_upload = adm0_json.copy(deep=True)
-            to_upload = to_upload[(to_upload["ISO_3"].isin(configuration["adm0"][visualization])) |
-                                  (to_upload["Color_Code"].isin(configuration["adm0"][visualization]))]
-            to_upload.loc[to_upload["ISO_3"] == "XXX", "ISO_3"] = to_upload.loc[to_upload["ISO_3"] == "XXX", "Color_Code"]
+            # to_upload = adm0_json.copy(deep=True)
+            to_upload = adm0_json_lr.copy(deep=True)
+            to_upload = to_upload[
+                (to_upload["ISO_3"].isin(configuration["adm0"][visualization]))
+                | (to_upload["Color_Code"].isin(configuration["adm0"][visualization]))
+            ]
+            to_upload.loc[to_upload["ISO_3"] == "XXX", "ISO_3"] = to_upload.loc[
+                to_upload["ISO_3"] == "XXX", "Color_Code"
+            ]
+            to_upload.loc[to_upload["ISO_3"].isna(), "ISO_3"] = to_upload.loc[
+                to_upload["ISO_3"].isna(), "Color_Code"
+            ]
+            to_upload = to_upload.dissolve(by="ISO_3")
+            to_upload["ISO_3"] = to_upload.index
+            to_upload.reset_index(drop=True, inplace=True)
+            to_upload = drop_fields(to_upload, ["ISO_3"])
+            to_upload = merge(
+                to_upload,
+                adm0_json_lr[["ISO_3", "STATUS", "Color_Code", "Terr_ID", "Terr_Name"]],
+                on="ISO_3",
+            )
             replace_mapbox_tileset(
                 configuration["mapbox"][visualization]["polbnda_int"]["mapid"],
                 mapbox_auth,
