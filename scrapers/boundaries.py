@@ -52,7 +52,7 @@ def update_boundaries(
     # download all datasets that are needed
     if data_source == "hdx":
         resource = find_resource(
-            configuration["boundaries"]["dataset"], "geojson", kw="polbnda_int"
+            configuration["boundaries"]["dataset"], "geojson", kw="polbnda_int_1m"
         )
         if not resource:
             return None
@@ -98,11 +98,18 @@ def update_boundaries(
 
     if data_source == "mapbox":
         adm0_json = download_from_mapbox(
-            configuration["mapbox"]["global"]["polbnda_int"], mapbox_auth
+            configuration["mapbox"]["global"]["polbnda_int_1m"], mapbox_auth
         )
         if isinstance(adm0_json, type(None)):
             return None
         adm0_json = GeoDataFrame.from_features(adm0_json["features"])
+
+        adm0_json_lr = download_from_mapbox(
+            configuration["mapbox"]["global"]["polbnda_int_15m"], mapbox_auth
+        )
+        if isinstance(adm0_json_lr, type(None)):
+            return None
+        adm0_json_lr = GeoDataFrame.from_features(adm0_json_lr["features"])
 
         adm0_l_json = download_from_mapbox(
             configuration["mapbox"]["global"]["polbndl_int"], mapbox_auth

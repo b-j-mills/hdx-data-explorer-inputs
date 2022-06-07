@@ -26,7 +26,8 @@ mapbox:
   global:
     polbnda_adm1: "cl2qdtczb0chh28lhq82qor46"
     polbndp_adm1: "cl2qdtxar0hwd29tkct32yp5a"
-    polbnda_int: "cl2qdreq4003128mppop3aidz"
+    polbnda_int_1m: "cl2qdreq4003128mppop3aidz"
+    polbnda_int_15m: "cl44eo2xg770229pkcsdvo9ko"
     polbndl_int: "cl2qdzz3p093827mm46l6ojzx"
     polbndp_int: "cl2qdugrr5e1r27t85am5vsgr"
     lake: "cl2qcnlcg002v28lnpi69l0rs"
