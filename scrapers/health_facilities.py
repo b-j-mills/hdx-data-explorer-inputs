@@ -4,8 +4,8 @@ from pandas import DataFrame
 
 from hdx.data.hdxobject import HDXError
 from scrapers.utilities.hdx_functions import (
-    find_resource,
     download_unzip_read_data,
+    find_resource,
     update_csv_resource,
 )
 
@@ -41,7 +41,9 @@ def update_health_facilities(
         if not health_resource:
             continue
 
-        health_shp_lyr = download_unzip_read_data(health_resource[0], "shp", unzip=True, read=True)
+        health_shp_lyr = download_unzip_read_data(
+            health_resource[0], "shp", unzip=True, read=True
+        )
         if isinstance(health_shp_lyr, type(None)):
             continue
 
@@ -50,15 +52,15 @@ def update_health_facilities(
         join_lyr = join_lyr.groupby("ADM1_PCODE").size()
         for pcode in join_lyr.index:
             hfs = join_lyr[pcode]
-            adm1_json.loc[
-                adm1_json["ADM1_PCODE"] == pcode, "Health_Facilities"
-            ] = hfs
+            adm1_json.loc[adm1_json["ADM1_PCODE"] == pcode, "Health_Facilities"] = hfs
 
     adm1_json = adm1_json.drop(columns="geometry")
     adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
     updated_countries = list(set(adm1_json["alpha_3"][~adm1_json["Health_Facilities"].isna()]))
-    adm1_json.loc[adm1_json["Health_Facilities"].isna() &
-                  adm1_json["alpha_3"].isin(updated_countries), "Health_Facilities"] = 0
+    adm1_json.loc[
+        adm1_json["Health_Facilities"].isna() & adm1_json["alpha_3"].isin(updated_countries),
+        "Health_Facilities",
+    ] = 0
     resource = find_resource(configuration["dataset"], "csv")[0]
     updated_resource = update_csv_resource(
         resource,
