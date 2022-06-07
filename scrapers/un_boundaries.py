@@ -3,17 +3,18 @@ from glob import glob
 from os.path import join
 from geojson import load
 from geopandas import GeoDataFrame
-from scrapers.utilities.mapbox_functions import replace_mapbox_dataset
-from scrapers.utilities.hdx_functions import find_resource
+
 from hdx.data.hdxobject import HDXError
+from scrapers.utilities.hdx_functions import find_resource
+from scrapers.utilities.mapbox_functions import replace_mapbox_dataset
 
 logger = logging.getLogger()
 
 
 def update_un_boundaries(
-        configuration,
-        mapbox_auth,
-        dest="HDX",
+    configuration,
+    mapbox_auth,
+    dest="HDX",
 ):
     logger.info(f"Uploading datasets to {dest}")
 
@@ -28,7 +29,9 @@ def update_un_boundaries(
 
         if dest.lower() == "hdx":
             # update in HDX
-            resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw=dataset_name)
+            resource = find_resource(
+                configuration["boundaries"]["dataset"], "geojson", kw=dataset_name
+            )
             try:
                 resource = resource[0]
             except IndexError:
