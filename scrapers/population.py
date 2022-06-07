@@ -48,7 +48,9 @@ def update_population(
         if len(pop_resource) > 1:
             logger.info(f"Found multiple resources for {iso}")
 
-        headers, iterator = downloader.get_tabular_rows(pop_resource[0]["url"], dict_form=True)
+        headers, iterator = downloader.get_tabular_rows(
+            pop_resource[0]["url"], dict_form=True
+        )
 
         pcode_header = None
         pop_header = None
@@ -114,7 +116,9 @@ def update_population(
 
     for index, row in adm1_json.iterrows():
         if not row["Population"]:
-            logger.info(f"Could not find unit {row['ADM1_PCODE']} in statistics for {row['alpha_3']}")
+            logger.info(
+                f"Could not find unit {row['ADM1_PCODE']} in statistics for {row['alpha_3']}"
+            )
 
     adm1_json.drop(columns="geometry", inplace=True)
     adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
