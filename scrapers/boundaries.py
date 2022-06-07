@@ -421,7 +421,7 @@ def update_boundaries(
         attributes = list()
         for _, row in adm1_json.iterrows():
             if row["alpha_3"] in configuration["adm1"][visualization]:
-                new_name = row["ADM1_REF"].replace("-", " ").replace("`", "")
+                new_name = row["ADM1_REF"].replace("-", " ").replace("`", "").replace("'", "")
                 new_name = (
                     normalize("NFKD", new_name)
                     .encode("ascii", "ignore")
