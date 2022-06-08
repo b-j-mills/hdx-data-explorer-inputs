@@ -135,4 +135,5 @@ dmypy.json
 scratch/
 *.log
 .DS_Store
-data_to_upload/
+data_to_upload/*
+!data_to_upload/.gitkeep
