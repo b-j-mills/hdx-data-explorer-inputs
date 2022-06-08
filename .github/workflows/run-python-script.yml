@@ -27,8 +27,15 @@ jobs:
     - name: Run script
       env:
         HDX_KEY: ${{ secrets.HDX_KEY }}
+        USER_AGENT: ${{ secrets.USER_AGENT }}
         PREPREFIX: ${{ secrets.PREPREFIX }}
+        HDX_SITE: ${{ secrets.HDX_SITE }}
+        SCRAPERS_TO_RUN: ${{ secrets.SCRAPERS_TO_RUN }}
+        COUNTRIES: ${{ secrets.COUNTRIES }}
+        VISUALIZATIONS: ${{ secrets.VISUALIZATIONS }}
+        UPDATE_TILESETS: ${{ secrets.UPDATE_TILESETS }}
         MAPBOX_AUTH: ${{ secrets.MAPBOX_AUTH }}
+        DATA_SOURCE: ${{ secrets.DATA_SOURCE }}
       run: |
         python run.py
     - name: Commit updated data bundle

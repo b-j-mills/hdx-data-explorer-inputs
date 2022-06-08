@@ -2,7 +2,7 @@ import argparse
 import logging
 import warnings
 from os import getenv
-from os.path import join
+from os.path import expanduser, join
 from shapely.errors import ShapelyDeprecationWarning
 
 from hdx.api.configuration import Configuration
@@ -15,6 +15,8 @@ from scrapers.main import get_indicators
 setup_logging()
 logger = logging.getLogger(__name__)
 warnings.filterwarnings("ignore", category=ShapelyDeprecationWarning)
+
+lookup = "hdx-scraper-data-explorer-inputs"
 
 
 def parse_args():
@@ -34,13 +36,13 @@ def parse_args():
 
 
 def main(
-        scrapers_to_run,
-        countries,
-        visualizations,
-        mapbox_auth,
-        data_source,
-        update_tilesets,
-        **ignore,
+    scrapers_to_run,
+    countries,
+    visualizations,
+    mapbox_auth,
+    data_source,
+    update_tilesets,
+    **ignore,
 ):
     logger.info(f"##### hdx-viz-data-inputs ####")
     configuration = Configuration.read()
@@ -50,7 +52,7 @@ def main(
                 logger.info(f"Updating only scrapers: {scrapers_to_run}")
             if visualizations:
                 logger.info(f"Updating only visualizations: {visualizations}")
-            countries_to_save = get_indicators(
+            get_indicators(
                 configuration,
                 downloader,
                 temp_folder,
@@ -71,34 +73,42 @@ if __name__ == "__main__":
     user_agent = args.user_agent
     if user_agent is None:
         user_agent = getenv("USER_AGENT")
-        if user_agent is None:
-            user_agent = "hdx-scraper-data-explorers"
     preprefix = args.preprefix
     if preprefix is None:
         preprefix = getenv("PREPREFIX")
     hdx_site = args.hdx_site
     if hdx_site is None:
         hdx_site = getenv("HDX_SITE", "prod")
-    if args.scrapers:
-        scrapers_to_run = args.scrapers.split(",")
-    else:
-        scrapers_to_run = None
-    if args.countries:
-        countries = args.countries.split(",")
-    else:
-        countries = None
-    if args.visualizations:
-        visualizations = args.visualizations.split(",")
-    else:
-        visualizations = None
-    update_tilesets = False
-    if args.update_tilesets:
-        if args.update_tilesets.lower() == "true":
+    scrapers_to_run = args.scrapers
+    if scrapers_to_run is None:
+        scrapers_to_run = getenv("SCRAPERS_TO_RUN", "population,health_facilities")
+    if scrapers_to_run:
+        scrapers_to_run = scrapers_to_run.split(",")
+    countries = args.countries
+    if countries is None:
+        countries = getenv("COUNTRIES", None)
+    if countries:
+        countries = countries.split(",")
+    visualizations = args.visualizations
+    if visualizations is None:
+        visualizations = getenv("VISUALIZATIONS", "all")
+    if visualizations:
+        visualizations = visualizations.split(",")
+    update_tilesets = args.update_tilesets
+    if update_tilesets is None:
+        update_tilesets = getenv("UPDATE_TILESETS", "false")
+    if update_tilesets:
+        if update_tilesets.lower() == "true":
             update_tilesets = True
+        else:
+            update_tilesets = False
     mapbox_auth = args.mapbox_auth
     if mapbox_auth is None:
-        mapbox_auth = getenv("MAPBOX_AUTH")
-    data_source = args.data_source.lower()
+        mapbox_auth = getenv("MAPBOX_AUTH", None)
+    data_source = args.data_source
+    if data_source is None:
+        data_source = getenv("DATA_SOURCE", "hdx")
+    data_source = data_source.lower()
     if data_source not in ["hdx", "mapbox"]:
         logger.info("Unknown data source, defaulting to HDX")
         data_source = "hdx"
@@ -106,6 +116,8 @@ if __name__ == "__main__":
         main,
         hdx_key=hdx_key,
         user_agent=user_agent,
+        user_agent_config_yaml=join(expanduser("~"), ".useragents.yml"),
+        user_agent_lookup=lookup,
         preprefix=preprefix,
         hdx_site=hdx_site,
         project_config_yaml=join("config", "project_configuration.yml"),
