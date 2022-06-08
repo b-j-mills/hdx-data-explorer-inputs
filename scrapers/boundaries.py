@@ -142,6 +142,7 @@ def update_boundaries(
 
         logger.info(f"Processing admin1 boundaries for {iso}")
 
+        # select single country boundary (including disputed areas), cut out water, and dissolve
         country_adm0 = adm0_json.copy(deep=True)
         country_adm0 = country_adm0.loc[
             (country_adm0["ISO_3"] == iso) | (country_adm0["Color_Code"] == iso)
@@ -153,6 +154,7 @@ def update_boundaries(
         if not country_adm0.crs:
             country_adm0 = country_adm0.set_crs(crs="EPSG:4326")
 
+        # find the correct admin boundary resource
         dataset_name = exceptions.get(iso)
         resource_name = resource_exceptions.get(iso)
         if not resource_name:
@@ -187,6 +189,7 @@ def update_boundaries(
                 logger.error(f"Could not distinguish between resources for {iso}")
                 continue
 
+        # find the correct admin boundary shapefile in the downloaded zip
         boundary_shp = download_unzip_read_data(boundary_resource[0], "shp", unzip=True)
         if not boundary_shp:
             continue
@@ -224,7 +227,7 @@ def update_boundaries(
         if not boundary_lyr.crs.name == "WGS 84":
             boundary_lyr = boundary_lyr.to_crs(crs="EPSG:4326")
 
-        # calculate fields
+        # calculate fields, finding admin1 name and pcode fields from config
         boundary_lyr["alpha_3"] = iso.upper()
         boundary_lyr["ADM0_REF"] = Country.get_country_name_from_iso3(iso)
         boundary_lyr["ADM0_PCODE"] = Country.get_iso2_from_iso3(iso)
@@ -257,6 +260,7 @@ def update_boundaries(
         if not pcode_field:
             boundary_lyr["ADM1_PCODE"] = ""
 
+        # calculate text pcodes (if pcod is not in field name or there were no codes in the boundaries, create pcodes)
         if pcode_field:
             if is_numeric_dtype(boundary_lyr[pcode_field]):
                 if "PCOD" not in pcode_field:
@@ -288,7 +292,9 @@ def update_boundaries(
         if na_count > 0:
             logger.warning(f"Found {na_count} null values in {iso} boundary")
 
-        boundary_topo = Topology(boundary_lyr)  # simplify
+        # simplify geometry of boundaries
+        # TODO: possibly identify small scale boundaries that don't need simplifying
+        boundary_topo = Topology(boundary_lyr)
         boundary_topo = boundary_topo.toposimplify(
             epsilon=0.01,
             simplify_algorithm="dp",
@@ -296,6 +302,7 @@ def update_boundaries(
         )
         boundary_lyr = boundary_topo.to_gdf(crs="EPSG:4326")
 
+        # harmonize international boundary with UN admin0 country boundary
         boundary_union = boundary_lyr.overlay(country_adm0, how="union")
         boundary_slivers = boundary_union[["ISO_3", "geometry"]][boundary_union["alpha_3"].isna()]
         boundary_union.dropna(axis=0, inplace=True)
@@ -312,6 +319,7 @@ def update_boundaries(
 
     adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
 
+    # convert polygon boundaries to point
     adm1_centroid = GeoDataFrame(adm1_json.representative_point())
     adm1_centroid.rename(columns={0: "geometry"}, inplace=True)
     adm1_centroid[req_fields] = adm1_json[req_fields]
@@ -377,6 +385,7 @@ def update_boundaries(
                 ],
                 temp_folder=temp_folder,
             )
+            # admin0 boundaries should include disputed areas and be dissolved to single features
             # to_upload = adm0_json.copy(deep=True)
             to_upload = adm0_json_lr.copy(deep=True)
             to_upload = to_upload[
@@ -456,13 +465,13 @@ def update_boundaries(
 
     logger.info("Updated admin1 lookups")
 
-    # create regional bb geojson
     logger.info("Updating regional bbox jsons")
     for visualization in visualizations:
         regional_file = join(
             "saved_outputs", f"ocha-regions-bbox-{visualization}.geojson"
         )
 
+        # select only territories or disputed areas in visualization
         adm0_region = adm0_json.copy(deep=True)
         adm0_region = adm0_region[
             (adm0_region["ISO_3"].isin(configuration["adm0"][visualization]))
@@ -474,6 +483,7 @@ def update_boundaries(
         adm0_region.loc[adm0_region["ISO_3"].isna(), "ISO_3"] = adm0_region.loc[
             adm0_region["ISO_3"].isna(), "Color_Code"
         ]
+        # assign region and HRP status
         adm0_region["region"] = ""
         adm0_region["HRPs"] = ""
         adm0_region.loc[
@@ -486,11 +496,13 @@ def update_boundaries(
             adm0_region.loc[
                 adm0_region["ISO_3"] == row[regional_info["iso3"]], "region"
             ] = row[regional_info["region"]]
+        # dissolve boundaries by region and HRP
         adm0_dissolve = adm0_region.dissolve(by="region")
         adm0_dissolve_HRPs = adm0_region[adm0_region["HRPs"] == "HRPs"].dissolve(
             by="HRPs"
         )
         adm0_dissolve = adm0_dissolve.append(adm0_dissolve_HRPs)
+        # convert to bounding box
         adm0_dissolve = adm0_dissolve.bounds
         adm0_dissolve["geometry"] = [
             box(l, b, r, t)
@@ -505,6 +517,7 @@ def update_boundaries(
         adm0_dissolve["tbl_regcov_2020_ocha_Field3"] = adm0_dissolve.index
         adm0_region = adm0_dissolve.to_json(show_bbox=True, drop_id=True)
         adm0_region = loads(adm0_region)
+        # remove any "NO_COVERAGE" regions
         for i in reversed(range(len(adm0_region["features"]))):
             if (
                 adm0_region["features"][i]["properties"]["tbl_regcov_2020_ocha_Field3"] == "NO COVERAGE"
