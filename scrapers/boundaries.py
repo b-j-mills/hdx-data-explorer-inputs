@@ -25,7 +25,7 @@ def update_boundaries(
     adm1_json,
     data_source,
     update_tilesets,
-    visualizations=None,
+    visualizations,
     countries=None,
 ):
     exceptions = configuration["boundaries"].get("dataset_exceptions")
@@ -37,6 +37,8 @@ def update_boundaries(
         resource_exceptions = {}
 
     if not visualizations:
+        visualizations = [key for key in configuration["adm0"]]
+    if visualizations[0].lower() == "all":
         visualizations = [key for key in configuration["adm0"]]
 
     if not countries:
