@@ -51,4 +51,5 @@ def main(countries):
 
 
 if __name__ == "__main__":
-    main([])  # fill in country list here
+    countries = []  # fill in country list here
+    main(countries)
