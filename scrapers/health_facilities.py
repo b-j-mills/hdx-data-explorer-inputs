@@ -61,7 +61,12 @@ def update_health_facilities(
         adm1_json["Health_Facilities"].isna() & adm1_json["alpha_3"].isin(updated_countries),
         "Health_Facilities",
     ] = 0
-    resource = find_resource(configuration["dataset"], "csv")[0]
+    resource = find_resource(configuration["dataset"], "csv")
+    try:
+        resource = resource[0]
+    except IndexError:
+        logger.error(f"Could not find resource")
+        return
     updated_resource = update_csv_resource(
         resource,
         downloader,
@@ -76,4 +81,4 @@ def update_health_facilities(
     except HDXError:
         logger.exception("Could not update health facilities resource")
 
-    return countries
+    return

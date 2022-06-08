@@ -27,7 +27,7 @@ def get_indicators(
         scrapers_to_run = ["boundaries", "health_facilities", "population"]
 
     if "un_boundaries" in scrapers_to_run:
-        un_boundaries = update_un_boundaries(
+        update_un_boundaries(
             configuration,
             mapbox_auth,
         )
@@ -42,16 +42,16 @@ def get_indicators(
     if data_source == "hdx":
         resource = find_resource(configuration["boundaries"]["dataset"], "geojson", kw="polbnda_adm1")
         if not resource:
-            return None
+            return
         adm1_json = download_unzip_read_data(resource[0], file_type="geojson", unzip=False, read=True)
     if data_source == "mapbox":
         adm1_json = download_from_mapbox(configuration["mapbox"]["global"]["polbnda_adm1"], mapbox_auth)
         if isinstance(adm1_json, type(None)):
-            return None
+            return
         adm1_json = GeoDataFrame.from_features(adm1_json["features"])
 
     if "boundaries" in scrapers_to_run:
-        boundaries = update_boundaries(
+        update_boundaries(
             configuration,
             downloader,
             mapbox_auth,
@@ -63,7 +63,7 @@ def get_indicators(
             countries,
         )
     if "population" in scrapers_to_run:
-        population = update_population(
+        update_population(
             configuration,
             downloader,
             adm1_countries,
@@ -72,7 +72,7 @@ def get_indicators(
             countries,
         )
     if "health_facilities" in scrapers_to_run:
-        health_facilities = update_health_facilities(
+        update_health_facilities(
             configuration,
             downloader,
             adm1_countries,
@@ -81,4 +81,4 @@ def get_indicators(
             countries,
         )
 
-    return adm1_countries
+    return

@@ -36,12 +36,14 @@ def update_un_boundaries(
                 resource = resource[0]
             except IndexError:
                 logger.error(f"Could not find resource")
+                continue
             resource.set_file_to_upload(in_files[0])
 
             try:
                 resource.update_in_hdx()
             except HDXError:
                 logger.exception("Could not update resource")
+                continue
 
         if dest.lower() == "mapbox":
             dataset_mapid = mapids[dataset_name]
@@ -52,4 +54,4 @@ def update_un_boundaries(
             replace_mapbox_dataset(dataset_mapid, mapbox_auth, json_to_upload=in_json)
             logger.info(f"Finished processing {dataset_name}")
 
-    return mapids
+    return

@@ -57,7 +57,7 @@ def update_boundaries(
             configuration["boundaries"]["dataset"], "geojson", kw="polbnda_int_1m"
         )
         if not resource:
-            return None
+            return
         adm0_json = download_unzip_read_data(
             resource[0], file_type="geojson", unzip=False, read=True
         )
@@ -66,7 +66,7 @@ def update_boundaries(
             configuration["boundaries"]["dataset"], "geojson", kw="polbnda_int_15m"
         )
         if not resource:
-            return None
+            return
         adm0_json_lr = download_unzip_read_data(
             resource[0], file_type="geojson", unzip=False, read=True
         )
@@ -75,7 +75,7 @@ def update_boundaries(
             configuration["boundaries"]["dataset"], "geojson", kw="polbndl_int"
         )
         if not resource:
-            return None
+            return
         adm0_l_json = download_unzip_read_data(
             resource[0], file_type="geojson", unzip=False, read=True
         )
@@ -84,7 +84,7 @@ def update_boundaries(
             configuration["boundaries"]["dataset"], "geojson", kw="polbndp_int"
         )
         if not resource:
-            return None
+            return
         adm0_c_json = download_unzip_read_data(
             resource[0], file_type="geojson", unzip=False, read=True
         )
@@ -93,7 +93,7 @@ def update_boundaries(
             configuration["boundaries"]["dataset"], "geojson", kw="lake"
         )
         if not resource:
-            return None
+            return
         water_json = download_unzip_read_data(
             resource[0], file_type="geojson", unzip=False, read=True
         )
@@ -103,35 +103,35 @@ def update_boundaries(
             configuration["mapbox"]["global"]["polbnda_int_1m"], mapbox_auth
         )
         if isinstance(adm0_json, type(None)):
-            return None
+            return
         adm0_json = GeoDataFrame.from_features(adm0_json["features"])
 
         adm0_json_lr = download_from_mapbox(
             configuration["mapbox"]["global"]["polbnda_int_15m"], mapbox_auth
         )
         if isinstance(adm0_json_lr, type(None)):
-            return None
+            return
         adm0_json_lr = GeoDataFrame.from_features(adm0_json_lr["features"])
 
         adm0_l_json = download_from_mapbox(
             configuration["mapbox"]["global"]["polbndl_int"], mapbox_auth
         )
         if isinstance(adm0_l_json, type(None)):
-            return None
+            return
         adm0_l_json = GeoDataFrame.from_features(adm0_l_json["features"])
 
         adm0_c_json = download_from_mapbox(
             configuration["mapbox"]["global"]["polbndp_int"], mapbox_auth
         )
         if isinstance(adm0_c_json, type(None)):
-            return None
+            return
         adm0_c_json = GeoDataFrame.from_features(adm0_c_json["features"])
 
         water_json = download_from_mapbox(
             configuration["mapbox"]["global"]["lake"], mapbox_auth
         )
         if isinstance(water_json, type(None)):
-            return None
+            return
         water_json = GeoDataFrame.from_features(water_json["features"])
 
     req_fields = ["alpha_3", "ADM0_REF", "ADM0_PCODE", "ADM1_REF", "ADM1_PCODE"]
@@ -519,4 +519,4 @@ def update_boundaries(
 
     logger.info("Updated regional bbox jsons")
 
-    return countries
+    return

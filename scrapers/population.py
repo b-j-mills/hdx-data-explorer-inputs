@@ -123,7 +123,12 @@ def update_population(
     adm1_json.drop(columns="geometry", inplace=True)
     adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
     updated_countries = list(set(adm1_json["alpha_3"][~adm1_json["Population"].isna()]))
-    resource = find_resource(configuration["dataset"], "csv")[0]
+    resource = find_resource(configuration["dataset"], "csv")
+    try:
+        resource = resource[0]
+    except IndexError:
+        logger.error(f"Could not find population resource")
+        return
     updated_resource = update_csv_resource(
         resource,
         downloader,
@@ -138,4 +143,4 @@ def update_population(
     except HDXError:
         logger.exception("Could not update population resource")
 
-    return countries
+    return
