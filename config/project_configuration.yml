@@ -293,6 +293,21 @@ population_attribute_mappings:
     - "ADMIN1PCOD"
     - "ADMIN1PCODE"
     - "ADMN1CODE"
+  name:
+    - "BOTH_TOTAL"
+    - "BOTH_TOTL"
+    - "ENSEMBLE"
+    - "POPULATION_TOTAL"
+    - "T"
+    - "T_ALL"
+    - "T_TL"
+    - "TOTAL"
+    - "TOTAL_POP"
+  name_years:
+    - "BOTH_TOTL_Y"
+    - "POP_Y"
+    - "POPYUNFPA"
+    - "PROJ_Y"
 
 regional:
   format: "xlsx"

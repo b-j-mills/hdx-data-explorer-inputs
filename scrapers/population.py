@@ -51,7 +51,7 @@ def update_population(
         )
 
         pcode_header = None
-        pop_header = None
+        pop_header = []
         for header in headers:
             if not pcode_header:
                 if (
@@ -59,51 +59,35 @@ def update_population(
                     in configuration["population_attribute_mappings"]["pcode"]
                 ):
                     pcode_header = header
-            popmatch = bool(
-                re.search(
-                    "(population|both|total|proj|pop|ensemble)",
-                    header,
-                    re.IGNORECASE,
-                )
-            )
-            tmatch = bool(re.search("t", header, re.IGNORECASE))
-            sexyearmatch = bool(
-                re.search("_f|_m|m_|f_|year|female|male", header, re.IGNORECASE)
-            )
-            agematch = bool(
-                re.search("^\d{1,2}\D|(\D\d{1,2}\D)|(\D\d$)", header, re.IGNORECASE)
-            )
-            agewordmatch = bool(re.search("(age|adult)", header, re.IGNORECASE))
-            yearmatch = len(re.findall("\d{4}", header, re.IGNORECASE))
-            if (
-                (popmatch or tmatch)
-                and not sexyearmatch
-                and not agematch
-                and not agewordmatch
-                and yearmatch < 2
-            ):
-                if not pop_header:
-                    pop_header = header
-                elif popmatch:
-                    pop_header = header
-                if pop_header and yearmatch > 0:
-                    try:
-                        h1year = re.search("20\d{2}", pop_header).group(0)
-                    except AttributeError:
-                        logger.info(
-                            f"Not sure which header to pick: {pop_header}, {header}"
-                        )
-                        continue
-                    h2year = re.search("20\d{2}", header).group(0)
-                    if int(h2year) > int(h1year):
-                        pop_header = header
+            if header.upper() in configuration["population_attribute_mappings"]["name"]:
+                pop_header.append(header)
+            else:
+                yearmatch = re.findall("\d{4}", header, re.IGNORECASE)
+                if len(yearmatch) > 0:
+                    check_header = re.sub("\d{4}", "Y", header, re.IGNORECASE)
+                    if check_header.upper() in configuration["population_attribute_mappings"]["name_years"]:
+                        pop_header.append(header)
+
+        if len(pop_header) > 1:
+            yearmatches = [re.findall("\d{4}", header, re.IGNORECASE) for header in pop_header]
+            yearmatches = sum(yearmatches, [])
+            if len(yearmatches) == 0:
+                logger.info(f"Not sure which header to pick: {pop_header}")
+                continue
+            yearmatches = [int(y) for y in yearmatches]
+            maxyear = [h for h in pop_header if str(max(yearmatches)) in h]
+            if len(maxyear) != 1:
+                logger.info(f"Not sure which header to pick: {pop_header}")
+                continue
+            pop_header = maxyear
 
         if not pcode_header:
             logger.error(f"Could not find pcode header for {iso}")
             continue
-        if not pop_header:
+        if len(pop_header) != 1:
             logger.error(f"Could not find pop header for {iso}")
             continue
+        pop_header = pop_header[0]
 
         for row in iterator:
             pcode = row[pcode_header]
