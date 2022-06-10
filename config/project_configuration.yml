@@ -284,6 +284,16 @@ shapefile_attribute_mappings:
     - "ST"
     - "SHAPENAME"
 
+population_attribute_mappings:
+  pcode:
+    - "ADM1_CODE"
+    - "ADM1_PCODE"
+    - "ADM1CODE"
+    - "ADMIN1_CODE"
+    - "ADMIN1PCOD"
+    - "ADMIN1PCODE"
+    - "ADMN1CODE"
+
 regional:
   format: "xlsx"
   dataset: "unocha-office-locations"

@@ -12,19 +12,17 @@ def update_population(
     configuration, downloader, adm1_countries, adm1_json, temp_folder, countries=None
 ):
 
-    configuration = configuration["population"]
-
     if not countries:
         countries = adm1_countries
 
     if len(countries) == 1 and countries[0].lower() == "all":
         countries = adm1_countries
 
-    exceptions = configuration.get("dataset_exceptions")
+    exceptions = configuration["population"].get("dataset_exceptions")
     if not exceptions:
         exceptions = {}
 
-    resource_exceptions = configuration.get("resource_exceptions")
+    resource_exceptions = configuration["population"].get("resource_exceptions")
     if not resource_exceptions:
         resource_exceptions = {}
 
@@ -56,9 +54,10 @@ def update_population(
         pop_header = None
         for header in headers:
             if not pcode_header:
-                codematch = bool(re.match(".*p?code.*", header, re.IGNORECASE))
-                levelmatch = bool(re.match(".*1.*", header, re.IGNORECASE))
-                if codematch and levelmatch:
+                if (
+                    header.upper()
+                    in configuration["population_attribute_mappings"]["pcode"]
+                ):
                     pcode_header = header
             popmatch = bool(
                 re.search(
@@ -123,7 +122,7 @@ def update_population(
     adm1_json.drop(columns="geometry", inplace=True)
     adm1_json.sort_values(by=["ADM1_PCODE"], inplace=True)
     updated_countries = list(set(adm1_json["alpha_3"][~adm1_json["Population"].isna()]))
-    resource = find_resource(configuration["dataset"], "csv")
+    resource = find_resource(configuration["population"]["dataset"], "csv")
     try:
         resource = resource[0]
     except IndexError:
