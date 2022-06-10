@@ -35,7 +35,7 @@ def update_population(
         dataset_name = exceptions.get(iso)
         resource_name = resource_exceptions.get(iso)
         if not resource_name:
-            resource_name = "adm1"
+            resource_name = "adm(in)?1"
         if not dataset_name:
             dataset_name = f"cod-ps-{iso.lower()}"
 
@@ -44,7 +44,16 @@ def update_population(
             continue
 
         if len(pop_resource) > 1:
-            logger.info(f"Found multiple resources for {iso}")
+            yearmatches = [re.findall("\d{4}", r["name"], re.IGNORECASE) for r in pop_resource]
+            yearmatches = sum(yearmatches, [])
+            if len(yearmatches) > 0:
+                yearmatches = [int(y) for y in yearmatches]
+            maxyear = [r for r in pop_resource if str(max(yearmatches)) in r["name"]]
+            if len(maxyear) == 1:
+                pop_resource = maxyear
+
+        if len(pop_resource) > 1:
+            logger.info(f"Found multiple resources for {iso}, using first in list")
 
         headers, iterator = downloader.get_tabular_rows(
             pop_resource[0]["url"], dict_form=True
