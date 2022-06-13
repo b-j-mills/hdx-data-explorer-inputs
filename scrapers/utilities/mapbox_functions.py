@@ -3,6 +3,7 @@ from os.path import join
 from mapbox import Uploader, Datasets
 from time import sleep
 from geojson import loads, load
+from geopandas import GeoDataFrame
 
 logger = logging.getLogger()
 
@@ -53,7 +54,9 @@ def download_from_mapbox(mapid, mapbox_auth):
         if nogos_in_a_row >= 10:
             break
 
-    return feature_list
+    features = GeoDataFrame.from_features(feature_list["features"])
+
+    return features
 
 
 def replace_mapbox_tileset(mapid, mapbox_auth, name, path_to_upload=None, json_to_upload=None, temp_folder=None):

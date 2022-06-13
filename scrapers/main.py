@@ -1,5 +1,4 @@
 import logging
-from geopandas import GeoDataFrame
 
 from scrapers.un_boundaries import update_un_boundaries
 from scrapers.boundaries import update_boundaries
@@ -48,7 +47,6 @@ def get_indicators(
         adm1_json = download_from_mapbox(configuration["mapbox"]["global"]["polbnda_adm1"], mapbox_auth)
         if isinstance(adm1_json, type(None)):
             return
-        adm1_json = GeoDataFrame.from_features(adm1_json["features"])
 
     if "boundaries" in scrapers_to_run:
         update_boundaries(
