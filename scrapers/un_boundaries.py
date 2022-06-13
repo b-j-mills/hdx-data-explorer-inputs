@@ -1,8 +1,6 @@
 import logging
 from glob import glob
 from os.path import join
-from geojson import load
-from geopandas import GeoDataFrame
 
 from hdx.data.hdxobject import HDXError
 from scrapers.utilities.hdx_functions import find_resource
@@ -32,26 +30,20 @@ def update_un_boundaries(
             resource = find_resource(
                 configuration["boundaries"]["dataset"], "geojson", kw=dataset_name
             )
-            try:
-                resource = resource[0]
-            except IndexError:
-                logger.error(f"Could not find resource")
+            if not resource:
                 continue
-            resource.set_file_to_upload(in_files[0])
+
+            resource[0].set_file_to_upload(in_files[0])
 
             try:
-                resource.update_in_hdx()
+                resource[0].update_in_hdx()
             except HDXError:
                 logger.exception("Could not update resource")
                 continue
 
         if dest.lower() == "mapbox":
             dataset_mapid = mapids[dataset_name]
-
-            with open(in_files[0]) as f:
-                in_json = load(f)
-            in_json = GeoDataFrame.from_features(in_json["features"])
-            replace_mapbox_dataset(dataset_mapid, mapbox_auth, json_to_upload=in_json)
+            replace_mapbox_dataset(dataset_mapid, mapbox_auth, path_to_upload=in_files[0])
             logger.info(f"Finished processing {dataset_name}")
 
     return
