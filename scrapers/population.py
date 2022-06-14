@@ -53,7 +53,7 @@ def update_population(
                 pop_resource = maxyear
 
         if len(pop_resource) > 1:
-            logger.info(f"Found multiple resources for {iso}, using first in list")
+            logger.warning(f"Found multiple resources for {iso}, using first in list")
 
         headers, iterator = downloader.get_tabular_rows(
             pop_resource[0]["url"], dict_form=True
@@ -68,13 +68,13 @@ def update_population(
                     in configuration["population_attribute_mappings"]["pcode"]
                 ):
                     pcode_header = header
-            if header.upper() in configuration["population_attribute_mappings"]["name"]:
+            if header.upper() in configuration["population_attribute_mappings"]["pop"]:
                 pop_header.append(header)
             else:
                 yearmatch = re.findall("\d{4}", header, re.IGNORECASE)
                 if len(yearmatch) > 0:
                     check_header = re.sub("\d{4}", "Y", header, re.IGNORECASE)
-                    if check_header.upper() in configuration["population_attribute_mappings"]["name_years"]:
+                    if check_header.upper() in configuration["population_attribute_mappings"]["pop_with_years"]:
                         pop_header.append(header)
 
         if len(pop_header) > 1:

@@ -293,7 +293,7 @@ population_attribute_mappings:
     - "ADMIN1PCOD"
     - "ADMIN1PCODE"
     - "ADMN1CODE"
-  name:
+  pop:
     - "BOTH_TOTAL"
     - "BOTH_TOTL"
     - "ENSEMBLE"
@@ -303,7 +303,7 @@ population_attribute_mappings:
     - "T_TL"
     - "TOTAL"
     - "TOTAL_POP"
-  name_years:
+  pop_with_years:
     - "BOTH_TOTL_Y"
     - "POP_Y"
     - "POPYUNFPA"
