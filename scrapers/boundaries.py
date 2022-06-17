@@ -288,10 +288,9 @@ def update_boundaries(
             logger.warning(f"Found {na_count} null values in {iso} boundary")
 
         # simplify geometry of boundaries
-        # TODO: possibly identify small scale boundaries that don't need simplifying
         boundary_topo = Topology(boundary_lyr)
         boundary_topo = boundary_topo.toposimplify(
-            epsilon=0.01,
+            epsilon=0.0075,
             simplify_algorithm="dp",
             prevent_oversimplify=True,
         )
