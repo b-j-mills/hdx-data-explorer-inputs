@@ -65,7 +65,7 @@ def update_population(
                 pop = row["properties"]["sum"]
                 if pop:
                     pop = int(round(pop, 0))
-                adm1_json.loc[adm1_json["ADM1_PCODE"] == pcode, "Population"] = pop
+                    adm1_json.loc[adm1_json["ADM1_PCODE"] == pcode, "Population"] = pop
 
         if len(pop_resource) > 1:
             yearmatches = [re.findall("(?<!\d)\d{4}(?!\d)", r["name"], re.IGNORECASE) for r in pop_resource]
