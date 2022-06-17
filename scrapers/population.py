@@ -44,7 +44,7 @@ def update_population(
             continue
 
         if len(pop_resource) > 1:
-            yearmatches = [re.findall("\d{4}", r["name"], re.IGNORECASE) for r in pop_resource]
+            yearmatches = [re.findall("(?<!\d)\d{4}(?!\d)", r["name"], re.IGNORECASE) for r in pop_resource]
             yearmatches = sum(yearmatches, [])
             if len(yearmatches) > 0:
                 yearmatches = [int(y) for y in yearmatches]
@@ -71,14 +71,14 @@ def update_population(
             if header.upper() in configuration["population_attribute_mappings"]["pop"]:
                 pop_header.append(header)
             else:
-                yearmatch = re.findall("\d{4}", header, re.IGNORECASE)
+                yearmatch = re.findall("(?<!\d)\d{4}(?!\d)", header, re.IGNORECASE)
                 if len(yearmatch) > 0:
-                    check_header = re.sub("\d{4}", "Y", header, re.IGNORECASE)
+                    check_header = re.sub("(?<!\d)\d{4}(?!\d)", "Y", header, re.IGNORECASE)
                     if check_header.upper() in configuration["population_attribute_mappings"]["pop_with_years"]:
                         pop_header.append(header)
 
         if len(pop_header) > 1:
-            yearmatches = [re.findall("\d{4}", header, re.IGNORECASE) for header in pop_header]
+            yearmatches = [re.findall("(?<!\d)\d{4}(?!\d)", header, re.IGNORECASE) for header in pop_header]
             yearmatches = sum(yearmatches, [])
             if len(yearmatches) == 0:
                 logger.info(f"Not sure which header to pick: {pop_header}")
