@@ -12,9 +12,9 @@ logger = logging.getLogger()
 def update_un_boundaries(
     configuration,
     mapbox_auth,
-    dest="HDX",
 ):
-    logger.info(f"Uploading datasets to {dest}")
+    dests = ["hdx", "mapbox"]
+    logger.info(f"Uploading UN datasets to {', '.join(dests)}")
 
     mapids = configuration["mapbox"]["global"]
     for dataset_name in mapids:
@@ -25,7 +25,7 @@ def update_un_boundaries(
             logger.error("Found the wrong number of files - skipping!")
             continue
 
-        if dest.lower() == "hdx":
+        if "hdx" in dests:
             # update in HDX
             resource = find_resource(
                 configuration["boundaries"]["dataset"], "geojson", kw=dataset_name
@@ -34,16 +34,15 @@ def update_un_boundaries(
                 continue
 
             resource[0].set_file_to_upload(in_files[0])
-
             try:
                 resource[0].update_in_hdx()
             except HDXError:
-                logger.exception("Could not update resource")
-                continue
+                logger.error("Could not update resource in HDX!")
 
-        if dest.lower() == "mapbox":
+        if "mapbox" in dests:
             dataset_mapid = mapids[dataset_name]
             replace_mapbox_dataset(dataset_mapid, mapbox_auth, path_to_upload=in_files[0])
-            logger.info(f"Finished processing {dataset_name}")
+
+        logger.info(f"Finished processing {dataset_name}")
 
     return
