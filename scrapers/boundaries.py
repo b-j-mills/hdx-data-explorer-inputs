@@ -131,8 +131,8 @@ def update_boundaries(
 
     req_fields = ["alpha_3", "ADM0_REF", "ADM0_PCODE", "ADM1_REF", "ADM1_PCODE"]
     for iso in countries:
-        if iso == "UKR":
-            logger.info("Not processing UKR for now")
+        if iso in configuration["boundaries"]["do_not_process"]:
+            logger.warning(f"Not processing {iso} for now")
             continue
 
         logger.info(f"Processing admin1 boundaries for {iso}")

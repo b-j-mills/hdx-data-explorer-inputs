@@ -9,6 +9,9 @@ boundaries:
     MMR: "Myanmar State and Region Boundaries MIMU v9.3 shapefile"
     MOZ: "moz_adm_20190607b_SHP.zip"
     SYR: "SYR Administrative Divisions Shapefiles.zip"
+  do_not_process:
+    - BHR
+    - UKR
 
 health_facilities:
   dataset: "admin-1-health-facilities-for-data-explorers"
