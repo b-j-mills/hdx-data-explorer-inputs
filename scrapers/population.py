@@ -1,9 +1,12 @@
 import logging
 import re
 from os.path import join
+from rasterstats import zonal_stats
+from slugify import slugify
 
+from hdx.location.country import Country
 from hdx.data.hdxobject import HDXError
-from scrapers.utilities.hdx_functions import find_resource, update_csv_resource
+from scrapers.utilities.hdx_functions import download_unzip_read_data, find_resource, update_csv_resource
 
 logger = logging.getLogger()
 
@@ -41,7 +44,28 @@ def update_population(
 
         pop_resource = find_resource(dataset_name, "csv", kw=resource_name)
         if not pop_resource:
-            continue
+            dataset_name = f"worldpop-population-counts-for-{slugify(Country.get_country_name_from_iso3(iso))}"
+            pop_resource = find_resource(dataset_name, "geotiff", kw="(?<!\d)\d{4}_constrained")
+            if not pop_resource:
+                logger.warning(f"Could not find any population data for {iso}")
+                continue
+
+            pop_raster = download_unzip_read_data(pop_resource[0], file_type="tif")
+            if not pop_raster:
+                continue
+
+            pop_stats = zonal_stats(
+                vectors=adm1_json.loc[(adm1_json["alpha_3"] == iso)],
+                raster=pop_raster[0],
+                stats="sum",
+                geojson_out=True,
+            )
+            for row in pop_stats:
+                pcode = row["properties"]["ADM1_PCODE"]
+                pop = row["properties"]["sum"]
+                if pop:
+                    pop = int(round(pop, 0))
+                adm1_json.loc[adm1_json["ADM1_PCODE"] == pcode, "Population"] = pop
 
         if len(pop_resource) > 1:
             yearmatches = [re.findall("(?<!\d)\d{4}(?!\d)", r["name"], re.IGNORECASE) for r in pop_resource]
