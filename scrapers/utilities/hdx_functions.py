@@ -6,11 +6,11 @@ from os.path import join, dirname
 from zipfile import ZipFile, BadZipFile
 from pandas import DataFrame, concat
 from geopandas import read_file
-from uuid import uuid4
 
 from hdx.data.dataset import Dataset
-from hdx.utilities.downloader import DownloadError
 from hdx.data.hdxobject import HDXError
+from hdx.utilities.downloader import DownloadError
+from hdx.utilities.uuid import get_uuid
 
 logger = logging.getLogger()
 
@@ -58,7 +58,7 @@ def download_unzip_read_data(resource, file_type=None, unzip=False, read=False):
         return None
 
     if unzip:
-        temp_folder = join(dirname(resource_file), uuid4().hex)
+        temp_folder = join(dirname(resource_file), get_uuid())
         try:
             with ZipFile(resource_file, "r") as z:
                 z.extractall(temp_folder)

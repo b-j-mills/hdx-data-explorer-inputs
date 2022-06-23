@@ -13,7 +13,12 @@ logger = logging.getLogger()
 
 
 def update_health_facilities(
-    configuration, downloader, adm1_countries, adm1_json, temp_folder, countries=None
+    configuration,
+    downloader,
+    adm1_countries,
+    adm1_json,
+    temp_folder,
+    countries=None,
 ):
     configuration = configuration["health_facilities"]
 
